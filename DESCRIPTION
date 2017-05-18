@@ -1,6 +1,7 @@
 Package: smbr
 Title: Facilitates Bayesian Analysis using STAN
-Version: 0.0.0.9000
+Version: 0.0.0.9001
+Date: 2017-05-18
 Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut", "cre")),
              person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
 Description: What the package does (one paragraph).
