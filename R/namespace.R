@@ -1,7 +1,6 @@
-#' @import datacheckr mcmcr mbr stringr rstan
+#' @import datacheckr mbr mcmcr rstan
 #' @importFrom broom glance
-#' @importFrom lubridate dminutes is.duration
 #' @importFrom magrittr %<>% %>%
 #' @importFrom plyr llply
-#' @importFrom stats coef predict update
+#' @importFrom stats sd coef predict update
 NULL

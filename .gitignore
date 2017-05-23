@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 .DS_Store
+
+models-test.R
+analyse-test.R

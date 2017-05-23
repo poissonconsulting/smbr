@@ -6,7 +6,7 @@
 #write(template(x), file = tempfile)
 
 
-smb_analyse <- function(data, model, tempfile, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -34,7 +34,7 @@ smb_analyse <- function(data, model, tempfile, quick, quiet, glance, parallel) {
   regexp <- model$fixed
   named <- names(model$random_effects) %>% c(model$derived)
 
-  stanfit <- stan(tempfile, data = data,
+  stanfit <- stan(data = data, model_code = template(model),
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet)
@@ -56,7 +56,6 @@ smb_analyse <- function(data, model, tempfile, quick, quiet, glance, parallel) {
   obj
 }
 
-#' analyse.smb_model
 #' @export
 analyse.smb_model <- function(x, data,
                               parallel = getOption("mb.parallel", FALSE),
@@ -79,15 +78,12 @@ analyse.smb_model <- function(x, data,
 
   if (beep) on.exit(beepr::beep())
 
-  tempfile <- tempfile(fileext = ".stan")
-  write(template(x), file = tempfile)
-
   if (is.data.frame(data)) {
-    return(smb_analyse(data = data, model = x, tempfile = tempfile,
+    return(smb_analyse(data = data, model = x,
                        quick = quick, quiet = quiet, glance = glance,
                        parallel = parallel))
   }
 
-  llply(data, smb_analyse, model = x, tempfile = tempfile,
+  llply(data, smb_analyse, model = x,
         quick = quick, quiet = quiet, glance = glance, parallel = parallel)
 }

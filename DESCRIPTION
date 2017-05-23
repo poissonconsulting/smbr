@@ -8,9 +8,18 @@ Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 URL: https://github.com/poissonconsulting/smbr
 BugReports: https://github.com/poissonconsulting/smbr/issues
-Depends: R (>= 3.2.0)
-Depends: rstan (>= 2.15.0)
-Imports: magrittr (>= 1.5.0)
+Depends: R (>= 3.2.0),
+         broom,
+         rstan (>= 2.15.0),
+         mbr
+Imports: beepr,
+         coda,
+         datacheckr,
+         dplyr,
+         magrittr (>= 1.5.0),
+         mcmcr,
+         plyr,
+         timer
 Suggests: testthat
 Encoding: UTF-8
 LazyData: true

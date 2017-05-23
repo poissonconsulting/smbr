@@ -3,3 +3,6 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^LICENSE\.md$
+
+^models-test.R$
+^analyse-test.R$
