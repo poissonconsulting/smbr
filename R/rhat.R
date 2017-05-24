@@ -1,7 +1,7 @@
 #' @export
 rhat.smb_analysis <- function(x, ...) {
 
-  x <- As.mcmc.list(x$stanfit)
+  x <- As.mcmc.list(x$stan_fit)
 
   if (length(x) < 2) error("x must have at least two chains")
 

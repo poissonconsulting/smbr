@@ -11,7 +11,7 @@ BugReports: https://github.com/poissonconsulting/smbr/issues
 Depends: R (>= 3.2.0),
          broom,
          rstan (>= 2.15.0),
-         mbr
+         mbr (>= 0.0.0.9042)
 Imports: beepr,
          coda,
          datacheckr,
@@ -19,6 +19,8 @@ Imports: beepr,
          magrittr (>= 1.5.0),
          mcmcr,
          plyr,
+         purrr,
+         stringr,
          timer
 Suggests: testthat
 Encoding: UTF-8

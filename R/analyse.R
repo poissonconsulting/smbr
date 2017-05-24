@@ -6,7 +6,7 @@
 #write(template(x), file = tempfile)
 
 
-smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -34,19 +34,19 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
   regexp <- model$fixed
   named <- names(model$random_effects) %>% c(model$derived)
 
-  stanfit <- stan(data = data, model_code = template(model),
+  stan_fit <- rstan::sampling(stan_model, data = data,
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet)
 
-  mcmcr <- extract(stanfit, permute = TRUE) #%>% as.mcmcr()
+  mcmcr <- extract(stan_fit, permute = TRUE) #%>% as.mcmcr()
   #mcmcr <- llply(jags_chains, function(x) x$jags_samples)
   #mcmcr %<>% llply(mcmcr::as.mcmcr)
   #mcmcr %<>% purrr::reduce(mcmcr::bind_chains)
 
   obj %<>% c(inits = list(inits),
-             stan_chains = extract(stanfit, permute = FALSE),
-             stanfit = stanfit,
+             stan_chains = extract(stan_fit, permute = FALSE),
+             stan_fit = stan_fit,
              mcmcr = list(mcmcr), ngens = niters)
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
@@ -78,12 +78,14 @@ analyse.smb_model <- function(x, data,
 
   if (beep) on.exit(beepr::beep())
 
+  stan_model <- rstan::stan_model(model_code = template(x), verbose = !quiet)
+
   if (is.data.frame(data)) {
-    return(smb_analyse(data = data, model = x,
+    return(smb_analyse(data = data, model = x, stan_model = stan_model,
                        quick = quick, quiet = quiet, glance = glance,
                        parallel = parallel))
   }
 
-  llply(data, smb_analyse, model = x,
+  llply(data, smb_analyse, model = x, stan_model = stan_model,
         quick = quick, quiet = quiet, glance = glance, parallel = parallel)
 }

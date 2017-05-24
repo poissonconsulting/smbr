@@ -28,11 +28,11 @@ coef.smb_analysis <- function(object, param_type = "fixed", include_constant = T
   parameters <- parameters(object, param_type)
 
   # Extract posterior of parameters
-  ex <- extract(object$stanfit) %>%
+  ex <- extract(object$stan_fit) %>%
     as.data.frame() %>%
     select_(.dots = as.list(parameters))
 
-  s <- summary(object$stanfit, pars = parameters,
+  s <- summary(object$stan_fit, pars = parameters,
                probs = c((1 - conf_level) / 2, 0.5 + conf_level / 2)) %>%
     use_series(summary)
 

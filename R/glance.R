@@ -5,9 +5,6 @@ glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), .
   rhat_analysis <- rhat(x)
   rhat_arg <- rhat
 
-
-  x$stanfit@model_pars
-
   if (is.null(random)) random <- character(0)
   derived <- x$model$derived
 
