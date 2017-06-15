@@ -48,7 +48,7 @@ coef.smb_analysis <- function(object, param_type = "fixed", include_constant = T
     select(term, estimate, sd, zscore, lower, upper, pvalue)
 
   if (!include_constant) {
-    s %<>% dplyr::filter_(~lower != upper)
+    s %<>% filter_(~lower != upper)
   }
 
   s

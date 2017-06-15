@@ -1,34 +1,39 @@
 #' @export
+#'
+
 parameters.smb_code <- function(x, param_type = "fixed", scalar = TRUE, ...) {
 
   # Find parameter block and extract parameter types and names
   check_scalar(param_type, c("fixed", "random", "derived"))
   check_flag(scalar)
 
-  if(param_type == "derived") {
-
-  }
-
-  x <- y # for debuggin
-
   x %<>% template()
 
-  parameters <- get_block(x, "parameters")
-  transformed <- get_block(x, "transformed parameters")
+  if (param_type == "derived") {
+    parameters <- c(get_par_names(x, "transformed parameters"),
+                    get_par_names(x, "generated quantities"))
+    types <- c(get_par_types(x, "transformed parameters"),
+               get_par_types(x, "generated quantities"))
+  } else {
+    parameters <- get_par_names(x, "parameters")
+    types <- get_par_types(x, "parameters")
+  }
 
-  scalar <- !str_detect(x, "\\[")
+  # Which parameters are scalars?
+  s <- types %in% c("int", "real")
 
-  x %<>% str_extract("\\w+$")
+  if (scalar) parameters <- parameters[s]
 
-  if(scalar) x <- x[scalar]
+  parameters %<>% sort()
 
-  x %<>% sort()
+  parameters
 
-  x
 }
 
 #' @export
+
 parameters.smb_analysis <- function(x, param_type = "fixed", ...) {
+
   check_scalar(param_type, c("fixed", "random", "derived"))
 
   random <- names(random_effects(x))
@@ -42,4 +47,5 @@ parameters.smb_analysis <- function(x, param_type = "fixed", ...) {
 
   parameters %<>% setdiff(random) %>% setdiff(derived)
   parameters
+
 }

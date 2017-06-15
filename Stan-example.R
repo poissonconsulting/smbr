@@ -14,6 +14,7 @@ transformed data {
 parameters {
   real mu_y; // modeled param
   real<lower=0> tau_y; // modeled param
+  vector<lower=0>[N] foo; // just for testing purposes
 }
 transformed parameters {
   real<lower=0> sigma_y; // derived quantity (param)

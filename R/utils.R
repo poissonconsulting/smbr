@@ -1,15 +1,3 @@
-# 0. delete comments
-# 1. get black
-# 2. get lines within blocks
-# 3. find parameter definitions
-# 4. extract name
-source("Stan-example.R")
-x %<>% mb_code()
-y <- x
-
-x %<>% remove_comments()
-x %<>% str_replace_all(";.*\n", ";\n")
-
 remove_comments <- function(x) {
 
   x %<>% str_replace_all("//.*", "")
@@ -18,39 +6,102 @@ remove_comments <- function(x) {
 
 }
 
-#get_block <- function(x, block_name) {
+clean_blocks <- function(x) {
+
+  # Remove linebreaks and extra white space
+  x %<>% str_replace_all(";.*\n", ";\n") %>%
+    str_replace_all("\n", "") %>%
+    str_replace_all("\\s{2,}", " ")
+  x
+}
+
+get_block_location <- function(x, block_name) {
+
   if(!str_detect(x, block_name)) return(character(0))
+  if(length(x) > 1) {
+    x <- x[1]
+    warning("length(x) > 1; using first element")
+  }
 
   possible_blocks <- c("data", "transformed data", "parameters",
                        "transformed parameters", "model", "generated quantities")
 
-  p <- str_c(c(possible_blocks, "$"), collapse = "|") # possible patterns after curly bracket
-  #p <- str_c(c(possible_blocks), collapse = "|") # possible patterns after curly bracket
+  block_names <- str_extract_all(x, "(^|[}])[^(}|{)]+[{]", simplify = TRUE) %>%
+    str_replace_all("([{]|[}])", "") %>%
+    str_replace_all("(^\\s+|\\s+$)", ""); block_names
 
-  x %<>% str_replace_all("\\n", " ") %>%
-    str_replace_all("\\s{2,} ", " ")
+  if(!block_name %in% block_names) return(character(0))
 
-  pattern <- str_c("(^|[}])\\s*", block_name, "\\s*[{].*[}]\\s*[(", p, ")]?")
+  block_locs <- str_locate_all(x, "(^|[}])[^(}|{)]+[{]")[[1]] %>% t()
 
-  #str_detect(x, pattern)
-  x %<>% str_extract_all(pattern, simplify = TRUE); x
+  if(ncol(block_locs) != length(block_names)) stop("Number of Stan blocks does not match number of block names")
 
-  block_name <- "model"
-block_name <- "generated quantities"
-  x %<>%
-    str_replace(str_c("(^|[}])\\s*", block_name, "\\s*[{]\\s*"), "") %<>%
-    str_replace(";\\s*[}]", "")
+  n_block <- ncol(block_locs)
+  block_locs[1:(2 * n_block - 1)] <- block_locs %>% magrittr::extract(2:(2 * n_block))
+  block_locs[2 * n_block] <- nchar(x)
+  block_locs %<>% t() %>% set_rownames(block_names)
 
-  if (length(x) > 1) stop(base::sprintf("multiple '%s' blocks in model", block_name))
+  which_block <- which(block_names == block_name)
 
-  str_(x, str_c("(^|[}])\\s*", block_name, "\\s*[{].*[}]"))
+  block_locs[which_block, ] %>% as.list()
 
-  x %<>% str_replace(str_c("(.*[}]\\s{0,}", block_name, "\\s{0,1}[{])([^}]*)(.*)"), "\\2") %>%
-    str_replace("\\s$", "")
-
-  x %<>% str_split(";") %>% unlist() %>% purrr::discard(function(x) identical(x, ""))
-
-  x
 }
 
-get_block(x, "parameters")
+extract_pars <- function(x, block_location) {
+
+  x %<>% str_sub(block_location$start, block_location$end) %>%
+    str_trim() %>%
+    str_replace_all("([{]|[}])", "") %>%
+    str_trim() %>%
+    str_replace(";$", "") %>%
+    str_split(";", simplify = TRUE) %>%
+    str_trim(); x
+
+  type <- c("int", "real", "vector", "simplex", "ordered", "row_vector",
+            "matrix", "corr_matrix", "cov_matrix", "positive_ordered") %>%
+    str_c(collapse = "|") %>%
+    str_c("(", ., ")")
+
+#  x <- "vector<lower=0>[N] name"
+  pattern <- str_c(type, "[<[^>]+>]*?\\s+(\\w+)$")
+  pars <- str_replace(x[str_detect(x, pattern)], pattern, "\\2")
+
+  pars
+
+}
+
+get_par_names <- function(x, block_name) {
+  x %<>% remove_comments() %>% clean_blocks()
+  block_location <- get_block_location(x, block_name)
+  extract_pars(x, block_location)
+}
+
+extract_types <- function(x, block_location) {
+
+  x %<>% str_sub(block_location$start, block_location$end) %>%
+    str_trim() %>%
+    str_replace_all("([{]|[}])", "") %>%
+    str_trim() %>%
+    str_replace(";$", "") %>%
+    str_split(";", simplify = TRUE) %>%
+    str_trim(); x
+
+  type <- c("int", "real", "vector", "simplex", "ordered", "row_vector",
+            "matrix", "corr_matrix", "cov_matrix", "positive_ordered") %>%
+    str_c(collapse = "|") %>%
+    str_c("(", ., ")")
+
+  pattern <- str_c(type, "[<[^>]+>]*?\\s+(\\w+)$")
+  x %<>% magrittr::extract(str_detect(x, pattern))
+
+  types <- str_extract(x, type)
+
+  types
+
+}
+
+get_par_types <- function(x, block_name) {
+  x %<>% remove_comments() %>% clean_blocks()
+  block_location <- get_block_location(x, block_name)
+  extract_types(x, block_location)
+}
