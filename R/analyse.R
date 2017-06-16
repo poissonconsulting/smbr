@@ -1,12 +1,4 @@
-
-
-# for testing
-# x <- model
-#tempfile <- tempfile(fileext = ".stan")
-#write(template(x), file = tempfile)
-
-
-smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -34,18 +26,19 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
   regexp <- model$fixed
   named <- names(model$random_effects) %>% c(model$derived)
 
+  stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
   stan_fit <- rstan::sampling(stan_model, data = data,
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet)
 
-  mcmcr <- extract(stan_fit, permute = TRUE) #%>% as.mcmcr()
+  mcmcr <- rstan::extract(stan_fit, permute = TRUE) #%>% as.mcmcr()
   #mcmcr <- llply(jags_chains, function(x) x$jags_samples)
   #mcmcr %<>% llply(mcmcr::as.mcmcr)
   #mcmcr %<>% purrr::reduce(mcmcr::bind_chains)
 
   obj %<>% c(inits = list(inits),
-             stan_chains = extract(stan_fit, permute = FALSE),
+             stan_chains = rstan::extract(stan_fit, permute = FALSE),
              stan_fit = stan_fit,
              mcmcr = list(mcmcr), ngens = niters)
   obj$duration <- timer$elapsed()

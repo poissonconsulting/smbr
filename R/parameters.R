@@ -10,10 +10,15 @@ parameters.smb_code <- function(x, param_type = "fixed", scalar = TRUE, ...) {
   x %<>% template()
 
   if (param_type == "derived") {
-    parameters <- c(get_par_names(x, "transformed parameters"),
-                    get_par_names(x, "generated quantities"))
-    types <- c(get_par_types(x, "transformed parameters"),
-               get_par_types(x, "generated quantities"))
+    parameters <- types <- c()
+    if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
+      parameters %<>% c(get_par_names(x, "transformed parameters"))
+      types %<>% c(get_par_types(x, "transformed parameters"))
+    }
+    if (str_detect(x, "generated quantities\\s*[{]{1}")) {
+      parameters %<>% c(get_par_names(x, "generated quantities"))
+      types %<>% c(get_par_types(x, "generated quantities"))
+    }
   } else {
     parameters <- get_par_names(x, "parameters")
     types <- get_par_types(x, "parameters")
