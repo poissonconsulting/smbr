@@ -1,4 +1,5 @@
 #' @import datacheckr mbr mcmcr rstan
+#' @import coda gelman.diag
 #' @importFrom broom glance
 #' @importFrom dplyr as.tbl filter_ select select_
 #' @importFrom magrittr %<>% %>% set_colnames set_rownames use_series

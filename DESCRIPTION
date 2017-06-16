@@ -13,7 +13,7 @@ Depends: R (>= 3.2.0),
          rstan (>= 2.15.0),
          mbr (>= 0.0.0.9042)
 Imports: beepr,
-         coda,
+         coda (>= 0.19.0),
          datacheckr,
          dplyr,
          magrittr (>= 1.5.0),
