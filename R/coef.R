@@ -25,7 +25,7 @@ coef.smb_analysis <- function(object, param_type = "fixed", include_constant = T
   check_flag(include_constant)
   check_number(conf_level, c(0.5, 0.99))
 
-  parameters <- parameters(object, param_type)
+  parameters <- parameters(object$model$code, param_type)
 
   # Extract posterior of parameters
   ex <- extract(object$stan_fit) %>%
@@ -37,10 +37,13 @@ coef.smb_analysis <- function(object, param_type = "fixed", include_constant = T
     use_series(summary)
 
   s <- s[, c("mean", "sd", colnames(s)[grepl("[0-9]+%", colnames(s))])] %>%
-    as.data.frame() %>% as.tbl()
+    matrix(ncol = 4) %>%
+    as.data.frame() %>%
+    as.tbl() %>%
+    set_colnames(c("estimate", "sd", "lower", "upper"))
 
   s$term <- parameters
-  s$zscore <- s$mean / s$sd
+  s$zscore <- s$estimate / s$sd
   s$pvalue <- apply(ex, 2, pvalue)
 
   s %<>% set_colnames(c("estimate", "sd", "lower", "upper", "term",

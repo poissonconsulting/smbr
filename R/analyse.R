@@ -32,13 +32,23 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet)
 
-  mcmcr <- rstan::extract(stan_fit, permute = TRUE) #%>% as.mcmcr()
-  #mcmcr <- llply(jags_chains, function(x) x$jags_samples)
-  #mcmcr %<>% llply(mcmcr::as.mcmcr)
+  # Extract posterior
+  ex <- rstan::extract(stan_fit, permute = FALSE)
+
+  # Remove lp__ (aka log posterior probability)
+  ex <- ex[, , (1:dim(ex)[3])[which(dimnames(ex)$parameters != "lp__")]]
+
+  # List of length equal to number of parameters
+  mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
+  for (i in 1:length(mcmcr)) {
+    mcmcr[[i]] <- ex[, , i]
+    dim(mcmcr[[i]]) <- c(1, iteration = 1000, 4)
+    class(mcmcr[[i]]) <- "mcarray"
+  }
+  mcmcr %<>% mcmcr::as.mcmcr()
   #mcmcr %<>% purrr::reduce(mcmcr::bind_chains)
 
   obj %<>% c(inits = list(inits),
-             stan_chains = rstan::extract(stan_fit, permute = FALSE),
              stan_fit = stan_fit,
              mcmcr = list(mcmcr), ngens = niters)
   obj$duration <- timer$elapsed()
@@ -71,14 +81,12 @@ analyse.smb_model <- function(x, data,
 
   if (beep) on.exit(beepr::beep())
 
-  stan_model <- rstan::stan_model(model_code = template(x), verbose = !quiet)
-
   if (is.data.frame(data)) {
-    return(smb_analyse(data = data, model = x, stan_model = stan_model,
-                       quick = quick, quiet = quiet, glance = glance,
-                       parallel = parallel))
+    return(smb_analyse(data = data, model = x, quick = quick, quiet = quiet,
+                       glance = glance, parallel = parallel))
   }
 
-  llply(data, smb_analyse, model = x, stan_model = stan_model,
-        quick = quick, quiet = quiet, glance = glance, parallel = parallel)
+  llply(data, smb_analyse, model = x, quick = quick, quiet = quiet,
+        glance = glance, parallel = parallel)
+
 }
