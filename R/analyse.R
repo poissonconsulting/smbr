@@ -31,6 +31,7 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet)
+  cat("Finished stan.\n")
 
   # Extract posterior
   ex <- rstan::extract(stan_fit, permute = FALSE)
@@ -41,20 +42,24 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
   # List of length equal to number of parameters
   mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
   for (i in 1:length(mcmcr)) {
+    cat("parameter", i, "of", length(mcmcr), "\n")
     mcmcr[[i]] <- ex[, , i]
     dim(mcmcr[[i]]) <- c(1, iteration = 1000, 4)
     class(mcmcr[[i]]) <- "mcarray"
   }
   mcmcr %<>% mcmcr::as.mcmcr()
   #mcmcr %<>% purrr::reduce(mcmcr::bind_chains)
+  cat("Converted to MCMCR.\n")
 
   obj %<>% c(inits = list(inits),
              stan_fit = stan_fit,
              mcmcr = list(mcmcr), ngens = niters)
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
+  cat("Made obj.\n")
 
   if (glance) print(glance(obj))
+  cat("Glanced.\n")
 
   obj
 }

@@ -2,7 +2,7 @@
 #'
 
 glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), ...) {
-  check_number(rhat)
+  datacheckr::check_number(rhat)
 
   rhat_analysis <- rhat(x)
   rhat_arg <- rhat

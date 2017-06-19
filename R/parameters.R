@@ -9,6 +9,12 @@ parameters.smb_code <- function(x, param_type = "fixed", scalar = TRUE, ...) {
 
   x %<>% template()
 
+  if (identical(param_type, "random")) {
+    random <- names(random_effects(x))
+    if (is.null(random)) random <- character(0)
+    return(random)
+  }
+
   if (param_type == "derived") {
     parameters <- types <- c()
     if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
