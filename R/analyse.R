@@ -1,4 +1,5 @@
-smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, quick, quiet, glance, parallel,
+                        stan_control) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -26,11 +27,13 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel) {
   regexp <- model$fixed
   named <- names(model$random_effects) %>% c(model$derived)
 
+  # nchains <- 1
   stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
   stan_fit <- rstan::sampling(stan_model, data = data,
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
-                      iter = 2 * niters, thin = nthin, verbose = quiet)
+                      iter = 2 * niters, thin = nthin, verbose = quiet,
+                      control = stan_control)
   cat("Finished stan.\n")
 
   # Extract posterior
@@ -71,6 +74,7 @@ analyse.smb_model <- function(x, data,
                               quiet = getOption("mb.quiet", TRUE),
                               glance = getOption("mb.glance", TRUE),
                               beep = getOption("mb.beep", TRUE),
+                              stan_control = NULL,
                               ...) {
   if (is.data.frame(data)) {
     check_data2(data)
@@ -88,10 +92,11 @@ analyse.smb_model <- function(x, data,
 
   if (is.data.frame(data)) {
     return(smb_analyse(data = data, model = x, quick = quick, quiet = quiet,
-                       glance = glance, parallel = parallel))
+                       glance = glance, parallel = parallel,
+                       stan_control = stan_control))
   }
 
   llply(data, smb_analyse, model = x, quick = quick, quiet = quiet,
-        glance = glance, parallel = parallel)
+        glance = glance, parallel = parallel, stan_control = stan_control)
 
 }

@@ -25,7 +25,7 @@ coef.smb_analysis <- function(object, param_type = "fixed", include_constant = T
   check_flag(include_constant)
   check_number(conf_level, c(0.5, 0.99))
 
-  parameters <- parameters(object$model$code, param_type)
+  parameters <- parameters(object$model, param_type)
 
   # Extract posterior of parameters
   ex <- extract(object$stan_fit) %>%

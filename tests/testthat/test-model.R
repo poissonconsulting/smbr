@@ -52,13 +52,13 @@ test_that("parameters", {
   expect_false(inherits(model, "tmb_model"))
 
   # Test that parameters are correct
-  expect_identical(parameters(model$code), c("mu_y", "tau_y"))
-  expect_identical(parameters(model$code, scalar = FALSE),
+  expect_identical(parameters(model), c("mu_y", "tau_y"))
+  expect_identical(parameters(model, scalar = FALSE),
                    c("foo", "mu_y", "tau_y"))
 
-  expect_identical(parameters(model$code, param_type = "derived"),
+  expect_identical(parameters(model, param_type = "derived"),
                    c("sigma_y", "variance_y"))
-  expect_identical(parameters(model$code, param_type = "derived",
+  expect_identical(parameters(model, param_type = "derived",
                               scalar = FALSE),
                    c("bar", "sigma_y", "variance_y"))
 
@@ -69,6 +69,6 @@ test_that("parameters", {
 #  expect_identical(parameters(mb_code(template), "derived"),
  #                  "sMales")
 
-  expect_error(parameters(mb_code(template), "adreport"))
-  expect_error(parameters(mb_code(template), "report"))
+  #expect_error(parameters(mb_code(template), "adreport"))
+  #expect_error(parameters(mb_code(template), "report"))
 })

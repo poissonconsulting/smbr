@@ -1,19 +1,19 @@
 #' @export
 #'
 
-parameters.smb_code <- function(x, param_type = "fixed", scalar = TRUE, ...) {
+parameters.smb_model <- function(x, param_type = "fixed", scalar = TRUE, ...) {
 
   # Find parameter block and extract parameter types and names
   check_scalar(param_type, c("fixed", "random", "derived"))
   check_flag(scalar)
-
-  x %<>% template()
 
   if (identical(param_type, "random")) {
     random <- names(random_effects(x))
     if (is.null(random)) random <- character(0)
     return(random)
   }
+
+  x %<>% .$code %>% template()
 
   if (param_type == "derived") {
     parameters <- types <- c()
