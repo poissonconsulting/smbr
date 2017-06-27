@@ -51,8 +51,8 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
   analysis
 }
 
-
 #' @export
+
 reanalyse.smb_analysis <- function(analysis,
                                    rhat = getOption("mb.rhat", 1.1),
                                    duration = getOption("mb.duration",
