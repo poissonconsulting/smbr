@@ -56,14 +56,14 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
 reanalyse.smb_analysis <- function(analysis,
                                    rhat = getOption("mb.rhat", 1.1),
                                    duration = getOption("mb.duration",
-                                                        lubridate::dminutes(10)),
+                                                        dminutes(10)),
                                    parallel = getOption("mb.parallel", FALSE),
                                    quick = getOption("mb.quick", FALSE),
                                    quiet = getOption("mb.quiet", TRUE),
                                    beep = getOption("mb.beep", TRUE),
                                    ...) {
 
-  if (!lubridate::is.duration(duration)) error("duration must be an object of class Duration")
+  if (!is.duration(duration)) error("duration must be an object of class Duration")
   check_flag(quick)
   check_flag(quiet)
   check_flag(parallel)
