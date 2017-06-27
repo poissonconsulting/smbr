@@ -27,14 +27,26 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   regexp <- model$fixed
   named <- names(model$random_effects) %>% c(model$derived)
 
-  # nchains <- 1
-  stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
+  # New code saves template and sets directory for Stan compilation so it can be used again with reanalyse without recompiling
+  subfoldr::save_template(model$code %>% as.character(), "stan_model")
+  file <- stringr::str_c(subfoldr::get_main(), "templates",
+                         subfoldr::get_sub(),
+                         "stan_model.txt", sep = "/")
+  s <- readr::read_file(file) %>% str_c("\n") # complete final line
+  readr::write_file(s, file)
+  rm(s)
+  base::file.copy(file, stringr::str_replace(file, "txt$", "stan"),
+                  overwrite = TRUE)
+  file %<>% stringr::str_replace("txt$", "stan")
+  stan_model <- rstan::stan_model(file = file, auto_write = TRUE)
+
+  # OLD: stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
+  stan_model <- rstan::stan_model(file = file, auto_write = TRUE)
   stan_fit <- rstan::sampling(stan_model, data = data,
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet,
                       control = stan_control)
-  cat("Finished stan.\n")
 
   # Extract posterior
   ex <- rstan::extract(stan_fit, permute = FALSE)
@@ -47,22 +59,20 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   for (i in 1:length(mcmcr)) {
     cat("parameter", i, "of", length(mcmcr), "\n")
     mcmcr[[i]] <- ex[, , i]
-    dim(mcmcr[[i]]) <- c(1, iteration = 1000, 4)
+    dim(mcmcr[[i]]) <- c(1, iteration = niters, nchains)
     class(mcmcr[[i]]) <- "mcarray"
   }
   mcmcr %<>% mcmcr::as.mcmcr()
-  #mcmcr %<>% purrr::reduce(mcmcr::bind_chains)
-  cat("Converted to MCMCR.\n")
 
   obj %<>% c(inits = list(inits),
              stan_fit = stan_fit,
+             stan_model = stan_model,
+             stan_control = stan_control,
              mcmcr = list(mcmcr), ngens = niters)
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
-  cat("Made obj.\n")
 
   if (glance) print(glance(obj))
-  cat("Glanced.\n")
 
   obj
 }

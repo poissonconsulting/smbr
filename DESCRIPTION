@@ -1,6 +1,6 @@
 Package: smbr
 Title: Facilitates Bayesian Analysis using STAN
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Date: 2017-05-18
 Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut", "cre")),
              person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
@@ -15,12 +15,15 @@ Depends: R (>= 3.2.0),
 Imports: beepr,
          coda (>= 0.19.0),
          datacheckr,
-         dplyr,
+         dplyr (>= 0.7.0),
+         lubridate (>= 1.6.0),
          magrittr (>= 1.5.0),
          mcmcr,
-         plyr,
-         purrr,
-         stringr,
+         plyr (>= 1.8.0),
+         purrr (>= 0.2.0),
+         readr (>= 1.1.0),
+         stringr (>= 1.2.0),
+         subfoldr,
          timer
 Suggests: testthat
 Encoding: UTF-8
