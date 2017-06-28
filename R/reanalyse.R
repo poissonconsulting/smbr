@@ -11,8 +11,10 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   stan_fit <- rstan::sampling(analysis$stan_model, data = data,
                               cores = ifelse(parallel, nchains, 1L),
                               init = analysis$inits,
-                              iter = 2 * niters, thin = nthin, verbose = quiet,
+                              iter = 2 * niters, thin = nthin,
+                              verbose = quiet,
                               control = analysis$stan_control)
+  stan_warnings <- warnings()
 
   # Extract posterior
   ex <- rstan::extract(stan_fit, permute = FALSE)
@@ -31,24 +33,45 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   mcmcr %<>% mcmcr::as.mcmcr()
 
   analysis$stan_fit <- stan_fit
+  analysis$stan_warnings <- stan_warnings
   analysis$mcmcr <- mcmcr
   analysis$ngens <- as.integer(niters)
   analysis$duration %<>% magrittr::add(timer$elapsed())
   analysis
 }
 
+enough_bfmi <- function(analysis) {
+  s <- "Bayesian Fraction of Missing Information"
+  bfmi <- !(analysis$stan_warnings %>%
+              utils::capture.output() %>%
+              stringr::str_detect(s) %>%
+              any())
+  bfmi
+}
+
 smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
 
-  if (quick || converged(analysis, rhat) || duration < elapsed(analysis) * 2) {
+  if (quick || duration < elapsed(analysis) * 2) {
     print(glance(analysis))
     return(analysis)
   }
+cat("HERE 1\n")
+  if (converged(analysis, rhat) & enough_bfmi(analysis)) {
+    print(glance(analysis))
+    return(analysis)
+  }
+cat("HERE 2\n")
 
-  while (!converged(analysis, rhat) && duration >= elapsed(analysis) * 2) {
+  while (!converged(analysis, rhat) && duration >= elapsed(analysis) * 2 &&
+         !enough_bfmi(analysis)) {
+    cat("HERE 3\n")
     analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
     print(glance(analysis))
   }
+cat("HERE 4\n")
+
   analysis
+
 }
 
 #' @export
@@ -70,7 +93,6 @@ reanalyse.smb_analysis <- function(analysis,
   check_flag(beep)
 
   if (beep) on.exit(beepr::beep())
-
   smb_reanalyse(analysis, rhat = rhat, duration = duration, quick = quick,
                 quiet = quiet, parallel = parallel)
 }

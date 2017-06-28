@@ -41,12 +41,12 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   stan_model <- rstan::stan_model(file = file, auto_write = TRUE)
 
   # OLD: stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
-  stan_model <- rstan::stan_model(file = file, auto_write = TRUE)
   stan_fit <- rstan::sampling(stan_model, data = data,
                       cores = ifelse(parallel, nchains, 1L),
                       init = inits,
                       iter = 2 * niters, thin = nthin, verbose = quiet,
                       control = stan_control)
+  stan_warnings <- list(warnings())
 
   # Extract posterior
   ex <- rstan::extract(stan_fit, permute = FALSE)
@@ -57,9 +57,9 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   # List of length equal to number of parameters
   mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
   for (i in 1:length(mcmcr)) {
-    cat("parameter", i, "of", length(mcmcr), "\n")
     mcmcr[[i]] <- ex[, , i]
-    dim(mcmcr[[i]]) <- c(1, iteration = niters, nchains)
+    dim(mcmcr[[i]]) <- c(1, iteration = ifelse(quick, 2 * niters, niters),
+                                               nchains)
     class(mcmcr[[i]]) <- "mcarray"
   }
   mcmcr %<>% mcmcr::as.mcmcr()
@@ -68,6 +68,7 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
              stan_fit = stan_fit,
              stan_model = stan_model,
              stan_control = stan_control,
+             stan_warnings = stan_warnings,
              mcmcr = list(mcmcr), ngens = niters)
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
