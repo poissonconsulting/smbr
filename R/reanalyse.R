@@ -27,7 +27,7 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   for (i in 1:length(mcmcr)) {
     cat("parameter", i, "of", length(mcmcr), "\n")
     mcmcr[[i]] <- ex[, , i]
-    dim(mcmcr[[i]]) <- c(1, iteration = niters, nchains)
+    dim(mcmcr[[i]]) <- c(1, iteration = niters / nthin, nchains)
     class(mcmcr[[i]]) <- "mcarray"
   }
   mcmcr %<>% mcmcr::as.mcmcr()
@@ -56,16 +56,19 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
     return(analysis)
   }
 cat("HERE 1\n")
-  if (converged(analysis, rhat) & enough_bfmi(analysis)) {
+  cnvrgd <- converged(analysis, rhat)
+
+  if (cnvrgd & enough_bfmi(analysis)) {
     print(glance(analysis))
     return(analysis)
   }
 cat("HERE 2\n")
 
-  while (!converged(analysis, rhat) && duration >= elapsed(analysis) * 2 &&
-         !enough_bfmi(analysis)) {
+  while ((!cnvrgd | !enough_bfmi(analysis)) &&
+         duration >= elapsed(analysis) * 2) {
     cat("HERE 3\n")
     analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
+    cnvrgd <- converged(analysis, rhat)
     print(glance(analysis))
   }
 cat("HERE 4\n")
