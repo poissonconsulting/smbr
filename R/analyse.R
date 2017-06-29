@@ -64,6 +64,7 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   }
   mcmcr %<>% mcmcr::as.mcmcr()
   names(mcmcr) <- attr(ex, "dimnames")$parameters
+  names(mcmcr) %<>% str_replace("\\[[0-9]+\\]", "") # gets rid of brackets of parameters that are part of vectors
 
   obj %<>% c(inits = list(inits),
              stan_fit = stan_fit,
