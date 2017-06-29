@@ -14,7 +14,6 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
                               iter = 2 * niters, thin = nthin,
                               verbose = quiet,
                               control = analysis$stan_control)
-  stan_warnings <- warnings()
 
   # Extract posterior
   ex <- rstan::extract(stan_fit, permute = FALSE)
@@ -25,15 +24,14 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   # List of length equal to number of parameters
   mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
   for (i in 1:length(mcmcr)) {
-    cat("parameter", i, "of", length(mcmcr), "\n")
     mcmcr[[i]] <- ex[, , i]
     dim(mcmcr[[i]]) <- c(1, iteration = niters / nthin, nchains)
     class(mcmcr[[i]]) <- "mcarray"
   }
   mcmcr %<>% mcmcr::as.mcmcr()
+  names(mcmcr) <- attr(ex, "dimnames")$parameters
 
   analysis$stan_fit <- stan_fit
-  analysis$stan_warnings <- stan_warnings
   analysis$mcmcr <- mcmcr
   analysis$ngens <- as.integer(niters)
   analysis$duration %<>% magrittr::add(timer$elapsed())
@@ -41,12 +39,21 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
 }
 
 enough_bfmi <- function(analysis) {
-  s <- "Bayesian Fraction of Missing Information"
-  bfmi <- !(analysis$stan_warnings %>%
-              utils::capture.output() %>%
-              stringr::str_detect(s) %>%
-              any())
-  bfmi
+
+  # code adapted from rstan (https://github.com/stan-dev/rstan/)
+  n_e <- 0L
+  object <- analysis$stan_fit
+  sp <- get_sampler_params(object, inc_warmup = FALSE)
+
+#  if (is_sfinstance_valid(object) && all(sapply(sp, function(x) "energy__" %in% colnames(x)))) {
+    E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
+    threshold <- 0.3
+    EBFMI <- get_num_upars(object) / apply(E, 2, var)
+    n_e <- sum(EBFMI < threshold, na.rm = TRUE)
+    if (n_e > 0) return(FALSE)
+
+    TRUE
+
 }
 
 smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
@@ -55,23 +62,21 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
     print(glance(analysis))
     return(analysis)
   }
-cat("HERE 1\n")
+
   cnvrgd <- converged(analysis, rhat)
 
   if (cnvrgd & enough_bfmi(analysis)) {
     print(glance(analysis))
     return(analysis)
   }
-cat("HERE 2\n")
 
   while ((!cnvrgd | !enough_bfmi(analysis)) &&
          duration >= elapsed(analysis) * 2) {
-    cat("HERE 3\n")
     analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
+    analysis$stan_warnings <- warnings()
     cnvrgd <- converged(analysis, rhat)
     print(glance(analysis))
   }
-cat("HERE 4\n")
 
   analysis
 

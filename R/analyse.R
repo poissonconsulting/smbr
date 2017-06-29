@@ -58,11 +58,12 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
   for (i in 1:length(mcmcr)) {
     mcmcr[[i]] <- ex[, , i]
-    dim(mcmcr[[i]]) <- c(1, iteration = ifelse(quick, 2 * niters, niters),
-                                               nchains)
+    dim(mcmcr[[i]]) <-
+      c(1, iteration = ifelse(quick, 2 * niters, niters / nthin), nchains)
     class(mcmcr[[i]]) <- "mcarray"
   }
   mcmcr %<>% mcmcr::as.mcmcr()
+  names(mcmcr) <- attr(ex, "dimnames")$parameters
 
   obj %<>% c(inits = list(inits),
              stan_fit = stan_fit,
