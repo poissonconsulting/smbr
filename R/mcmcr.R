@@ -1,5 +1,5 @@
 #' @export
-as.mcmcr.stan_fit <- function(x, ...) {
+as.mcmcr.stanfit <- function(x, ...) {
 
   pex <- rstan::extract(x) # permuted extract
   ppars <- names(pex) # permuted pars

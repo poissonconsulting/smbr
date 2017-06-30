@@ -7,3 +7,4 @@
 ^models-test.R$
 ^analyse-test.R$
 ^\.travis\.yml$
+^output$

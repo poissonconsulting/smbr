@@ -6,3 +6,5 @@
 
 models-test.R
 analyse-test.R
+
+output/*

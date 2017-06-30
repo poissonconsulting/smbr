@@ -15,24 +15,8 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
                               verbose = quiet,
                               control = analysis$stan_control)
 
-  # Extract posterior
-  ex <- rstan::extract(stan_fit, permute = FALSE)
-
-  # Remove lp__ (aka log posterior probability)
-  ex <- ex[, , (1:dim(ex)[3])[which(dimnames(ex)$parameters != "lp__")]]
-
-  # List of length equal to number of parameters
-  mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
-  for (i in 1:length(mcmcr)) {
-    mcmcr[[i]] <- ex[, , i]
-    dim(mcmcr[[i]]) <- c(1, iteration = niters / nthin, nchains)
-    class(mcmcr[[i]]) <- "mcarray"
-  }
-  mcmcr %<>% mcmcr::as.mcmcr()
-  names(mcmcr) <- attr(ex, "dimnames")$parameters
-
   analysis$stan_fit <- stan_fit
-  analysis$mcmcr <- mcmcr
+  analysis$mcmcr <- mcmcr(stan_fit) %>% list()
   analysis$ngens <- as.integer(niters)
   analysis$duration %<>% magrittr::add(timer$elapsed())
   analysis
