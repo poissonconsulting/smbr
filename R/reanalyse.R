@@ -38,21 +38,20 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   analysis
 }
 
+# THIS DOESN'T DO ANYTHING AT THE MOMENT BECAUSE I'M NOT SURE IF IT MATTERS, BUT LEAVING IN CASE I WANT TO IMPLEMENT LATER
 enough_bfmi <- function(analysis) {
 
   # code adapted from rstan (https://github.com/stan-dev/rstan/)
   n_e <- 0L
   object <- analysis$stan_fit
   sp <- get_sampler_params(object, inc_warmup = FALSE)
+  E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
+  threshold <- 0.3
+  EBFMI <- get_num_upars(object) / apply(E, 2, var)
+  n_e <- sum(EBFMI < threshold, na.rm = TRUE)
+  # UNCOMMENT THIS TO WORK:  # if (n_e > 0) return(FALSE)
 
-#  if (is_sfinstance_valid(object) && all(sapply(sp, function(x) "energy__" %in% colnames(x)))) {
-    E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
-    threshold <- 0.3
-    EBFMI <- get_num_upars(object) / apply(E, 2, var)
-    n_e <- sum(EBFMI < threshold, na.rm = TRUE)
-    if (n_e > 0) return(FALSE)
-
-    TRUE
+  TRUE
 
 }
 

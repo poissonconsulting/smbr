@@ -48,31 +48,14 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
                       control = stan_control)
   stan_warnings <- list(warnings())
 
-  # Extract posterior
-  ex <- rstan::extract(stan_fit, permute = FALSE)
-
-  # Remove lp__ (aka log posterior probability)
-  ex <- ex[, , (1:dim(ex)[3])[which(dimnames(ex)$parameters != "lp__")]]
-
-  # List of length equal to number of parameters
-  mcmcr <- base::vector(mode = "list", length = dim(ex)[3])
-  for (i in 1:length(mcmcr)) {
-    mcmcr[[i]] <- ex[, , i]
-    dim(mcmcr[[i]]) <-
-      c(1, iteration = ifelse(quick, 2 * niters, niters / nthin), nchains)
-    class(mcmcr[[i]]) <- "mcarray"
-  }
-  mcmcr %<>% mcmcr::as.mcmcr()
-  names(mcmcr) <- attr(ex, "dimnames")$parameters
-  names(mcmcr) %<>% str_replace("\\[[0-9]+\\]", "") # gets rid of brackets of parameters that are part of vectors
-
   obj %<>% c(inits = list(inits),
              stan_fit = stan_fit,
              stan_model = stan_model,
              stan_control = stan_control,
              stan_warnings = stan_warnings,
-             mcmcr = list(mcmcr), ngens = niters)
-  obj$duration <- timer$elapsed()
+             mcmcr = list(as.mcmcr(stan_fit)),
+             ngens = niters,
+             duration = timer$elapsed())
   class(obj) <- c("smb_analysis", "mb_analysis")
 
   if (glance) print(glance(obj))
