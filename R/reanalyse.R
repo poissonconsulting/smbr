@@ -10,13 +10,14 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   data <- analysis$data %>% mbr::modify_data(analysis$model)
   stan_fit <- rstan::sampling(analysis$stan_model, data = data,
                               cores = ifelse(parallel, nchains, 1L),
+                              chains = nchains,
                               init = analysis$inits,
                               iter = 2 * niters, thin = nthin,
                               verbose = quiet,
                               control = analysis$stan_control)
 
   analysis$stan_fit <- stan_fit
-  analysis$mcmcr <- mcmcr(stan_fit) %>% list()
+  analysis$mcmcr <- as.mcmcr(stan_fit) %>% list()
   analysis$ngens <- as.integer(niters)
   analysis$duration %<>% magrittr::add(timer$elapsed())
   analysis

@@ -4,9 +4,13 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   timer <- timer::Timer$new()
   timer$start()
 
-  nchains <- 4L
+  # nchains <- 4L
+  # niters <- model$niters
+  # nthin <- niters * nchains / (2000 * 2)
+
+  nchains <- 2L
   niters <- model$niters
-  nthin <- niters * nchains / (2000 * 2)
+  nthin <- niters * nchains / (100 * 2)
 
   if (quick) {
     nchains <- 2L
@@ -43,7 +47,7 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   # OLD: stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
   stan_fit <- rstan::sampling(stan_model, data = data,
                       cores = ifelse(parallel, nchains, 1L),
-                      init = inits,
+                      init = inits, chains = nchains,
                       iter = 2 * niters, thin = nthin, verbose = quiet,
                       control = stan_control)
   stan_warnings <- list(warnings())
@@ -54,8 +58,8 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
              stan_control = stan_control,
              stan_warnings = stan_warnings,
              mcmcr = list(as.mcmcr(stan_fit)),
-             ngens = niters,
-             duration = timer$elapsed())
+             ngens = niters)
+  obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
 
   if (glance) print(glance(obj))
