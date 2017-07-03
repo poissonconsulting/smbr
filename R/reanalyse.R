@@ -40,7 +40,15 @@ enough_bfmi <- function(analysis) {
 
 }
 
-smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel) {
+smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel,
+                          reanalyse_once) {
+
+  if (reanalyse_once) {
+    analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
+    analysis$stan_warnings <- warnings()
+    print(glance(analysis))
+    return(analysis)
+  }
 
   if (quick || duration < elapsed(analysis) * 2) {
     print(glance(analysis))
@@ -76,6 +84,7 @@ reanalyse.smb_analysis <- function(analysis,
                                    quick = getOption("mb.quick", FALSE),
                                    quiet = getOption("mb.quiet", TRUE),
                                    beep = getOption("mb.beep", TRUE),
+                                   reanalyse_once = FALSE,
                                    ...) {
 
   if (!is.duration(duration)) error("duration must be an object of class Duration")
@@ -86,5 +95,5 @@ reanalyse.smb_analysis <- function(analysis,
 
   if (beep) on.exit(beepr::beep())
   smb_reanalyse(analysis, rhat = rhat, duration = duration, quick = quick,
-                quiet = quiet, parallel = parallel)
+                quiet = quiet, parallel = parallel, reanalyse_once)
 }

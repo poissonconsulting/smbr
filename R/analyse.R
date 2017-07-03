@@ -4,13 +4,13 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   timer <- timer::Timer$new()
   timer$start()
 
-  # nchains <- 4L
-  # niters <- model$niters
-  # nthin <- niters * nchains / (2000 * 2)
-
-  nchains <- 2L
+  nchains <- 4L
   niters <- model$niters
-  nthin <- niters * nchains / (100 * 2)
+  nthin <- niters * nchains / (2000 * 2)
+
+  # nchains <- 2L
+  # niters <- model$niters
+  # nthin <- niters * nchains / (100 * 2)
 
   if (quick) {
     nchains <- 2L
