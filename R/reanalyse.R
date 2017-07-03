@@ -17,7 +17,7 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
                               control = analysis$stan_control)
 
   analysis$stan_fit <- stan_fit
-  analysis$mcmcr <- as.mcmcr(stan_fit) %>% list()
+  analysis$mcmcr <- as.mcmcr(stan_fit)
   analysis$ngens <- as.integer(niters)
   analysis$duration %<>% magrittr::add(timer$elapsed())
   analysis
