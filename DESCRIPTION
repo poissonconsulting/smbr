@@ -1,7 +1,7 @@
 Package: smbr
 Title: Facilitates Bayesian Analysis using STAN
-Version: 0.0.0.9005
-Date: 2017-06-30
+Version: 0.0.0.9006
+Date: 2017-07-05
 Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut", "cre")),
              person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
 Description: What the package does (one paragraph).
@@ -16,6 +16,7 @@ Imports: beepr,
          coda (>= 0.19.0),
          datacheckr,
          dplyr (>= 0.7.0),
+         loo (>= 1.1.0),
          lubridate (>= 1.6.0),
          magrittr (>= 1.5.0),
          mcmcr,

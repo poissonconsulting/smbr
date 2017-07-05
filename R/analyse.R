@@ -42,7 +42,8 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   base::file.copy(file, stringr::str_replace(file, "txt$", "stan"),
                   overwrite = TRUE)
   file %<>% stringr::str_replace("txt$", "stan")
-  stan_model <- rstan::stan_model(file = file, auto_write = TRUE)
+  stan_model <- suppressWarnings(
+    rstan::stan_model(file = file, auto_write = TRUE))
 
   # OLD: stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
   stan_fit <- rstan::sampling(stan_model, data = data,
@@ -50,13 +51,11 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
                       init = inits, chains = nchains,
                       iter = 2 * niters, thin = nthin, verbose = quiet,
                       control = stan_control)
-  stan_warnings <- list(warnings())
 
   obj %<>% c(inits = list(inits),
              stan_fit = stan_fit,
              stan_model = stan_model,
              stan_control = stan_control,
-             stan_warnings = stan_warnings,
              mcmcr = list(as.mcmcr(stan_fit)),
              ngens = niters)
   obj$duration <- timer$elapsed()

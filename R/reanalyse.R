@@ -16,11 +16,19 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
                               verbose = quiet,
                               control = analysis$stan_control)
 
-  analysis$stan_fit <- stan_fit
-  analysis$mcmcr <- as.mcmcr(stan_fit)
-  analysis$ngens <- as.integer(niters)
-  analysis$duration %<>% magrittr::add(timer$elapsed())
-  analysis
+  obj <- list(model = analysis$model,
+              data = analysis$data)
+  obj %<>% c(inits = list(analysis$inits),
+             stan_fit = stan_fit,
+             stan_model = analysis$stan_model,
+             stan_control = analysis$stan_control,
+             mcmcr = list(as.mcmcr(stan_fit)),
+             ngens = niters)
+  obj$duration <- analysis$duration + timer$elapsed()
+  class(obj) <- c("smb_analysis", "mb_analysis")
+
+  obj
+
 }
 
 # THIS DOESN'T DO ANYTHING AT THE MOMENT BECAUSE I'M NOT SURE IF IT MATTERS, BUT LEAVING IN CASE I WANT TO IMPLEMENT LATER
@@ -45,7 +53,6 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel,
 
   if (reanalyse_once) {
     analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
-    analysis$stan_warnings <- warnings()
     print(glance(analysis))
     return(analysis)
   }
@@ -65,7 +72,6 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel,
   while ((!cnvrgd | !enough_bfmi(analysis)) &&
          duration >= elapsed(analysis) * 2) {
     analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
-    analysis$stan_warnings <- warnings()
     cnvrgd <- converged(analysis, rhat)
     print(glance(analysis))
   }

@@ -1,6 +1,7 @@
 #' @import datacheckr mbr mcmcr rstan
 #' @importFrom broom glance
 #' @importFrom dplyr as.tbl filter_ select select_
+#' @importFrom loo extract_log_lik waic
 #' @importFrom lubridate dminutes is.duration
 #' @importFrom magrittr %<>% %>% set_colnames set_rownames use_series
 #' @importFrom plyr llply
