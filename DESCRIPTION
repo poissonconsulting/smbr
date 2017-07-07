@@ -4,7 +4,7 @@ Version: 0.0.0.9006
 Date: 2017-07-05
 Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut", "cre")),
              person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
-Description: What the package does (one paragraph).
+Description: Facilitates analyses using STAN.
 License: MIT + file LICENSE
 URL: https://github.com/poissonconsulting/smbr
 BugReports: https://github.com/poissonconsulting/smbr/issues
