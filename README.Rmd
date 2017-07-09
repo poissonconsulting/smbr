@@ -20,6 +20,8 @@ knitr::opts_chunk$set(
 
 # smbr
 
+## Introduction
+
 `smbr` (pronounced simber) is an R package to facilitate analyses using [STAN](http://mc-stan.org/about/).
 It is part of the [mbr](https://github.com/poissonconsulting/mbr) family of packages.
 
@@ -32,14 +34,121 @@ You can install smbr from github with:
 devtools::install_github("poissonconsulting/smbr")
 ```
 
-## Example
+## Demonstration
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-## basic example code
+```{r, message = FALSE}
+library(bauw)
+library(ggplot2)
+library(magrittr)
+library(smbr)
 ```
 
+```{r}
+# define model in Stan language
+model <- model("
+  data {
+    
+    // Data lengths
+      int nAnnual;
+      int nObs;
+
+    // Data
+      int Annual[nObs];
+      int Pairs[nObs];
+      real Year[nObs];
+
+  }
+  parameters {
+
+    // Random effects
+      vector[nAnnual] bAnnual;
+      real log_sAnnual;
+
+    // Regression model
+      real alpha;
+      real beta1;
+      real beta2;
+      real beta3;
+
+  }
+  transformed parameters {
+  
+    real sAnnual;
+    sAnnual = exp(log_sAnnual);
+
+  }
+  model {
+
+    // Vectors of expected values
+      vector[nObs] ePairs;
+    
+    // Priors on random effects
+      log_sAnnual ~ normal(0, 10);
+      bAnnual ~ normal(0, sAnnual);
+
+    // Priors on regression coefficients
+      alpha ~ normal(0, 10);
+      beta1 ~ normal(0, 10);
+      beta2 ~ normal(0, 10);
+      beta3 ~ normal(0, 10);
+
+    // Model
+      for (i in 1:nObs) {
+        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
+                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);
+      }
+
+      target += poisson_lpmf(Pairs | ePairs);
+
+  }
+  generated quantities {
+    
+    // Calculations for WAIC
+      vector[nObs] ePairs;
+      vector[nObs] log_lik;
+
+      for (i in 1:nObs) {
+        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
+                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);
+        log_lik[i] = poisson_lpmf(Pairs[i] | ePairs[i]);
+      }
+
+  }")
+
+# add R code to modify data before running Stan
+model %<>% update_model(modify_data = function(data) {
+  data$nObs <- length(data$Pairs)
+  data$nAnnual <- nlevels(data$Annual)
+  data$Annual %<>% as.integer()
+  data
+})
+
+# add R code to calculate derived parameters
+model %<>% update_model(new_expr = "
+  for (i in 1:length(Pairs)) {
+    prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
+                       beta3 * Year[i]^3 + bAnnual[Annual[i]])
+  }")
+
+# define data types and center year
+model %<>% update_model(
+  select_data = list("Pairs" = integer(), "Year*" = integer(), 
+                     Annual = factor()),
+  derived = "sAnnual",
+  random_effects = list(bAnnual = "Annual"))
+
+data <- bauw::peregrine
+data$Annual <- factor(data$Year)
+
+# analyse
+modify_data(data, model) %>% str()
+analysis <- analyse(model, data = data)
+analysis %<>% reanalyse(rhat = 1.05)
+
+coef(analysis)
+
+plot(analysis)
+```
 
 ## Contribution
 
