@@ -4,8 +4,6 @@
 ^README-.*\.png$
 ^LICENSE\.md$
 
-^models-test.R$
-^analyse-test.R$
 ^\.travis\.yml$
 ^output$
 ^CONDUCT\.md$

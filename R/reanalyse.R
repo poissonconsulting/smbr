@@ -1,34 +1,25 @@
-smb_reanalyse_internal <- function(analysis, parallel, quiet) {
-
+smb_reanalyse_internal <- function(analysis, parallel, quiet, ...) {
   timer <- timer::Timer$new()
   timer$start()
 
   niters <- analysis$ngens * 2
-  nchains <- dim(as.array(analysis$stan_fit))[2]
+  nchains <- nchains(analysis)
   nthin <- niters * nchains / (2000 * 2)
 
-  data <- analysis$data %>% mbr::modify_data(analysis$model)
-  stan_fit <- rstan::sampling(analysis$stan_model, data = data,
-                              cores = ifelse(parallel, nchains, 1L),
-                              chains = nchains,
+  # inits should ideally be set from last values...
+  stan_fit <- rstan::sampling(analysis$stan_model,
+                              data = data_set(analysis, modify = TRUE),
+                              chains = nchains, iter = niters * 2L, thin = nthin,
                               init = analysis$inits,
-                              iter = 2 * niters, thin = nthin,
-                              verbose = quiet,
-                              control = analysis$stan_control)
+                              cores = ifelse(parallel, nchains, 1L),
+                              show_messages = !quiet,
+                              ...)
 
-  obj <- list(model = analysis$model,
-              data = analysis$data)
-  obj %<>% c(inits = list(analysis$inits),
-             stan_fit = stan_fit,
-             stan_model = analysis$stan_model,
-             stan_control = analysis$stan_control,
-             mcmcr = list(as.mcmcr(stan_fit)),
-             ngens = niters)
-  obj$duration <- analysis$duration + timer$elapsed()
-  class(obj) <- c("smb_analysis", "mb_analysis")
-
-  obj
-
+  analysis$stan_fit <- stan_fit
+  analysis$mcmcr <- as.mcmcr(stan_fit)
+  analysis$ngens <- as.integer(niters)
+  analysis$duration %<>% magrittr::add(timer$elapsed())
+  analysis
 }
 
 # THIS DOESN'T DO ANYTHING AT THE MOMENT BECAUSE I'M NOT SURE IF IT MATTERS, BUT LEAVING IN CASE I WANT TO IMPLEMENT LATER
@@ -48,49 +39,28 @@ enough_bfmi <- function(analysis) {
 
 }
 
-smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel,
-                          reanalyse_once) {
-
-  if (reanalyse_once) {
-    analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
+smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel, ...) {
+  if (quick || (converged(analysis, rhat) && enough_bfmi(analysis)) || duration < elapsed(analysis) * 2) {
     print(glance(analysis))
     return(analysis)
   }
 
-  if (quick || duration < elapsed(analysis) * 2) {
-    print(glance(analysis))
-    return(analysis)
-  }
-
-  cnvrgd <- converged(analysis, rhat)
-
-  if (cnvrgd & enough_bfmi(analysis)) {
-    print(glance(analysis))
-    return(analysis)
-  }
-
-  while ((!cnvrgd | !enough_bfmi(analysis)) &&
+  while (!(converged(analysis, rhat) && enough_bfmi(analysis)) &&
          duration >= elapsed(analysis) * 2) {
-    analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
-    cnvrgd <- converged(analysis, rhat)
+    analysis %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet, ...)
     print(glance(analysis))
   }
-
   analysis
-
 }
 
 #' @export
-
 reanalyse.smb_analysis <- function(analysis,
                                    rhat = getOption("mb.rhat", 1.1),
-                                   duration = getOption("mb.duration",
-                                                        dminutes(10)),
+                                   duration = getOption("mb.duration", dminutes(10)),
                                    parallel = getOption("mb.parallel", FALSE),
                                    quick = getOption("mb.quick", FALSE),
                                    quiet = getOption("mb.quiet", TRUE),
                                    beep = getOption("mb.beep", TRUE),
-                                   reanalyse_once = FALSE,
                                    ...) {
 
   if (!is.duration(duration)) error("duration must be an object of class Duration")
@@ -100,6 +70,7 @@ reanalyse.smb_analysis <- function(analysis,
   check_flag(beep)
 
   if (beep) on.exit(beepr::beep())
+
   smb_reanalyse(analysis, rhat = rhat, duration = duration, quick = quick,
-                quiet = quiet, parallel = parallel, reanalyse_once)
+                quiet = quiet, parallel = parallel, ...)
 }

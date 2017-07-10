@@ -1,6 +1,4 @@
 #' @export
-#'
-
 glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), ...) {
   datacheckr::check_number(rhat)
 

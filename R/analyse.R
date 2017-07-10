@@ -1,5 +1,4 @@
-smb_analyse <- function(data, model, quick, quiet, glance, parallel,
-                        stan_control) {
+smb_analyse <- function(data, model, quick, quiet, glance, parallel, ...) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -7,10 +6,6 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
   nchains <- 4L
   niters <- model$niters
   nthin <- niters * nchains / (2000 * 2)
-
-  # nchains <- 2L
-  # niters <- model$niters
-  # nthin <- niters * nchains / (100 * 2)
 
   if (quick) {
     nchains <- 2L
@@ -22,42 +17,31 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
 
   data %<>% modify_data(model = model)
 
-  inits <- if(identical(model$gen_inits(data), list())) {
-    "random"
-  } else {
-    model$gen_inits(data)
-  }
+  inits <- model$gen_inits(data)
+
+  if (identical(inits, list())) inits <- "random"
 
   regexp <- model$fixed
   named <- names(model$random_effects) %>% c(model$derived)
 
-  # New code saves template and sets directory for Stan compilation so it can be used again with reanalyse without recompiling
-  subfoldr::save_template(model$code %>% as.character(), "stan_model")
-  file <- stringr::str_c(subfoldr::get_main(), "templates",
-                         subfoldr::get_sub(),
-                         "stan_model.txt", sep = "/")
-  s <- readr::read_file(file) %>% str_c("\n") # complete final line
-  readr::write_file(s, file)
-  rm(s)
-  base::file.copy(file, stringr::str_replace(file, "txt$", "stan"),
-                  overwrite = TRUE)
-  file %<>% stringr::str_replace("txt$", "stan")
-  stan_model <- suppressWarnings(
-    rstan::stan_model(file = file, auto_write = TRUE))
+  if (quiet) {
+    suppressWarnings(stan_model <- rstan::stan_model(model_code = template(model), verbose = FALSE, auto_write = TRUE))
+  } else
+    stan_model <- rstan::stan_model(model_code = template(model), verbose = TRUE, auto_write = TRUE)
 
-  # OLD: stan_model <- rstan::stan_model(model_code = model$code %>% as.character())
+  # use named and regexp and parameters to set pars
   stan_fit <- rstan::sampling(stan_model, data = data,
-                      cores = ifelse(parallel, nchains, 1L),
-                      init = inits, chains = nchains,
-                      iter = 2 * niters, thin = nthin, verbose = quiet,
-                      control = stan_control)
+                              chains = nchains, iter = niters * 2L, thin = nthin,
+                              init = inits, cores = ifelse(parallel, nchains, 1L),
+                              show_messages = FALSE,
+                              ...)
 
   obj %<>% c(inits = list(inits),
-             stan_fit = stan_fit,
              stan_model = stan_model,
-             stan_control = stan_control,
+             stan_fit = stan_fit,
              mcmcr = list(as.mcmcr(stan_fit)),
              ngens = niters)
+
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
 
@@ -67,13 +51,13 @@ smb_analyse <- function(data, model, quick, quiet, glance, parallel,
 }
 
 #' @export
+#' @param ... Additional arguments passed to rstan::sampling
 analyse.smb_model <- function(x, data,
                               parallel = getOption("mb.parallel", FALSE),
                               quick = getOption("mb.quick", FALSE),
                               quiet = getOption("mb.quiet", TRUE),
                               glance = getOption("mb.glance", TRUE),
                               beep = getOption("mb.beep", TRUE),
-                              stan_control = NULL,
                               ...) {
   if (is.data.frame(data)) {
     check_data2(data)
@@ -90,12 +74,11 @@ analyse.smb_model <- function(x, data,
   if (beep) on.exit(beepr::beep())
 
   if (is.data.frame(data)) {
-    return(smb_analyse(data = data, model = x, quick = quick, quiet = quiet,
-                       glance = glance, parallel = parallel,
-                       stan_control = stan_control))
+    return(smb_analyse(data = data, model = x,
+                       quick = quick, quiet = quiet,
+                       glance = glance, parallel = parallel, ...))
   }
 
   llply(data, smb_analyse, model = x, quick = quick, quiet = quiet,
-        glance = glance, parallel = parallel, stan_control = stan_control)
-
+        glance = glance, parallel = parallel, ...)
 }

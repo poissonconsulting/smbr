@@ -1,62 +1,68 @@
 #' @export
-#'
+parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
+  check_scalar(param_type, c("fixed", "random", "derived", "primary", "all"))
+  check_flag(scalar_only)
 
-parameters.smb_model <- function(x, param_type = "fixed", scalar = TRUE, ...) {
+  if (param_type %in% c("fixed", "random"))
+    error("parameters.tmb_code is not currently able to separate 'fixed' or 'random' parameter types - set param_type = 'primary' instead")
 
-  # Find parameter block and extract parameter types and names
-  check_scalar(param_type, c("fixed", "random", "derived"))
-  check_flag(scalar)
+  if (param_type == "all") {
+    parameters <- c("primary", "derived")
 
-  if (identical(param_type, "random")) {
-    random <- names(random_effects(x))
-    if (is.null(random)) random <- character(0)
-    return(random)
+    parameters %<>%
+      purrr::map(parameters_arg2to1, x = x, scalar_only = scalar_only) %>%
+      unlist() %>%
+      sort()
+
+    return(parameters)
   }
 
-  x %<>% .$code %>% template()
-
   if (param_type == "derived") {
-    parameters <- types <- c()
     if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
-      parameters %<>% c(get_par_names(x, "transformed parameters"))
-      types %<>% c(get_par_types(x, "transformed parameters"))
+      parameters <- get_par_names(x, "transformed parameters")
+      types <- get_par_types(x, "transformed parameters")
+    } else {
+      parameters <- character(0)
+      types <- character(0)
     }
     if (str_detect(x, "generated quantities\\s*[{]{1}")) {
       parameters %<>% c(get_par_names(x, "generated quantities"))
       types %<>% c(get_par_types(x, "generated quantities"))
     }
-  } else {
+  } else { # param_type == "primary"
     parameters <- get_par_names(x, "parameters")
     types <- get_par_types(x, "parameters")
   }
 
-  # Which parameters are scalars?
-  s <- types %in% c("int", "real")
-
-  if (scalar) parameters <- parameters[s]
+  if (scalar_only) parameters <- parameters[types %in% c("int", "real")]
 
   parameters %<>% sort()
 
   parameters
-
 }
 
+
 #' @export
+parameters.smb_model <- function(x, param_type = "all", scalar_only = FALSE, ...) {
+  check_scalar(param_type, c("fixed", "random", "derived", "primary", "all"))
+  check_flag(scalar_only)
 
-parameters.smb_analysis <- function(x, param_type = "fixed", ...) {
+  if (!param_type %in% c("fixed", "random"))
+    return(parameters(code(x), param_type = param_type, scalar_only = scalar_only))
 
-  check_scalar(param_type, c("fixed", "random", "derived"))
+  parameters <- parameters(code(x), param_type = "primary", scalar_only = scalar_only)
 
   random <- names(random_effects(x))
   if (is.null(random)) random <- character(0)
-  derived <- x$model$derived
+  random %<>%
+    intersect(parameters) %>%
+    sort()
 
-  if (identical(param_type, "random")) return(random)
-  if (identical(param_type, "derived")) return(derived)
+  if (param_type == "random") return(random)
 
-  parameters <- x$stan_fit@model_pars
+  parameters %<>%
+    setdiff(random) %>%
+    sort()
 
-  parameters %<>% setdiff(random) %>% setdiff(derived)
-  parameters
-
+  return(parameters)
 }
