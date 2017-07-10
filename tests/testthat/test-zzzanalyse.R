@@ -107,7 +107,7 @@ test_that("analyse", {
 
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_identical(parameters(analysis, "random"), "bAnnual")
-  expect_identical(parameters(analysis), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "ePairs", "log_lik", "log_sAnnual", "sAnnual")))
+  expect_identical(parameters(analysis), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")))
   expect_identical(parameters(analysis, "primary"), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_error(parameters(analysis, "some"))
 

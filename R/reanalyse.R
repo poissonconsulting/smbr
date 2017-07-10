@@ -6,7 +6,6 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet, ...) {
   nchains <- nchains(analysis)
   nthin <- niters * nchains / (2000 * 2)
 
-  # inits should ideally be set from last values...
   stan_fit <- rstan::sampling(analysis$stan_model,
                               data = data_set(analysis, modify = TRUE),
                               chains = nchains, iter = niters * 2L, thin = nthin,

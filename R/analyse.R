@@ -73,6 +73,9 @@ analyse.smb_model <- function(x, data,
 
   if (beep) on.exit(beepr::beep())
 
+  # Check that terms aren't used in both new_expr and generated quanities block
+
+
   if (is.data.frame(data)) {
     return(smb_analyse(data = data, model = x,
                        quick = quick, quiet = quiet,

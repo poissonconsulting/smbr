@@ -42,7 +42,7 @@ test_that("code", {
   expect_identical(class(code), c("smb_code", "mb_code"))
   expect_true(is.smb_code(code))
 
-  expect_identical(parameters(code), c("bar", "foo", "mu_y", "sigma_y", "tau_y", "variance_y"))
+  expect_identical(parameters(code), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
 
   expect_identical(parameters(code, "primary"),
                    c("foo", "mu_y", "tau_y"))
@@ -50,7 +50,7 @@ test_that("code", {
   expect_identical(parameters(code, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
 
   expect_identical(parameters(code, param_type = "derived"),
-                   c("bar", "sigma_y", "variance_y"))
+                   c("bar", "sigma_y"))
   expect_identical(parameters(code, param_type = "derived", scalar_only = TRUE),
-                   c("sigma_y", "variance_y"))
+                   c("sigma_y"))
 })

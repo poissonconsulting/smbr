@@ -42,7 +42,7 @@ test_that("parameters", {
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))
 
-  expect_identical(parameters(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y", "variance_y"))
+  expect_identical(parameters(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
 
   expect_identical(parameters(model, "primary"),
                    c("foo", "mu_y", "tau_y"))
@@ -50,9 +50,9 @@ test_that("parameters", {
   expect_identical(parameters(model, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
 
   expect_identical(parameters(model, param_type = "derived"),
-                   c("bar", "sigma_y", "variance_y"))
+                   c("bar", "sigma_y"))
   expect_identical(parameters(model, param_type = "derived", scalar_only = TRUE),
-                   c("sigma_y", "variance_y"))
+                   c("sigma_y"))
 
   expect_identical(parameters(model, "fixed", scalar_only = TRUE),
                    c("mu_y", "tau_y"))
