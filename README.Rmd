@@ -118,7 +118,6 @@ model <- model("
 # add R code to modify data before running Stan
 model %<>% update_model(modify_data = function(data) {
   data$nObs <- length(data$Pairs)
-  data$nAnnual <- nlevels(data$Annual)
   data$Annual %<>% as.integer()
   data
 })
