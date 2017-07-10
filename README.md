@@ -108,7 +108,6 @@ model <- model("
 # add R code to modify data before running Stan
 model %<>% update_model(modify_data = function(data) {
   data$nObs <- length(data$Pairs)
-  data$nAnnual <- nlevels(data$Annual)
   data$Annual %<>% as.integer()
   data
 })
@@ -132,7 +131,7 @@ data$Annual <- factor(data$Year)
 
 # analyse
 analysis <- analyse(model, data = data)
-#> In file included from filed1053059f5e2.cpp:8:
+#> In file included from filed276e17ee65.cpp:8:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/src/stan/model/model_header.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/mat.hpp:4:
@@ -147,7 +146,7 @@ analysis <- analyse(model, data = data)
 #> <command line>:6:9: note: previous definition is here
 #> #define BOOST_NO_CXX11_RVALUE_REFERENCES 1
 #>         ^
-#> In file included from filed1053059f5e2.cpp:8:
+#> In file included from filed276e17ee65.cpp:8:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/src/stan/model/model_header.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/mat.hpp:4:
@@ -155,7 +154,7 @@ analysis <- analyse(model, data = data)
 #> /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/core/set_zero_all_adjoints.hpp:14:17: warning: unused function 'set_zero_all_adjoints' [-Wunused-function]
 #>     static void set_zero_all_adjoints() {
 #>                 ^
-#> In file included from filed1053059f5e2.cpp:8:
+#> In file included from filed276e17ee65.cpp:8:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/src/stan/model/model_header.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/mat.hpp:4:
@@ -163,7 +162,7 @@ analysis <- analyse(model, data = data)
 #> /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/core/set_zero_all_adjoints_nested.hpp:17:17: warning: 'static' function 'set_zero_all_adjoints_nested' declared in header file should be declared 'static inline' [-Wunneeded-internal-declaration]
 #>     static void set_zero_all_adjoints_nested() {
 #>                 ^
-#> In file included from filed1053059f5e2.cpp:8:
+#> In file included from filed276e17ee65.cpp:8:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/src/stan/model/model_header.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/mat.hpp:12:
@@ -171,7 +170,7 @@ analysis <- analyse(model, data = data)
 #> /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/prim/mat/fun/autocorrelation.hpp:17:14: warning: function 'fft_next_good_size' is not needed and will not be emitted [-Wunneeded-internal-declaration]
 #>       size_t fft_next_good_size(size_t N) {
 #>              ^
-#> In file included from filed1053059f5e2.cpp:8:
+#> In file included from filed276e17ee65.cpp:8:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/src/stan/model/model_header.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math.hpp:4:
 #> In file included from /Library/Frameworks/R.framework/Versions/3.4/Resources/library/StanHeaders/include/stan/math/rev/mat.hpp:12:
@@ -198,8 +197,8 @@ analysis <- analyse(model, data = data)
 #> 
 #> SAMPLING FOR MODEL '21bc95bc8ddd5a1f99041fde3480be22' NOW (CHAIN 1).
 #> 
-#> Gradient evaluation took 3.3e-05 seconds
-#> 1000 transitions using 10 leapfrog steps per transition would take 0.33 seconds.
+#> Gradient evaluation took 3.1e-05 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 0.31 seconds.
 #> Adjust your expectations accordingly!
 #> 
 #> 
@@ -216,15 +215,15 @@ analysis <- analyse(model, data = data)
 #> Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Iteration: 2000 / 2000 [100%]  (Sampling)
 #> 
-#>  Elapsed Time: 0.437667 seconds (Warm-up)
-#>                0.443733 seconds (Sampling)
-#>                0.8814 seconds (Total)
+#>  Elapsed Time: 0.452958 seconds (Warm-up)
+#>                0.42148 seconds (Sampling)
+#>                0.874438 seconds (Total)
 #> 
 #> 
 #> SAMPLING FOR MODEL '21bc95bc8ddd5a1f99041fde3480be22' NOW (CHAIN 2).
 #> 
-#> Gradient evaluation took 1.6e-05 seconds
-#> 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.
+#> Gradient evaluation took 1.7e-05 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 0.17 seconds.
 #> Adjust your expectations accordingly!
 #> 
 #> 
@@ -241,15 +240,15 @@ analysis <- analyse(model, data = data)
 #> Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Iteration: 2000 / 2000 [100%]  (Sampling)
 #> 
-#>  Elapsed Time: 0.433477 seconds (Warm-up)
-#>                0.446272 seconds (Sampling)
-#>                0.879749 seconds (Total)
+#>  Elapsed Time: 0.443442 seconds (Warm-up)
+#>                0.4367 seconds (Sampling)
+#>                0.880142 seconds (Total)
 #> 
 #> 
 #> SAMPLING FOR MODEL '21bc95bc8ddd5a1f99041fde3480be22' NOW (CHAIN 3).
 #> 
-#> Gradient evaluation took 1.5e-05 seconds
-#> 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
+#> Gradient evaluation took 1.9e-05 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.
 #> Adjust your expectations accordingly!
 #> 
 #> 
@@ -266,15 +265,15 @@ analysis <- analyse(model, data = data)
 #> Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Iteration: 2000 / 2000 [100%]  (Sampling)
 #> 
-#>  Elapsed Time: 0.442117 seconds (Warm-up)
-#>                0.433614 seconds (Sampling)
-#>                0.875731 seconds (Total)
+#>  Elapsed Time: 0.469334 seconds (Warm-up)
+#>                0.419347 seconds (Sampling)
+#>                0.888681 seconds (Total)
 #> 
 #> 
 #> SAMPLING FOR MODEL '21bc95bc8ddd5a1f99041fde3480be22' NOW (CHAIN 4).
 #> 
-#> Gradient evaluation took 1.6e-05 seconds
-#> 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.
+#> Gradient evaluation took 1.9e-05 seconds
+#> 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.
 #> Adjust your expectations accordingly!
 #> 
 #> 
@@ -291,29 +290,29 @@ analysis <- analyse(model, data = data)
 #> Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Iteration: 2000 / 2000 [100%]  (Sampling)
 #> 
-#>  Elapsed Time: 0.459853 seconds (Warm-up)
-#>                0.44219 seconds (Sampling)
-#>                0.902043 seconds (Total)
+#>  Elapsed Time: 0.433107 seconds (Warm-up)
+#>                0.436475 seconds (Sampling)
+#>                0.869582 seconds (Total)
 #> 
 #> # A tibble: 1 x 8
 #>       n     K nsamples nchains nsims       duration  rhat converged
 #>   <int> <int>    <int>   <int> <int> <S4: Duration> <dbl>     <lgl>
-#> 1    40     5     4000       4  4000          43.8s  1.01      TRUE
+#> 1    40     5     4000       4  4000          45.3s  1.01      TRUE
 analysis %<>% reanalyse(rhat = 1.05)
 #> # A tibble: 1 x 8
 #>       n     K nsamples nchains nsims       duration  rhat converged
 #>   <int> <int>    <int>   <int> <int> <S4: Duration> <dbl>     <lgl>
-#> 1    40     5     4000       4  4000          43.8s  1.01      TRUE
+#> 1    40     5     4000       4  4000          45.3s  1.01      TRUE
 
 coef(analysis)
 #> # A tibble: 5 x 7
 #>          term    estimate         sd      zscore       lower       upper
 #> *  <S3: term>       <dbl>      <dbl>       <dbl>       <dbl>       <dbl>
-#> 1       alpha  4.21236050 0.04012776 104.9607877  4.13040883  4.28892610
-#> 2       beta1  1.19276998 0.07167326  16.6783944  1.06324742  1.34285616
-#> 3       beta2  0.01704606 0.03100273   0.5467378 -0.04432903  0.07833103
-#> 4       beta3 -0.27180207 0.03704373  -7.3836797 -0.34919288 -0.20530434
-#> 5 log_sAnnual -2.22198900 0.31730887  -7.1210771 -2.96258284 -1.75127558
+#> 1       alpha  4.21266907 0.04153367 101.3879846  4.12496570  4.29064374
+#> 2       beta1  1.19559675 0.07246774  16.5324219  1.06367353  1.34649060
+#> 3       beta2  0.01479392 0.03157849   0.4942904 -0.04420309  0.07977753
+#> 4       beta3 -0.27358129 0.03711775  -7.3967170 -0.35106197 -0.20571681
+#> 5 log_sAnnual -2.22932692 0.30421714  -7.4200618 -2.96243061 -1.74260061
 #> # ... with 1 more variables: pvalue <dbl>
 
 plot(analysis)
@@ -334,10 +333,7 @@ ggplot(data = year, aes(x = Year, y = estimate)) +
   expand_limits(y = 0)
 ```
 
-![](tools/README-unnamed-chunk-4-1.png)
-
-Contribution
-------------
+![](tools/README-unnamed-chunk-4-1.png) \#\# Contribution
 
 Please report any [issues](https://github.com/poissonconsulting/smbr/issues).
 

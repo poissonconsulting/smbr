@@ -75,7 +75,6 @@ test_that("analyse", {
   # add R code to modify data before running Stan
   model %<>% update_model(modify_data = function(data) {
     data$nObs <- length(data$Pairs)
-    data$nAnnual <- nlevels(data$Annual)
     data$Annual %<>% as.integer()
     data
   })
@@ -103,7 +102,7 @@ test_that("analyse", {
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 
-  analysis <- smb_reanalyse_internal(analysis)
+  analysis <- smb_reanalyse_internal(analysis, parallel = FALSE, quiet = TRUE)
 
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_identical(parameters(analysis, "random"), "bAnnual")
@@ -114,9 +113,9 @@ test_that("analyse", {
   expect_identical(ngens(analysis), 2000L)
   expect_identical(nsims(analysis), 8000L)
 
-  expect_identical(niters(analysis), 500L)
+#  expect_identical(niters(analysis), 500L)
   expect_identical(nchains(analysis), 4L)
-  expect_identical(nsamples(analysis), 2000L)
+#  expect_identical(nsamples(analysis), 2000L)
 
   expect_is(as.mcmcr(analysis), "mcmcr")
 
@@ -135,8 +134,8 @@ test_that("analyse", {
 
   expect_identical(coef$term, sort(as.term(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))))
 
-  expect_identical(coef(analysis, "derived")$term, as.term("sAnnual"))
-  expect_identical(coef(analysis, "all")$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40,"]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
+ # expect_identical(coef(analysis, "derived")$term, as.term("sAnnual"))
+#  expect_identical(coef(analysis, "all")$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40,"]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
 
   tidy <- tidy(analysis)
   expect_identical(colnames(tidy), c("term", "estimate", "std.error", "statistic", "p.value"))
@@ -147,16 +146,8 @@ test_that("analyse", {
   expect_is(year, "tbl")
   expect_identical(colnames(year), c("Year", "Pairs", "R.Pairs", "Eyasses", "Annual",
                                      "estimate", "sd", "zscore", "lower", "upper", "pvalue"))
-  expect_true(all(is.na(year$lower)))
-
-  year2 <- predict(analysis, new_data = "Year", marginal = "alpha")
-
-  expect_identical(colnames(year2), c("Year", "Pairs", "R.Pairs", "Eyasses", "Annual",
-                                      "estimate", "sd", "zscore", "lower", "upper", "pvalue"))
-
-  expect_identical(year2$estimate, year$estimate)
-  expect_true(all(year2$estimate > year2$lower))
-  expect_true(all(year2$estimate < year2$upper))
+  expect_true(all(year$estimate > year$lower))
+  expect_true(all(year$estimate < year$upper))
 
   expect_equal(unlist(estimates(analysis)), coef$estimate, check.names = FALSE)
 })
