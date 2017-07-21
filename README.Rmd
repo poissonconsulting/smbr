@@ -100,19 +100,6 @@ model <- model("
 
       target += poisson_lpmf(Pairs | ePairs);
 
-  }
-  generated quantities {
-    
-    // Calculations for WAIC
-      vector[nObs] ePairs;
-      vector[nObs] log_lik;
-
-      for (i in 1:nObs) {
-        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);
-        log_lik[i] = poisson_lpmf(Pairs[i] | ePairs[i]);
-      }
-
   }")
 
 # add R code to modify data before running Stan
@@ -127,7 +114,11 @@ model %<>% update_model(new_expr = "
   for (i in 1:length(Pairs)) {
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
-  }")
+  }
+  
+  log_lik <- dpois(Pairs, prediction, log = TRUE)
+
+  ")
 
 # define data types and center year
 model %<>% update_model(
@@ -143,9 +134,15 @@ data$Annual <- factor(data$Year)
 analysis <- analyse(model, data = data)
 analysis %<>% reanalyse(rhat = 1.05)
 
+# coefficient table
 coef(analysis)
 
+# trace plots
 plot(analysis)
+
+# widely applicable information criterion (WAIC)
+IC(analysis) # should be about 309.5
+
 ```
 ```{r, message = FALSE}
 # make predictions by varying year with other predictors including the random effect of Annual held constant

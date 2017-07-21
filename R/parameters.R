@@ -3,8 +3,9 @@ parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...)
   check_scalar(param_type, c("fixed", "random", "derived", "primary", "all"))
   check_flag(scalar_only)
 
-  if (param_type %in% c("fixed", "random"))
+  if (param_type %in% c("fixed", "random")) {
     error("parameters.smb_code is not currently able to separate 'fixed' or 'random' parameter types - set param_type = 'primary' instead")
+  }
 
   if (param_type == "all") {
     parameters <- c("primary", "derived")
@@ -19,12 +20,13 @@ parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...)
 
   if (param_type == "derived") {
     if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
-      parameters <- get_par_names(x, "transformed parameters")
-      types <- get_par_types(x, "transformed parameters")
-    } else {
-      parameters <- character(0)
-      types <- character(0)
-    }
+        parameters <- get_par_names(x, "transformed parameters")
+        types <- get_par_types(x, "transformed parameters")
+      } else {
+        parameters <- character(0)
+        types <- character(0)
+      }
+  }
   if (param_type == "primary") {
     parameters <- get_par_names(x, "parameters")
     types <- get_par_types(x, "parameters")
