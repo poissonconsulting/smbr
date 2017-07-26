@@ -143,6 +143,9 @@ plot(analysis)
 # widely applicable information criterion (WAIC)
 IC(analysis) # should be about 309.5
 
+# posterior predictive check
+pp <- pp_check(analysis, "Pairs")
+
 ```
 ```{r, message = FALSE}
 # make predictions by varying year with other predictors including the random effect of Annual held constant
