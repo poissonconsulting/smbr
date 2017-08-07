@@ -1,3 +1,4 @@
+#' @export
 smb_reanalyse_internal <- function(analysis, parallel, quiet, ...) {
   timer <- timer::Timer$new()
   timer$start()
