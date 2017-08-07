@@ -26,13 +26,13 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet, ...) {
 enough_bfmi <- function(analysis) {
 
   # code adapted from rstan (https://github.com/stan-dev/rstan/)
-  n_e <- 0L
-  object <- analysis$stan_fit
-  sp <- get_sampler_params(object, inc_warmup = FALSE)
-  E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
-  threshold <- 0.3
-  EBFMI <- get_num_upars(object) / apply(E, 2, var)
-  n_e <- sum(EBFMI < threshold, na.rm = TRUE)
+  # n_e <- 0L
+  # object <- analysis$stan_fit
+  # sp <- get_sampler_params(object, inc_warmup = FALSE)
+  # E <- as.matrix(sapply(sp, FUN = function(x) x[,"energy__"]))
+  # threshold <- 0.3
+  # EBFMI <- get_num_upars(object) / apply(E, 2, var)
+  # n_e <- sum(EBFMI < threshold, na.rm = TRUE)
   # UNCOMMENT THIS TO WORK:  # if (n_e > 0) return(FALSE)
 
   TRUE
@@ -73,4 +73,33 @@ reanalyse.smb_analysis <- function(analysis,
 
   smb_reanalyse(analysis, rhat = rhat, duration = duration, quick = quick,
                 quiet = quiet, parallel = parallel, ...)
+}
+
+#' @export
+reanalyse.smb_analyses <- function(analyses,
+                                   rhat = getOption("mb.rhat", 1.1),
+                                   duration = getOption("mb.duration", dminutes(10)),
+                                   parallel = getOption("mb.parallel", FALSE),
+                                   quick = getOption("mb.quick", FALSE),
+                                   quiet = getOption("mb.quiet", TRUE),
+                                   beep = getOption("mb.beep", TRUE),
+                                   ...) {
+
+  check_flag(beep)
+
+  if (beep) on.exit(beepr::beep())
+
+  if (!length(analyses)) return(analyses)
+
+  names <- names(analyses)
+  if (is.null(names)) {
+    names(analyses) <- 1:length(analyses)
+  }
+
+  analyses %<>% as.list() %>%
+    purrr::map(reanalyse, rhat = rhat, duration = duration, quick = quick,
+               quiet = quiet, beep = FALSE, ...)
+  names(analyses) <- names
+  class(analyses) <- "smb_analyses"
+  analyses
 }

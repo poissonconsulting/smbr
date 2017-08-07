@@ -15,6 +15,14 @@ IC <- function(object, ...) {
 }
 
 #' @export
+IC.smb_analyses <- function(object, n = NULL, ...) {
+
+  object %<>% purrr::map(IC, n = n, ...)
+  invisible(object)
+
+}
+
+#' @export
 IC.smb_analysis <- function(object, n = NULL, ...) {
 
   # Code adapted from loo version 1.0.0
@@ -36,7 +44,19 @@ IC.smb_analysis <- function(object, n = NULL, ...) {
   nms <- names(pointwise)
   names(out) <- c(nms, paste0("se_", nms))
   out$pointwise <- cbind_list(pointwise)
-  cat("waic:", out$waic)
+
+  out$df <- dplyr::data_frame(
+    n = n, # sample size
+    elpd = round(out$elpd_waic, 1), # log posterior density
+    se.elpd = round(out$se_elpd_waic, 1),
+    p = round(out$p_waic, 1), # effective number of parameters
+    se.p = round(out$se_p_waic, 1),
+    waic = round(out$waic, 1), # Widely applicable information criterion
+    se.waic = round(out$se_waic, 1)
+  )
+
+  print(out$df)
+
   invisible(out)
 
 }
@@ -77,4 +97,22 @@ nlist <- function(...) {
   }
 
   return(out)
+}
+
+#' Compare SMB analyses using WAIC
+#'
+#' @param analyses An object inheriting from class smb_analyses.
+#' @param ... Not used.
+#'
+#' @export
+compare <- function(analyses, ...) {
+  UseMethod("compare")
+}
+
+#' @export
+compare.smb_analyses <- function(analyses, ...) {
+
+  analyses %<>% IC()
+  # do comparison
+  analyses
 }

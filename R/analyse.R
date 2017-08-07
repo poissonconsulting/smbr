@@ -85,3 +85,48 @@ analyse.smb_model <- function(x, data,
   llply(data, smb_analyse, model = x, quick = quick, quiet = quiet,
         glance = glance, parallel = parallel, ...)
 }
+
+#' Analyse
+#'
+#' @param x An object inheriting from class smb_models.
+#' @param data The data frame to analyse.
+#' @param parallel A flag indicating whether to perform the analysis in parallel if possible.
+#' @param quick A flag indicating whether to quickly get unreliable values.
+#' @param quiet A flag indicating whether to disable tracing information.
+#' @param glance A flag indicating whether to print a model summary.
+#' @param beep A flag indicating whether to beep on completion of the analysis.
+#' @param ...  Additional arguments.
+#' @export
+analyse.smb_models <- function(x, data,
+                               parallel = getOption("mb.parallel", FALSE),
+                               quick = getOption("mb.quick", FALSE),
+                               quiet = getOption("mb.quiet", TRUE),
+                               glance = getOption("mb.glance", TRUE),
+                               beep = getOption("mb.beep", TRUE),
+                               ...) {
+
+  check_flag(beep)
+  if (beep) on.exit(beepr::beep())
+
+  names <- names(x)
+  if (is.null(names)) names(x) <- 1:length(x)
+
+  analyses <- purrr::map(x, analyse, data = data, parallel = parallel,
+                         quick = quick, quiet = quiet, glance = glance,
+                         beep = FALSE, ...)
+
+  as_smb_analyses <- function(x, names) {
+    names(x) <- names
+    class(x) <- "smb_analyses"
+    x
+  }
+
+  if (is.data.frame(data)) {
+    analyses %<>% as_smb_analyses(names = names)
+    return(analyses)
+  }
+  analyses %<>% purrr::transpose()
+  analyses %<>% purrr::map(as_smb_analyses, names = names)
+  analyses
+
+}

@@ -16,3 +16,12 @@ glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), .
     converged = rhat_analysis <= rhat_arg
   )
 }
+
+#' @export
+glance.smb_analyses <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), ...) {
+
+  x %<>% purrr::map(glance, n = n, rhat = rhat, ...) %>% bind_rows()
+  print(x)
+  x
+
+}
