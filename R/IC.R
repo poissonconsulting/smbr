@@ -33,7 +33,7 @@ IC.smb_analysis <- function(object, n = NULL, ...) {
   log_lik_mat <- derive(object, term = "log_lik") %>%
     mcmcr::collapse_chains() %>%
     use_series("log_lik") %>%
-    matrix(nrow = n) %>% t()
+    matrix(ncol = n)
 
   lpd <- logColMeansExp(log_lik_mat)
   p_waic <- matrixStats::colVars(log_lik_mat)
