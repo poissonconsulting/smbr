@@ -26,6 +26,7 @@ test_that("analyse", {
       real beta1;
       real beta2;
       real beta3;
+      // real beta4;
 
   }
   transformed parameters {
@@ -73,21 +74,21 @@ test_that("analyse", {
   }")
 
   # add R code to modify data before running Stan
-  model %<>% update_model(modify_data = function(data) {
+  model <- update_model(model, modify_data = function(data) {
     data$nObs <- length(data$Pairs)
-    data$Annual %<>% as.integer()
+    data$Annual <- as.integer(data$Annual)
     data
   })
 
   # add R code to calculate derived parameters
-  model %<>% update_model(new_expr = "
+  model <- update_model(model, new_expr = "
   for (i in 1:length(Pairs)) {
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
   }")
 
   # define data types and center year
-  model %<>% update_model(
+  model <- update_model(model,
     select_data = list("Pairs" = integer(), "Year*" = integer(),
                        Annual = factor()),
     derived = "sAnnual",

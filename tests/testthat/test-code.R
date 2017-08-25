@@ -16,6 +16,7 @@ test_that("code", {
       beta = 0.1;
     }
     parameters {
+      // real mu_y2; // modeled param
       real mu_y; // modeled param
       real<lower=0> tau_y; // modeled param
       vector<lower=0>[N] foo; // just for testing purposes
