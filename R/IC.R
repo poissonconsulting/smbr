@@ -15,6 +15,14 @@ IC <- function(object, ...) {
 }
 
 #' @export
+IC.smb_analyses <- function(object, n = NULL, ...) {
+
+  object %<>% purrr::map(IC, n = n, ...)
+  invisible(object)
+
+}
+
+#' @export
 IC.smb_analysis <- function(object, n = NULL, ...) {
 
   # Code adapted from loo version 1.0.0
@@ -22,24 +30,13 @@ IC.smb_analysis <- function(object, n = NULL, ...) {
   if (is.null(n))
     n <- sample_size(object)
 
-  iter <- object$model$niters
-
-  log_lik <- logLik(object) # mcmcrarray
-
-  log_lik %<>% extract2(1)
-
-  chains <- nchains(log_lik)
-
-  log_lik %<>% as.array() %>% use_series(log_lik)
-
-  # Convert to matrix
-  log_lik_mat <- matrix(numeric(iter * chains * n), ncol = n, nrow = iter * chains)
-  for (i in 1:chains) {
-    log_lik_mat[((i - 1) * iter + 1):(i * iter), ] <- log_lik[i, , ]
-  }
+  log_lik_mat <- derive(object, term = "log_lik") %>%
+    mcmcr::collapse_chains() %>%
+    use_series("log_lik") %>%
+    matrix(ncol = n)
 
   lpd <- logColMeansExp(log_lik_mat)
-  p_waic <- colVars(log_lik_mat)
+  p_waic <- matrixStats::colVars(log_lik_mat)
   elpd_waic <- lpd - p_waic
   waic <- -2 * elpd_waic
   pointwise <- nlist(elpd_waic, p_waic, waic)
@@ -47,7 +44,19 @@ IC.smb_analysis <- function(object, n = NULL, ...) {
   nms <- names(pointwise)
   names(out) <- c(nms, paste0("se_", nms))
   out$pointwise <- cbind_list(pointwise)
-  cat("waic:", out$waic)
+
+  out$df <- dplyr::data_frame(
+    n = n, # sample size
+    elpd = round(out$elpd_waic, 1), # log posterior density
+    se.elpd = round(out$se_elpd_waic, 1),
+    p = round(out$p_waic, 1), # effective number of parameters
+    se.p = round(out$se_p_waic, 1),
+    waic = round(out$waic, 1), # Widely applicable information criterion
+    se.waic = round(out$se_waic, 1)
+  )
+
+  print(out$df)
+
   invisible(out)
 
 }
@@ -55,7 +64,7 @@ IC.smb_analysis <- function(object, n = NULL, ...) {
 logColMeansExp <- function(x) {
   # should be more stable than log(colMeans(exp(x)))
   S <- nrow(x)
-  colLogSumExps(x) - log(S)
+  matrixStats::colLogSumExps(x) - log(S)
 }
 
 totals <- function(pointwise) {
@@ -88,4 +97,22 @@ nlist <- function(...) {
   }
 
   return(out)
+}
+
+#' Compare SMB analyses using WAIC
+#'
+#' @param analyses An object inheriting from class smb_analyses.
+#' @param ... Not used.
+#'
+#' @export
+compare <- function(analyses, ...) {
+  UseMethod("compare")
+}
+
+#' @export
+compare.smb_analyses <- function(analyses, ...) {
+
+  analyses %<>% IC()
+  # do comparison
+  analyses
 }
