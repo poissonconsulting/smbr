@@ -1,4 +1,3 @@
-#' @export
 as.mcmcr.stanfit <- function(x, ...) {
 
   pex <- rstan::extract(x) # permuted extract

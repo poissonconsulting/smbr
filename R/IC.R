@@ -1,25 +1,39 @@
-#' IC Stan Analysis
-#'
-#' Widely applicable information criterion (WAIC)
-#'
-#' @param object The smb_analysis object.
-#' @param ... Other arguments. Currently ignored.
-#'
-#' @return See \code{\link{waic}}
-#'
-#' @seealso \code{\link{waic}}
-#'
-#' @export
-IC <- function(object, ...) {
-  UseMethod("IC")
+logColMeansExp <- function(x) {
+  # should be more stable than log(colMeans(exp(x)))
+  S <- nrow(x)
+  matrixStats::colLogSumExps(x) - log(S)
 }
 
-#' @export
-IC.smb_analyses <- function(object, n = NULL, ...) {
+totals <- function(pointwise) {
+  N <- length(pointwise[[1L]])
+  total  <- unlist_lapply(pointwise, sum)
+  se <- sqrt(N * unlist_lapply(pointwise, var))
+  as.list(c(total, se))
+}
 
-  object %<>% purrr::map(IC, n = n, ...)
-  invisible(object)
+unlist_lapply <- function(X, FUN, ...) {
+  unlist(lapply(X, FUN, ...), use.names = FALSE)
+}
 
+cbind_list <- function(x) {
+  do.call(cbind, x)
+}
+
+nlist <- function(...) {
+  m <- match.call()
+  out <- list(...)
+  no_names <- is.null(names(out))
+  has_name <- if (no_names) FALSE else nzchar(names(out))
+  if (all(has_name))
+    return(out)
+  nms <- as.character(m)[-1L]
+  if (no_names) {
+    names(out) <- nms
+  } else {
+    names(out)[!has_name] <- nms[!has_name]
+  }
+
+  return(out)
 }
 
 #' @export
@@ -59,60 +73,4 @@ IC.smb_analysis <- function(object, n = NULL, ...) {
 
   invisible(out)
 
-}
-
-logColMeansExp <- function(x) {
-  # should be more stable than log(colMeans(exp(x)))
-  S <- nrow(x)
-  matrixStats::colLogSumExps(x) - log(S)
-}
-
-totals <- function(pointwise) {
-  N <- length(pointwise[[1L]])
-  total  <- unlist_lapply(pointwise, sum)
-  se <- sqrt(N * unlist_lapply(pointwise, var))
-  as.list(c(total, se))
-}
-
-unlist_lapply <- function(X, FUN, ...) {
-  unlist(lapply(X, FUN, ...), use.names = FALSE)
-}
-
-cbind_list <- function(x) {
-  do.call(cbind, x)
-}
-
-nlist <- function(...) {
-  m <- match.call()
-  out <- list(...)
-  no_names <- is.null(names(out))
-  has_name <- if (no_names) FALSE else nzchar(names(out))
-  if (all(has_name))
-    return(out)
-  nms <- as.character(m)[-1L]
-  if (no_names) {
-    names(out) <- nms
-  } else {
-    names(out)[!has_name] <- nms[!has_name]
-  }
-
-  return(out)
-}
-
-#' Compare SMB analyses using WAIC
-#'
-#' @param analyses An object inheriting from class smb_analyses.
-#' @param ... Not used.
-#'
-#' @export
-compare <- function(analyses, ...) {
-  UseMethod("compare")
-}
-
-#' @export
-compare.smb_analyses <- function(analyses, ...) {
-
-  analyses %<>% IC()
-  # do comparison
-  analyses
 }

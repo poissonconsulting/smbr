@@ -6,18 +6,14 @@ r_packages:
   - covr
 
 r_binary_packages:
- - rstan
+  - rstan
 
 after_success:
   - Rscript -e 'covr::codecov()'
 
 notifications:
-  email:
-    recipients:
-      - chris@poissonconsulting.ca
   slack:
     rooms:
       - poissonconsulting:BKjfn7jsVh8zXTu2rq7BEQEb
     on_success: change
     on_failure: always
-
