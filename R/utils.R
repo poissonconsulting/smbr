@@ -2,14 +2,6 @@ parameters_arg2to1 <- function(param_type, x, scalar_only) {
   parameters(x = x, param_type = param_type, scalar_only = scalar_only)
 }
 
-remove_comments <- function(x) {
-
-  x %<>% str_replace_all("//.*", "")
-
-  x
-
-}
-
 clean_blocks <- function(x) {
 
   # Remove linebreaks and extra white space
@@ -75,7 +67,7 @@ extract_pars <- function(x, block_location) {
 }
 
 get_par_names <- function(x, block_name) {
-  x %<>% remove_comments() %>% clean_blocks()
+  x %<>% rm_comments() %>% clean_blocks()
   block_location <- get_block_location(x, block_name)
   extract_pars(x, block_location)
 }
@@ -105,7 +97,7 @@ extract_types <- function(x, block_location) {
 }
 
 get_par_types <- function(x, block_name) {
-  x %<>% remove_comments() %>% clean_blocks()
+  x %<>% rm_comments() %>% clean_blocks()
   block_location <- get_block_location(x, block_name)
   extract_types(x, block_location)
 }
