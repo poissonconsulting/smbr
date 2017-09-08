@@ -219,7 +219,7 @@ analyses %<>% reanalyse(rhat = 1.05)
 glance(analyses)
 
 # widely applicable information criterion (WAIC)
-IC(analyses)
+#IC(analyses)
 
 ```
 
