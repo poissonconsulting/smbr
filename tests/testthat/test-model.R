@@ -1,4 +1,4 @@
-context("parameters")
+context("model")
 
 test_that("parameters", {
 

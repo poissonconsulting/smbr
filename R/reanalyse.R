@@ -6,13 +6,22 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
   nchains <- nchains(analysis)
   nthin <- niters * nchains / (2000 * 2)
 
-  ### core sampling...
-  stan_fit <- rstan::sampling(analysis$stan_model,
-                              data = data_set(analysis, modify = TRUE),
-                              chains = nchains, iter = niters * 2L, thin = nthin,
-                              init = analysis$inits,
-                              cores = ifelse(parallel, nchains, 1L),
-                              show_messages = !quiet)
+  capture.output(
+    stanc <- rstan::stanc(model_code = template(analysis))
+  )
+  capture.output(
+    stan_model <- rstan::stan_model(
+      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
+  )
+
+  capture.output(
+    stan_fit <- rstan::sampling(
+      stan_model, data = data_set(analysis, modify = TRUE),
+      init = analysis$inits,
+      chains = nchains, iter = niters,  warmup = floor(niters/2), thin = nthin,
+      cores = ifelse(parallel, nchains, 1L),
+      show_messages = !quiet)
+  )
 
   analysis$mcmcr <- as.mcmcr(stan_fit)
   analysis$ngens <- as.integer(niters)
@@ -34,6 +43,7 @@ smb_reanalyse <- function(analysis, rhat, duration, quick, quiet, parallel, glan
   analysis
 }
 
+#' @export
 reanalyse.smb_analysis <- function(analysis,
                                    rhat = getOption("mb.rhat", 1.1),
                                    duration = getOption("mb.duration", dminutes(10)),

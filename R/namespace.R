@@ -1,4 +1,4 @@
-#' @import datacheckr mbr mcmcr rstan
+#' @import datacheckr mbr mcmcr rstan utils
 #' @importFrom broom glance
 #' @importFrom dplyr as.tbl filter_ select select_
 #' @importFrom lubridate dminutes is.duration

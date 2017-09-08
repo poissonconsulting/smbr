@@ -1,11 +1,11 @@
 #' @export
 glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), ...) {
-  datacheckr::check_number(rhat)
+  check_number(rhat)
 
   rhat_analysis <- rhat(x)
   rhat_arg <- rhat
 
-  dplyr::data_frame(
+  tibble::tibble(
     n = sample_size(x),
     K = nterms(x, include_constant = FALSE),
     nsamples = nsamples(x),
@@ -15,13 +15,4 @@ glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), .
     rhat = rhat_analysis,
     converged = rhat_analysis <= rhat_arg
   )
-}
-
-#' @export
-glance.smb_analyses <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), ...) {
-
-  x %<>% purrr::map(glance, n = n, rhat = rhat, ...) %>% dplyr::bind_rows()
-  print(x)
-  x
-
 }

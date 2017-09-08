@@ -98,7 +98,7 @@ test_that("analyse", {
   data$Annual <- factor(data$Year)
 
   # analyse
-  analysis <- analyse(model, data = data)
+  analysis <- analyse(model, data = data, glance = FALSE)
 
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
