@@ -15,15 +15,13 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
 
   obj <- list(model = model, data = data)
 
-  data %<>% modify_data(model = model)
+  data %<>% modify_data(model = model, numericize_factors = TRUE)
 
   inits <- inits(data, model$gen_inits, nchains = nchains)
 
   regexp <- model$fixed
   named <- names(model$random_effects) %>%
     c(model$derived)
-  # use named and regexp and parameters to set pars
-  # set seed
 
   capture.output(
     stan_fit <- rstan::sampling(
@@ -68,8 +66,6 @@ analyse.smb_model <- function(x, data,
   check_flag(beep)
 
   if (beep) on.exit(beepr::beep())
-
-  # Check that terms aren't used in both new_expr and generated quanities block
 
   capture.output(
     stanc <- rstan::stanc(model_code = template(x))

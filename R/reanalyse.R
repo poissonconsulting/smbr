@@ -14,9 +14,11 @@ smb_reanalyse_internal <- function(analysis, parallel, quiet) {
       stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
   )
 
+  data <- data_set(analysis, modify = TRUE, numericize_factors = TRUE)
+
   capture.output(
     stan_fit <- rstan::sampling(
-      stan_model, data = data_set(analysis, modify = TRUE),
+      stan_model, data = data,
       init = analysis$inits,
       chains = nchains, iter = niters,  warmup = floor(niters/2), thin = nthin,
       cores = ifelse(parallel, nchains, 1L),

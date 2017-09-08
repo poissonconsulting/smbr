@@ -81,67 +81,41 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define model in Stan language</span>
 model &lt;-<span class="st"> </span><span class="kw">model</span>(<span class="st">"</span>
 <span class="st">  data {</span>
-<span class="st">    </span>
-<span class="st">    // Data lengths</span>
 <span class="st">      int nAnnual;</span>
 <span class="st">      int nObs;</span>
-
-<span class="st">    // Data</span>
 <span class="st">      int Annual[nObs];</span>
 <span class="st">      int Pairs[nObs];</span>
 <span class="st">      real Year[nObs];</span>
-
 <span class="st">  }</span>
 <span class="st">  parameters {</span>
-
-<span class="st">    // Random effects</span>
 <span class="st">      vector[nAnnual] bAnnual;</span>
 <span class="st">      real log_sAnnual;</span>
-
-<span class="st">    // Regression model</span>
 <span class="st">      real alpha;</span>
 <span class="st">      real beta1;</span>
 <span class="st">      real beta2;</span>
 <span class="st">      real beta3;</span>
-
 <span class="st">  }</span>
 <span class="st">  transformed parameters {</span>
-<span class="st">  </span>
 <span class="st">    real sAnnual;</span>
 <span class="st">    sAnnual = exp(log_sAnnual);</span>
-
 <span class="st">  }</span>
 <span class="st">  model {</span>
-
-<span class="st">    // Vectors of expected values</span>
 <span class="st">      vector[nObs] ePairs;</span>
 <span class="st">    </span>
-<span class="st">    // Priors on random effects</span>
 <span class="st">      log_sAnnual ~ normal(0, 10);</span>
 <span class="st">      bAnnual ~ normal(0, sAnnual);</span>
 
-<span class="st">    // Priors on regression coefficients</span>
 <span class="st">      alpha ~ normal(0, 10);</span>
 <span class="st">      beta1 ~ normal(0, 10);</span>
 <span class="st">      beta2 ~ normal(0, 10);</span>
 <span class="st">      beta3 ~ normal(0, 10);</span>
 
-<span class="st">    // Model</span>
 <span class="st">      for (i in 1:nObs) {</span>
 <span class="st">        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span>
 <span class="st">                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);</span>
 <span class="st">      }</span>
-
 <span class="st">      target += poisson_lpmf(Pairs | ePairs);</span>
-
 <span class="st">  }"</span>)
-
-<span class="co"># add R code to modify data before running Stan</span>
-model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">update_model</span>(<span class="dt">modify_data =</span> <span class="cf">function</span>(data) {
-  data<span class="op">$</span>nObs &lt;-<span class="st"> </span><span class="kw">length</span>(data<span class="op">$</span>Pairs)
-  data<span class="op">$</span>Annual <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">as.integer</span>()
-  data
-})
 
 <span class="co"># add R code to calculate derived parameters</span>
 model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">update_model</span>(<span class="dt">new_expr =</span> <span class="st">"</span>
@@ -149,10 +123,7 @@ model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw
 <span class="st">    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span>
 <span class="st">                       beta3 * Year[i]^3 + bAnnual[Annual[i]])</span>
 <span class="st">  }</span>
-<span class="st">  </span>
-<span class="st">  log_lik &lt;- dpois(Pairs, prediction, log = TRUE)</span>
-
-<span class="st">  "</span>)
+<span class="st">"</span>)
 
 <span class="co"># define data types and center year</span>
 model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">update_model</span>(
@@ -169,35 +140,23 @@ analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <s
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
 <span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.3s  1.01      TRUE</span>
-analysis <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">reanalyse</span>(<span class="dt">rhat =</span> <span class="fl">1.05</span>)
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.3s  1.01      TRUE</span>
+<span class="co">#&gt; 1    40     5     2000       4  4000           2.3s  1.02      TRUE</span>
 
 <span class="co"># coefficient table</span>
 <span class="kw">coef</span>(analysis)
 <span class="co">#&gt; # A tibble: 5 x 7</span>
-<span class="co">#&gt;          term    estimate         sd      zscore       lower       upper</span>
-<span class="co">#&gt; *  &lt;S3: term&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1       alpha  4.20948115 0.04095542 102.7810802  4.12874308  4.28890332</span>
-<span class="co">#&gt; 2       beta1  1.19881296 0.07234789  16.5961286  1.06476395  1.34786806</span>
-<span class="co">#&gt; 3       beta2  0.01747544 0.03138272   0.5484977 -0.04486145  0.07985619</span>
-<span class="co">#&gt; 4       beta3 -0.27634438 0.03681250  -7.5025001 -0.34819226 -0.20748788</span>
-<span class="co">#&gt; 5 log_sAnnual -2.20906791 0.28214007  -7.9048988 -2.85072713 -1.76835818</span>
+<span class="co">#&gt;          term    estimate         sd      zscore      lower       upper</span>
+<span class="co">#&gt; *  &lt;S3: term&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt; 1       alpha  4.21177554 0.04183141 100.6731548  4.1260720  4.29189561</span>
+<span class="co">#&gt; 2       beta1  1.19879437 0.07538070  15.9377935  1.0660321  1.35951854</span>
+<span class="co">#&gt; 3       beta2  0.01625899 0.03136678   0.5121953 -0.0462603  0.07669739</span>
+<span class="co">#&gt; 4       beta3 -0.27412474 0.03885613  -7.1047946 -0.3571945 -0.20428168</span>
+<span class="co">#&gt; 5 log_sAnnual -2.19368146 0.28245137  -7.8502128 -2.8348376 -1.72567318</span>
 <span class="co">#&gt; # ... with 1 more variables: pvalue &lt;dbl&gt;</span>
 
 <span class="co"># trace plots</span>
 <span class="kw">plot</span>(analysis)</code></pre></div>
 <p><img src="tools/README-unnamed-chunk-3-1.png" width="672"><img src="tools/README-unnamed-chunk-3-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="co"># widely applicable information criterion (WAIC)</span>
-<span class="kw">IC</span>(analysis) <span class="co"># should be about 309.5</span>
-<span class="co">#&gt; # A tibble: 1 x 7</span>
-<span class="co">#&gt;       n   elpd se.elpd     p  se.p  waic se.waic</span>
-<span class="co">#&gt;   &lt;int&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1    40 -154.7     4.3  16.9   2.4 309.3     8.6</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span>
 year &lt;-<span class="st"> </span><span class="kw">predict</span>(analysis, <span class="dt">new_data =</span> <span class="st">"Year"</span>)
 
@@ -209,111 +168,6 @@ year &lt;-<span class="st"> </span><span class="kw">predict</span>(analysis, <sp
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">y =</span> upper), <span class="dt">linetype =</span> <span class="st">"dotted"</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/expand_limits">expand_limits</a></span>(<span class="dt">y =</span> <span class="dv">0</span>)</code></pre></div>
 <p><img src="tools/README-unnamed-chunk-4-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="co"># Compare models using information criteria</span>
-
-## Define simpler model for comparison
-
-simpler_model &lt;-<span class="st"> </span><span class="kw">model</span>(<span class="st">"</span>
-<span class="st">  data {</span>
-<span class="st">    </span>
-<span class="st">    // Data lengths</span>
-<span class="st">      int nObs;</span>
-
-<span class="st">    // Data</span>
-<span class="st">      int Pairs[nObs];</span>
-<span class="st">      real Year[nObs];</span>
-
-<span class="st">  }</span>
-<span class="st">  parameters {</span>
-
-<span class="st">    // Regression model</span>
-<span class="st">      real alpha;</span>
-<span class="st">      real beta1;</span>
-<span class="st">      real beta2;</span>
-<span class="st">      real beta3;</span>
-
-<span class="st">  }</span>
-<span class="st">  model {</span>
-
-<span class="st">    // Vectors of expected values</span>
-<span class="st">      vector[nObs] ePairs;</span>
-<span class="st">    </span>
-<span class="st">    // Priors on regression coefficients</span>
-<span class="st">      alpha ~ normal(0, 10);</span>
-<span class="st">      beta1 ~ normal(0, 10);</span>
-<span class="st">      beta2 ~ normal(0, 10);</span>
-<span class="st">      beta3 ~ normal(0, 10);</span>
-
-<span class="st">    // Model</span>
-<span class="st">      for (i in 1:nObs) {</span>
-<span class="st">        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span>
-<span class="st">                      beta3 * Year[i]^3);</span>
-<span class="st">      }</span>
-
-<span class="st">      target += poisson_lpmf(Pairs | ePairs);</span>
-
-<span class="st">  }"</span>)
-
-<span class="co"># add R code to calculate derived parameters</span>
-simpler_model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">update_model</span>(<span class="dt">new_expr =</span> <span class="st">"</span>
-<span class="st">  for (i in 1:length(Pairs)) {</span>
-<span class="st">    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span>
-<span class="st">                       beta3 * Year[i]^3)</span>
-<span class="st">  }</span>
-<span class="st">  </span>
-<span class="st">  log_lik &lt;- dpois(Pairs, prediction, log = TRUE)</span>
-
-<span class="st">  "</span>)
-
-<span class="co"># modify data, define data types, and center year</span>
-simpler_model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">update_model</span>(<span class="dt">modify_data =</span> model<span class="op">$</span>modify_data)
-simpler_model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">update_model</span>(
-  <span class="dt">select_data =</span> <span class="kw">list</span>(<span class="st">"Pairs"</span> =<span class="st"> </span><span class="kw">integer</span>(), <span class="st">"Year*"</span> =<span class="st"> </span><span class="kw">integer</span>()))
-
-<span class="co"># analyse</span>
-analyses &lt;-<span class="st"> </span><span class="kw">analyse</span>(<span class="kw">models</span>(model, simpler_model), <span class="dt">data =</span> data)
-<span class="co">#&gt; Model: 1</span>
-<span class="co">#&gt; Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
-<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#bfmi-low</span>
-<span class="co">#&gt; Warning: Examine the pairs() plot to diagnose sampling problems</span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.2s  1.03      TRUE</span>
-<span class="co">#&gt; Model: 2 </span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     4     2000       4  4000           0.9s  1.01      TRUE</span>
-analyses <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">reanalyse</span>(<span class="dt">rhat =</span> <span class="fl">1.05</span>)
-<span class="co">#&gt; Model: 1 </span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.2s  1.03      TRUE</span>
-<span class="co">#&gt; Model: 2 </span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     4     2000       4  4000           0.9s  1.01      TRUE</span>
-
-<span class="co"># glance at analyses</span>
-<span class="kw">glance</span>(analyses)
-<span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.2s  1.03      TRUE</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     4     2000       4  4000           0.9s  1.01      TRUE</span>
-
-<span class="co"># widely applicable information criterion (WAIC)</span>
-<span class="co">#IC(analyses)</span></code></pre></div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -346,7 +200,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <h2 class="hasAnchor">
 <a href="#documentation" class="anchor"></a>Documentation</h2>
 <ul>
-<li><a href="http://mc-stan.org/users/documentation/">STAN Documentation</a></li>
+<li><a href="http://www.poissonconsulting.ca/smbr/">smbr</a></li>
 </ul>
 </div>
 </div>

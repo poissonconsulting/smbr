@@ -39,67 +39,41 @@ library(smbr)
 # define model in Stan language
 model <- model("
   data {
-    
-    // Data lengths
       int nAnnual;
       int nObs;
-
-    // Data
       int Annual[nObs];
       int Pairs[nObs];
       real Year[nObs];
-
   }
   parameters {
-
-    // Random effects
       vector[nAnnual] bAnnual;
       real log_sAnnual;
-
-    // Regression model
       real alpha;
       real beta1;
       real beta2;
       real beta3;
-
   }
   transformed parameters {
-  
     real sAnnual;
     sAnnual = exp(log_sAnnual);
-
   }
   model {
-
-    // Vectors of expected values
       vector[nObs] ePairs;
     
-    // Priors on random effects
       log_sAnnual ~ normal(0, 10);
       bAnnual ~ normal(0, sAnnual);
 
-    // Priors on regression coefficients
       alpha ~ normal(0, 10);
       beta1 ~ normal(0, 10);
       beta2 ~ normal(0, 10);
       beta3 ~ normal(0, 10);
 
-    // Model
       for (i in 1:nObs) {
         ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
                       beta3 * Year[i]^3 + bAnnual[Annual[i]]);
       }
-
       target += poisson_lpmf(Pairs | ePairs);
-
   }")
-
-# add R code to modify data before running Stan
-model %<>% update_model(modify_data = function(data) {
-  data$nObs <- length(data$Pairs)
-  data$Annual %<>% as.integer()
-  data
-})
 
 # add R code to calculate derived parameters
 model %<>% update_model(new_expr = "
@@ -107,10 +81,7 @@ model %<>% update_model(new_expr = "
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
   }
-  
-  log_lik <- dpois(Pairs, prediction, log = TRUE)
-
-  ")
+")
 
 # define data types and center year
 model %<>% update_model(
@@ -124,16 +95,12 @@ data$Annual <- factor(data$Year)
 
 # analyse
 analysis <- analyse(model, data = data)
-analysis %<>% reanalyse(rhat = 1.05)
 
 # coefficient table
 coef(analysis)
 
 # trace plots
 plot(analysis)
-
-# widely applicable information criterion (WAIC)
-IC(analysis) # should be about 309.5
 ```
 ```{r, message = FALSE}
 # make predictions by varying year with other predictors including the random effect of Annual held constant
@@ -146,81 +113,6 @@ ggplot(data = year, aes(x = Year, y = estimate)) +
   geom_line(aes(y = lower), linetype = "dotted") +
   geom_line(aes(y = upper), linetype = "dotted") +
   expand_limits(y = 0)
-```
-
-```{r}
-
-# Compare models using information criteria
-
-## Define simpler model for comparison
-
-simpler_model <- model("
-  data {
-    
-    // Data lengths
-      int nObs;
-
-    // Data
-      int Pairs[nObs];
-      real Year[nObs];
-
-  }
-  parameters {
-
-    // Regression model
-      real alpha;
-      real beta1;
-      real beta2;
-      real beta3;
-
-  }
-  model {
-
-    // Vectors of expected values
-      vector[nObs] ePairs;
-    
-    // Priors on regression coefficients
-      alpha ~ normal(0, 10);
-      beta1 ~ normal(0, 10);
-      beta2 ~ normal(0, 10);
-      beta3 ~ normal(0, 10);
-
-    // Model
-      for (i in 1:nObs) {
-        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                      beta3 * Year[i]^3);
-      }
-
-      target += poisson_lpmf(Pairs | ePairs);
-
-  }")
-
-# add R code to calculate derived parameters
-simpler_model %<>% update_model(new_expr = "
-  for (i in 1:length(Pairs)) {
-    prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                       beta3 * Year[i]^3)
-  }
-  
-  log_lik <- dpois(Pairs, prediction, log = TRUE)
-
-  ")
-
-# modify data, define data types, and center year
-simpler_model %<>% update_model(modify_data = model$modify_data)
-simpler_model %<>% update_model(
-  select_data = list("Pairs" = integer(), "Year*" = integer()))
-
-# analyse
-analyses <- analyse(models(model, simpler_model), data = data)
-analyses %<>% reanalyse(rhat = 1.05)
-
-# glance at analyses
-glance(analyses)
-
-# widely applicable information criterion (WAIC)
-#IC(analyses)
-
 ```
 
 ## Installation
@@ -248,4 +140,4 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Documentation
 
-- [STAN Documentation](http://mc-stan.org/users/documentation/)
+- [smbr](http://www.poissonconsulting.ca/smbr/)
