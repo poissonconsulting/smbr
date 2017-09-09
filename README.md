@@ -79,11 +79,7 @@ data <- bauw::peregrine
 data$Annual <- factor(data$Year)
 
 # analyse
-analysis <- analyse(model, data = data, seed = 3L)
-#> # A tibble: 1 x 8
-#>       n     K nsamples nchains nsims       duration  rhat converged
-#>   <int> <int>    <int>   <int> <int> <S4: Duration> <dbl>     <lgl>
-#> 1    40     5     2000       4  4000             2s  1.01      TRUE
+analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 
 # coefficient table
 coef(analysis)

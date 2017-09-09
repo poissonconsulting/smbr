@@ -94,7 +94,7 @@ data <- bauw::peregrine
 data$Annual <- factor(data$Year)
 
 # analyse
-analysis <- analyse(model, data = data, seed = 3L)
+analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 
 # coefficient table
 coef(analysis)

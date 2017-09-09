@@ -136,11 +136,7 @@ data &lt;-<span class="st"> </span>bauw<span class="op">::</span>peregrine
 data<span class="op">$</span>Annual &lt;-<span class="st"> </span><span class="kw">factor</span>(data<span class="op">$</span>Year)
 
 <span class="co"># analyse</span>
-analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <span class="dt">data =</span> data, <span class="dt">seed =</span> 3L)
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.3s  1.01      TRUE</span>
+analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <span class="dt">data =</span> data, <span class="dt">seed =</span> 3L, <span class="dt">glance =</span> <span class="ot">FALSE</span>)
 
 <span class="co"># coefficient table</span>
 <span class="kw">coef</span>(analysis)
