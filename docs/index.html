@@ -140,18 +140,18 @@ analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <s
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
 <span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
-<span class="co">#&gt; 1    40     5     2000       4  4000           2.3s  1.02      TRUE</span>
+<span class="co">#&gt; 1    40     5     2000       4  4000           2.3s  1.01      TRUE</span>
 
 <span class="co"># coefficient table</span>
 <span class="kw">coef</span>(analysis)
 <span class="co">#&gt; # A tibble: 5 x 7</span>
-<span class="co">#&gt;          term    estimate         sd      zscore      lower       upper</span>
-<span class="co">#&gt; *  &lt;S3: term&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1       alpha  4.21177554 0.04183141 100.6731548  4.1260720  4.29189561</span>
-<span class="co">#&gt; 2       beta1  1.19879437 0.07538070  15.9377935  1.0660321  1.35951854</span>
-<span class="co">#&gt; 3       beta2  0.01625899 0.03136678   0.5121953 -0.0462603  0.07669739</span>
-<span class="co">#&gt; 4       beta3 -0.27412474 0.03885613  -7.1047946 -0.3571945 -0.20428168</span>
-<span class="co">#&gt; 5 log_sAnnual -2.19368146 0.28245137  -7.8502128 -2.8348376 -1.72567318</span>
+<span class="co">#&gt;          term    estimate         sd      zscore       lower       upper</span>
+<span class="co">#&gt; *  &lt;S3: term&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt; 1       alpha  4.21048185 0.04149529 101.4201394  4.12174655  4.28176929</span>
+<span class="co">#&gt; 2       beta1  1.19604269 0.07350729  16.2974250  1.06047184  1.35067652</span>
+<span class="co">#&gt; 3       beta2  0.01806255 0.03130771   0.5831216 -0.04387396  0.08283728</span>
+<span class="co">#&gt; 4       beta3 -0.27477828 0.03700830  -7.4280292 -0.34983922 -0.20543801</span>
+<span class="co">#&gt; 5 log_sAnnual -2.22617627 0.29215647  -7.6953223 -2.89129519 -1.73233415</span>
 <span class="co">#&gt; # ... with 1 more variables: pvalue &lt;dbl&gt;</span>
 
 <span class="co"># trace plots</span>
