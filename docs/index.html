@@ -136,7 +136,7 @@ data &lt;-<span class="st"> </span>bauw<span class="op">::</span>peregrine
 data<span class="op">$</span>Annual &lt;-<span class="st"> </span><span class="kw">factor</span>(data<span class="op">$</span>Year)
 
 <span class="co"># analyse</span>
-analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <span class="dt">data =</span> data)
+analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <span class="dt">data =</span> data, <span class="dt">seed =</span> 3L)
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;       n     K nsamples nchains nsims       duration  rhat converged</span>
 <span class="co">#&gt;   &lt;int&gt; &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;S4: Duration&gt; &lt;dbl&gt;     &lt;lgl&gt;</span>
@@ -145,13 +145,13 @@ analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <s
 <span class="co"># coefficient table</span>
 <span class="kw">coef</span>(analysis)
 <span class="co">#&gt; # A tibble: 5 x 7</span>
-<span class="co">#&gt;          term    estimate         sd      zscore       lower       upper</span>
-<span class="co">#&gt; *  &lt;S3: term&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1       alpha  4.21048185 0.04149529 101.4201394  4.12174655  4.28176929</span>
-<span class="co">#&gt; 2       beta1  1.19604269 0.07350729  16.2974250  1.06047184  1.35067652</span>
-<span class="co">#&gt; 3       beta2  0.01806255 0.03130771   0.5831216 -0.04387396  0.08283728</span>
-<span class="co">#&gt; 4       beta3 -0.27477828 0.03700830  -7.4280292 -0.34983922 -0.20543801</span>
-<span class="co">#&gt; 5 log_sAnnual -2.22617627 0.29215647  -7.6953223 -2.89129519 -1.73233415</span>
+<span class="co">#&gt;          term   estimate         sd      zscore       lower      upper</span>
+<span class="co">#&gt; *  &lt;S3: term&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt; 1       alpha  4.2118481 0.04098492 102.7359176  4.12465882  4.2871594</span>
+<span class="co">#&gt; 2       beta1  1.1978341 0.07543337  15.9131253  1.07077639  1.3670585</span>
+<span class="co">#&gt; 3       beta2  0.0160963 0.03192005   0.5118242 -0.04322279  0.0821183</span>
+<span class="co">#&gt; 4       beta3 -0.2744212 0.03793250  -7.2645669 -0.35995934 -0.2073967</span>
+<span class="co">#&gt; 5 log_sAnnual -2.2128625 0.29615643  -7.5662784 -2.91349591 -1.7260250</span>
 <span class="co">#&gt; # ... with 1 more variables: pvalue &lt;dbl&gt;</span>
 
 <span class="co"># trace plots</span>

@@ -80,24 +80,21 @@ data$Annual <- factor(data$Year)
 
 # analyse
 analysis <- analyse(model, data = data, seed = 3L)
-#> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
-#> http://mc-stan.org/misc/warnings.html#bfmi-low
-#> Warning: Examine the pairs() plot to diagnose sampling problems
 #> # A tibble: 1 x 8
 #>       n     K nsamples nchains nsims       duration  rhat converged
 #>   <int> <int>    <int>   <int> <int> <S4: Duration> <dbl>     <lgl>
-#> 1    40     5     2000       4  4000           2.2s  1.09      TRUE
+#> 1    40     5     2000       4  4000             2s  1.01      TRUE
 
 # coefficient table
 coef(analysis)
 #> # A tibble: 5 x 7
-#>          term    estimate         sd      zscore       lower       upper
-#> *  <S3: term>       <dbl>      <dbl>       <dbl>       <dbl>       <dbl>
-#> 1       alpha  4.21102465 0.04069179 103.4724429  4.13242832  4.28919651
-#> 2       beta1  1.19367659 0.07382047  16.2356425  1.06746923  1.34706829
-#> 3       beta2  0.01615742 0.03079083   0.5452871 -0.04471434  0.07876253
-#> 4       beta3 -0.27229969 0.03799213  -7.2384299 -0.35667675 -0.20883674
-#> 5 log_sAnnual -2.23333921 0.38423236  -5.9774889 -3.40111033 -1.75960102
+#>          term   estimate         sd      zscore       lower      upper
+#> *  <S3: term>      <dbl>      <dbl>       <dbl>       <dbl>      <dbl>
+#> 1       alpha  4.2118481 0.04098492 102.7359176  4.12465882  4.2871594
+#> 2       beta1  1.1978341 0.07543337  15.9131253  1.07077639  1.3670585
+#> 3       beta2  0.0160963 0.03192005   0.5118242 -0.04322279  0.0821183
+#> 4       beta3 -0.2744212 0.03793250  -7.2645669 -0.35995934 -0.2073967
+#> 5 log_sAnnual -2.2128625 0.29615643  -7.5662784 -2.91349591 -1.7260250
 #> # ... with 1 more variables: pvalue <dbl>
 
 # trace plots
