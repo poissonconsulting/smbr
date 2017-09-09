@@ -77,7 +77,9 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bauw)
 <span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(magrittr)
-<span class="kw">library</span>(smbr)</code></pre></div>
+<span class="kw">library</span>(smbr)
+<span class="co">#&gt; Warning: replacing previous import 'mbr::monitor' by 'rstan::monitor' when</span>
+<span class="co">#&gt; loading 'smbr'</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define model in Stan language</span>
 model &lt;-<span class="st"> </span><span class="kw">model</span>(<span class="st">"</span>
 <span class="st">  data {</span>

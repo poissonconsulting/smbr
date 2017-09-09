@@ -18,6 +18,8 @@ library(bauw)
 library(ggplot2)
 library(magrittr)
 library(smbr)
+#> Warning: replacing previous import 'mbr::monitor' by 'rstan::monitor' when
+#> loading 'smbr'
 ```
 
 ``` r

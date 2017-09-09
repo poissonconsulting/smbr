@@ -38,7 +38,7 @@ test_that("parameters", {
       variance_y = sigma_y * sigma_y;
     }")
 
-  model <- model(template)
+  model <- model(template, fixed = "_y$")
 
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))
@@ -57,4 +57,6 @@ test_that("parameters", {
 
   expect_identical(parameters(model, "fixed", scalar_only = TRUE),
                    c("mu_y", "tau_y"))
+
+  expect_identical(mbr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))
 })

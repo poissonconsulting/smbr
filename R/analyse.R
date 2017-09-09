@@ -19,13 +19,11 @@ smb_analyse <- function(data, model, stan_model, seed, quick, quiet, glance, par
 
   inits <- inits(data, model$gen_inits, nchains = nchains)
 
-  regexp <- model$fixed
-  named <- names(model$random_effects) %>%
-    c(model$derived)
+  monitor <- mbr::monitor(model)
 
   capture.output(
     stan_fit <- rstan::sampling(
-      stan_model, data = data, init = inits,
+      stan_model, data = data, init = inits, pars = monitor,
       chains = nchains, iter = niters, warmup = floor(niters/2), thin = nthin,
       cores = ifelse(parallel, nchains, 1L), seed = seed,
       show_messages = !quiet)
