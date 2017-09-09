@@ -30,7 +30,11 @@ Imports: beepr,
          timer,
          utils
 Suggests: testthat
-Remotes: poissonconsulting/datacheckr
+Remotes: poissonconsulting/datacheckr,
+         poissonconsulting/mcmcr,
+         poissonconsulting/mbr,
+         poissonconsulting/subfoldr,
+         poissonconsulting/timer
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1

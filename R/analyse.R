@@ -1,4 +1,4 @@
-smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, stan_model, seed, quick, quiet, glance, parallel) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -27,32 +27,36 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
     stan_fit <- rstan::sampling(
       stan_model, data = data, init = inits,
       chains = nchains, iter = niters, warmup = floor(niters/2), thin = nthin,
-      cores = ifelse(parallel, nchains, 1L),
+      cores = ifelse(parallel, nchains, 1L), seed = seed,
       show_messages = !quiet)
   )
 
   obj %<>% c(inits = list(inits),
              mcmcr = list(as.mcmcr(stan_fit)),
-             ngens = niters)
+             ngens = niters,
+             seed = seed)
 
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
 
   if (glance) {
-    # no idea why not printing
     print(glance(obj))
   }
   obj
 }
 
 #' @export
-analyse.smb_model <- function(x, data,
+analyse.smb_model <- function(x, data, seed = NA,
                               parallel = getOption("mb.parallel", FALSE),
                               quick = getOption("mb.quick", FALSE),
                               quiet = getOption("mb.quiet", TRUE),
                               glance = getOption("mb.glance", TRUE),
                               beep = getOption("mb.beep", TRUE),
                               ...) {
+
+  check_flag(beep)
+  if (beep) on.exit(beepr::beep())
+
   if (is.data.frame(data)) {
     check_data2(data)
   } else if (is.list(data)) {
@@ -63,9 +67,11 @@ analyse.smb_model <- function(x, data,
   check_flag(quiet)
   check_flag(parallel)
   check_flag(glance)
-  check_flag(beep)
 
-  if (beep) on.exit(beepr::beep())
+  seed %<>% as.integer()
+  if (identical(seed, NA_integer_))
+    seed <- sample.int(.Machine$integer.max, 1)
+  check_count(seed)
 
   capture.output(
     stanc <- rstan::stanc(model_code = template(x))
@@ -77,11 +83,11 @@ analyse.smb_model <- function(x, data,
 
   if (is.data.frame(data)) {
     return(smb_analyse(data = data, model = x, stan_model = stan_model,
-                       parallel = parallel,
+                       seed = seed, parallel = parallel,
                        quick = quick, glance = glance, quiet = quiet))
   }
 
   plyr::llply(data, smb_analyse, model = x, stan_model = stan_model,
-              parallel = parallel,
+              seed = seed, parallel = parallel,
               quick = quick, glance = glance, quiet = quiet)
 }
