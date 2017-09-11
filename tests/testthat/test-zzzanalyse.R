@@ -63,6 +63,13 @@ test_that("analyse", {
                       glance = FALSE, beep = FALSE,
                       quiet = TRUE)
 
+  expect_identical(ngens(analysis), 1000L)
+  expect_identical(nsims(analysis), 4000L)
+
+  expect_identical(niters(analysis), 500L)
+  expect_identical(nchains(analysis), 4L)
+  expect_identical(nsamples(analysis), 2000L)
+
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 

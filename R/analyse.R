@@ -4,12 +4,12 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
   timer$start()
 
   nchains <- 4L
-  niters <- model$niters
-  nthin <- niters * nchains / (2000 * 2)
+  ngens <- model$ngens
+  nthin <- ngens * nchains / 4000L
 
   if (quick) {
     nchains <- 2L
-    niters <- 10
+    ngens <- 10L
     nthin <- 1L
   }
 
@@ -24,14 +24,14 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
   capture.output(
     stan_fit <- rstan::sampling(
       stan_model, data = data, init = inits, pars = monitor,
-      chains = nchains, iter = niters, warmup = floor(niters/2), thin = nthin,
+      chains = nchains, iter = ngens, thin = nthin,
       cores = ifelse(parallel, nchains, 1L),
       show_messages = !quiet)
   )
 
   obj %<>% c(inits = list(inits),
              mcmcr = list(as.mcmcr(stan_fit)),
-             ngens = niters)
+             ngens = ngens)
 
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")

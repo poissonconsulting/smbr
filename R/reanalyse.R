@@ -2,9 +2,9 @@ smb_reanalyse_internal <- function(object, parallel, quiet) {
   timer <- timer::Timer$new()
   timer$start()
 
-  niters <- object$ngens * 2
+  ngens <- object$ngens * 2L
   nchains <- nchains(object)
-  nthin <- niters * nchains / (2000 * 2)
+  nthin <- ngens * nchains / 4000
 
   capture.output(
     stanc <- rstan::stanc(model_code = template(object))
@@ -22,13 +22,13 @@ smb_reanalyse_internal <- function(object, parallel, quiet) {
     stan_fit <- rstan::sampling(
       stan_model, data = data, pars = monitor,
       init = object$inits,
-      chains = nchains, iter = niters,  warmup = floor(niters/2), thin = nthin,
+      chains = nchains, iter = ngens, thin = nthin,
       cores = ifelse(parallel, nchains, 1L),
       show_messages = !quiet)
   )
 
   object$mcmcr <- as.mcmcr(stan_fit)
-  object$ngens <- as.integer(niters)
+  object$ngens <- as.integer(ngens)
   object$duration %<>% magrittr::add(timer$elapsed())
   object
 }
