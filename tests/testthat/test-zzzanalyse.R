@@ -66,7 +66,7 @@ test_that("analyse", {
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 
-  analysis <- smb_reanalyse_internal(analysis, parallel = FALSE, quiet = TRUE)
+  analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
 
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_identical(parameters(analysis, "random"), "bAnnual")

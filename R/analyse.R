@@ -1,4 +1,4 @@
-smb_analyse <- function(data, model, stan_model, seed, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
 
   timer <- timer::Timer$new()
   timer$start()
@@ -25,14 +25,13 @@ smb_analyse <- function(data, model, stan_model, seed, quick, quiet, glance, par
     stan_fit <- rstan::sampling(
       stan_model, data = data, init = inits, pars = monitor,
       chains = nchains, iter = niters, warmup = floor(niters/2), thin = nthin,
-      cores = ifelse(parallel, nchains, 1L), seed = seed,
+      cores = ifelse(parallel, nchains, 1L),
       show_messages = !quiet)
   )
 
   obj %<>% c(inits = list(inits),
              mcmcr = list(as.mcmcr(stan_fit)),
-             ngens = niters,
-             seed = seed)
+             ngens = niters)
 
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
@@ -44,7 +43,7 @@ smb_analyse <- function(data, model, stan_model, seed, quick, quiet, glance, par
 }
 
 #' @export
-analyse.smb_model <- function(x, data, seed = NA,
+analyse.smb_model <- function(x, data,
                               parallel = getOption("mb.parallel", FALSE),
                               quick = getOption("mb.quick", FALSE),
                               quiet = getOption("mb.quiet", TRUE),
@@ -66,26 +65,21 @@ analyse.smb_model <- function(x, data, seed = NA,
   check_flag(parallel)
   check_flag(glance)
 
-  seed %<>% as.integer()
-  if (identical(seed, NA_integer_))
-    seed <- sample.int(.Machine$integer.max, 1)
-  check_count(seed)
-
   capture.output(
     stanc <- rstan::stanc(model_code = template(x))
   )
   capture.output(
     stan_model <- rstan::stan_model(
-      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
+      stanc_ret = stanc, save_dso = TRUE, auto_write = FALSE)
   )
 
   if (is.data.frame(data)) {
     return(smb_analyse(data = data, model = x, stan_model = stan_model,
-                       seed = seed, parallel = parallel,
+                       parallel = parallel,
                        quick = quick, glance = glance, quiet = quiet))
   }
 
   plyr::llply(data, smb_analyse, model = x, stan_model = stan_model,
-              seed = seed, parallel = parallel,
+              parallel = parallel,
               quick = quick, glance = glance, quiet = quiet)
 }

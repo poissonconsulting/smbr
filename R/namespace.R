@@ -1,6 +1,6 @@
 #' @import datacheckr mbr mcmcr utils
 #' @importFrom broom glance
-#' @importFrom lubridate dminutes is.duration
+#' @importFrom lubridate dminutes dhours is.duration
 #' @importFrom magrittr %<>% %>% extract2 set_rownames use_series
 #' @importFrom matrixStats colLogSumExps colVars
 #' @importFrom plyr llply

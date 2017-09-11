@@ -18,8 +18,6 @@ library(bauw)
 library(ggplot2)
 library(magrittr)
 library(smbr)
-#> Warning: replacing previous import 'mbr::monitor' by 'rstan::monitor' when
-#> loading 'smbr'
 ```
 
 ``` r
@@ -80,19 +78,24 @@ model %<>% update_model(
 data <- bauw::peregrine
 data$Annual <- factor(data$Year)
 
+set.seed(42)
+
 # analyse
 analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
+#> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
+#> http://mc-stan.org/misc/warnings.html#bfmi-low
+#> Warning: Examine the pairs() plot to diagnose sampling problems
 
 # coefficient table
 coef(analysis)
 #> # A tibble: 5 x 7
-#>          term   estimate         sd      zscore       lower      upper
-#> *  <S3: term>      <dbl>      <dbl>       <dbl>       <dbl>      <dbl>
-#> 1       alpha  4.2118481 0.04098492 102.7359176  4.12465882  4.2871594
-#> 2       beta1  1.1978341 0.07543337  15.9131253  1.07077639  1.3670585
-#> 3       beta2  0.0160963 0.03192005   0.5118242 -0.04322279  0.0821183
-#> 4       beta3 -0.2744212 0.03793250  -7.2645669 -0.35995934 -0.2073967
-#> 5 log_sAnnual -2.2128625 0.29615643  -7.5662784 -2.91349591 -1.7260250
+#>          term    estimate         sd      zscore       lower       upper
+#> *  <S3: term>       <dbl>      <dbl>       <dbl>       <dbl>       <dbl>
+#> 1       alpha  4.20923921 0.04010467 104.9563556  4.13265307  4.28998159
+#> 2       beta1  1.19584854 0.07198905  16.6412853  1.06413797  1.34367373
+#> 3       beta2  0.01732761 0.03051702   0.5549338 -0.04213119  0.07525986
+#> 4       beta3 -0.27364650 0.03653887  -7.4983996 -0.34958522 -0.20570150
+#> 5 log_sAnnual -2.23663651 0.38230718  -6.0162425 -3.45408458 -1.75611897
 #> # ... with 1 more variables: pvalue <dbl>
 
 # trace plots

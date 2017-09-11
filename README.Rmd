@@ -93,6 +93,8 @@ model %<>% update_model(
 data <- bauw::peregrine
 data$Annual <- factor(data$Year)
 
+set.seed(42)
+
 # analyse
 analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 

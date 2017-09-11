@@ -77,9 +77,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bauw)
 <span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(magrittr)
-<span class="kw">library</span>(smbr)
-<span class="co">#&gt; Warning: replacing previous import 'mbr::monitor' by 'rstan::monitor' when</span>
-<span class="co">#&gt; loading 'smbr'</span></code></pre></div>
+<span class="kw">library</span>(smbr)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define model in Stan language</span>
 model &lt;-<span class="st"> </span><span class="kw">model</span>(<span class="st">"</span>
 <span class="st">  data {</span>
@@ -137,19 +135,24 @@ model <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw
 data &lt;-<span class="st"> </span>bauw<span class="op">::</span>peregrine
 data<span class="op">$</span>Annual &lt;-<span class="st"> </span><span class="kw">factor</span>(data<span class="op">$</span>Year)
 
+<span class="kw">set.seed</span>(<span class="dv">42</span>)
+
 <span class="co"># analyse</span>
 analysis &lt;-<span class="st"> </span><span class="kw">analyse</span>(model, <span class="dt">data =</span> data, <span class="dt">seed =</span> 3L, <span class="dt">glance =</span> <span class="ot">FALSE</span>)
+<span class="co">#&gt; Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
+<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#bfmi-low</span>
+<span class="co">#&gt; Warning: Examine the pairs() plot to diagnose sampling problems</span>
 
 <span class="co"># coefficient table</span>
 <span class="kw">coef</span>(analysis)
 <span class="co">#&gt; # A tibble: 5 x 7</span>
-<span class="co">#&gt;          term   estimate         sd      zscore       lower      upper</span>
-<span class="co">#&gt; *  &lt;S3: term&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt; 1       alpha  4.2118481 0.04098492 102.7359176  4.12465882  4.2871594</span>
-<span class="co">#&gt; 2       beta1  1.1978341 0.07543337  15.9131253  1.07077639  1.3670585</span>
-<span class="co">#&gt; 3       beta2  0.0160963 0.03192005   0.5118242 -0.04322279  0.0821183</span>
-<span class="co">#&gt; 4       beta3 -0.2744212 0.03793250  -7.2645669 -0.35995934 -0.2073967</span>
-<span class="co">#&gt; 5 log_sAnnual -2.2128625 0.29615643  -7.5662784 -2.91349591 -1.7260250</span>
+<span class="co">#&gt;          term    estimate         sd      zscore       lower       upper</span>
+<span class="co">#&gt; *  &lt;S3: term&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt; 1       alpha  4.20923921 0.04010467 104.9563556  4.13265307  4.28998159</span>
+<span class="co">#&gt; 2       beta1  1.19584854 0.07198905  16.6412853  1.06413797  1.34367373</span>
+<span class="co">#&gt; 3       beta2  0.01732761 0.03051702   0.5549338 -0.04213119  0.07525986</span>
+<span class="co">#&gt; 4       beta3 -0.27364650 0.03653887  -7.4983996 -0.34958522 -0.20570150</span>
+<span class="co">#&gt; 5 log_sAnnual -2.23663651 0.38230718  -6.0162425 -3.45408458 -1.75611897</span>
 <span class="co">#&gt; # ... with 1 more variables: pvalue &lt;dbl&gt;</span>
 
 <span class="co"># trace plots</span>
