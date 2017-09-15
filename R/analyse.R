@@ -1,3 +1,19 @@
+smb_analyse_chain <- function(inits_chainid, stan_model, data,
+                              monitor, seed, ngens, nthin, quiet) {
+
+  capture.output(
+    stan_fit <- rstan::sampling(
+      stan_model, data = data, init = inits_chainid$inits, pars = monitor,
+      seed = seed,
+      chains = 1L, iter = ngens, thin = nthin,
+      cores = 1L, chain_id = inits_chainid$chain_id,
+      show_messages = !quiet)
+  )
+
+  stan_fit
+}
+
+
 smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
 
   timer <- timer::Timer$new()
@@ -19,17 +35,24 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
 
   inits <- inits(data, model$gen_inits, nchains = nchains)
 
+  inits_chainid <- purrr::imap(inits, function(x, n) {x <- list(inits = x, chain_id = n); x})
+
   monitor <- mbr::monitor(model)
 
-  capture.output(
-    stan_fit <- rstan::sampling(
-      stan_model, data = data, init = inits, pars = monitor,
-      chains = nchains, iter = ngens, thin = nthin,
-      cores = ifelse(parallel, nchains, 1L),
-      show_messages = !quiet)
-  )
+  # share seed as different chain_ids
+  seed <- sample.int(.Machine$integer.max, 1)
+
+  stan_fit <- llply(inits_chainid, .fun = smb_analyse_chain,
+                       .parallel = parallel,
+                       stan_model = stan_model,
+                       data = data,
+                       monitor = monitor, seed = seed,
+                       ngens = ngens, nthin = nthin,
+                       quiet = quiet) %>%
+    rstan::sflist2stanfit()
 
   obj %<>% c(inits = list(inits),
+             stanfit = list(stan_fit),
              mcmcr = list(as.mcmcr(stan_fit)),
              ngens = ngens)
 
@@ -70,7 +93,7 @@ analyse.smb_model <- function(x, data,
   )
   capture.output(
     stan_model <- rstan::stan_model(
-      stanc_ret = stanc, save_dso = TRUE, auto_write = FALSE)
+      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
   )
 
   if (is.data.frame(data)) {

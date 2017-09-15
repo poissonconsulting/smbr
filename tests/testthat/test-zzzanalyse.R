@@ -58,6 +58,8 @@ test_that("analyse", {
   data <- bauw::peregrine
   data$Annual <- factor(data$Year)
 
+  set.seed(42)
+
   # analyse
   analysis <- analyse(model, data = data, parallel = FALSE,
                       glance = FALSE, beep = FALSE,
@@ -97,9 +99,7 @@ test_that("analyse", {
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
 
-  waic <- IC(analysis)
-  expect_gt(waic, 305)
-  expect_lt(waic, 315)
+  expect_equal(IC(analysis), 309.7343, tolerance = 0.00001)
 
   coef <- coef(analysis)
 

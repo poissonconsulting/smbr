@@ -4,32 +4,38 @@ smb_reanalyse_internal <- function(object, parallel, quiet) {
 
   ngens <- object$ngens * 2L
   nchains <- nchains(object)
-  nthin <- ngens * nchains / 4000
+  nthin <- ngens * nchains / 4000L
 
   capture.output(
     stanc <- rstan::stanc(model_code = template(object))
   )
   capture.output(
     stan_model <- rstan::stan_model(
-      stanc_ret = stanc, save_dso = TRUE, auto_write = FALSE)
+      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
   )
 
   data <- data_set(object, modify = TRUE, numericize_factors = TRUE)
 
+  inits_chainid <- purrr::imap(object$inits, function(x, n) {x <- list(inits = x, chain_id = n); x})
+
   monitor <- mbr::monitor(object$model)
 
-  capture.output(
-    stan_fit <- rstan::sampling(
-      stan_model, data = data, pars = monitor,
-      init = object$inits,
-      chains = nchains, iter = ngens, thin = nthin,
-      cores = ifelse(parallel, nchains, 1L),
-      show_messages = !quiet)
-  )
+  # share seed as different chain_ids
+  seed <- sample.int(.Machine$integer.max, 1)
 
+  stan_fit <- llply(inits_chainid, .fun = smb_analyse_chain,
+                       .parallel = parallel,
+                       stan_model = stan_model,
+                       data = data,
+                       monitor = monitor, seed = seed,
+                       ngens = ngens, nthin = nthin,
+                       quiet = quiet) %>%
+    rstan::sflist2stanfit()
+
+  object$stan_fit <- stan_fit
   object$mcmcr <- as.mcmcr(stan_fit)
   object$ngens <- as.integer(ngens)
-  object$duration %<>% magrittr::add(timer$elapsed())
+  object$duration <- timer$elapsed()
   object
 }
 
