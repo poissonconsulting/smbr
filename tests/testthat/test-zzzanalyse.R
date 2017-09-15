@@ -58,8 +58,6 @@ test_that("analyse", {
   data <- bauw::peregrine
   data$Annual <- factor(data$Year)
 
-  set.seed(42)
-
   # analyse
   analysis <- analyse(model, data = data, parallel = FALSE,
                       glance = FALSE, beep = FALSE,
@@ -75,6 +73,7 @@ test_that("analyse", {
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 
+  set.seed(42)
   analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
 
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
@@ -99,7 +98,7 @@ test_that("analyse", {
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
 
-  expect_equal(IC(analysis), 309.7343, tolerance = 0.00001)
+  expect_equal(IC(analysis), 309.4503, tolerance = 0.0001)
 
   coef <- coef(analysis)
 
