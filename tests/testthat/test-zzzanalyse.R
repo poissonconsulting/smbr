@@ -73,7 +73,6 @@ test_that("analyse", {
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 
-  set.seed(42)
   analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
 
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
@@ -98,7 +97,9 @@ test_that("analyse", {
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
 
-  expect_equal(IC(analysis), 309.4503, tolerance = 0.0001)
+  waic <- IC(analysis)
+  expect_gt(waic, 305)
+  expect_lt(waic, 315)
 
   coef <- coef(analysis)
 
