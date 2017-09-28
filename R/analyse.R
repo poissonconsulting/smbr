@@ -1,7 +1,9 @@
 smb_analyse_chain <- function(inits_chainid, stan_model, data,
                               monitor, seed, ngens, nthin, quiet) {
 
-  capture.output(
+  capture_output <- if (quiet) capture.output else eval
+
+  capture_output(
     stan_fit <- rstan::sampling(
       stan_model, data = data, init = inits_chainid$inits, pars = monitor,
       seed = seed,
@@ -15,7 +17,6 @@ smb_analyse_chain <- function(inits_chainid, stan_model, data,
 
 
 smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
-
   timer <- timer::Timer$new()
   timer$start()
 
@@ -43,12 +44,12 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
   seed <- sample.int(.Machine$integer.max, 1)
 
   stan_fit <- llply(inits_chainid, .fun = smb_analyse_chain,
-                       .parallel = parallel,
-                       stan_model = stan_model,
-                       data = data,
-                       monitor = monitor, seed = seed,
-                       ngens = ngens, nthin = nthin,
-                       quiet = quiet) %>%
+                    .parallel = parallel,
+                    stan_model = stan_model,
+                    data = data,
+                    monitor = monitor, seed = seed,
+                    ngens = ngens, nthin = nthin,
+                    quiet = quiet) %>%
     rstan::sflist2stanfit()
 
   obj %<>% c(inits = list(inits),
@@ -88,10 +89,12 @@ analyse.smb_model <- function(x, data,
   check_flag(parallel)
   check_flag(glance)
 
-  capture.output(
+  capture_output <- if (quiet) capture.output else eval
+
+  capture_output(
     stanc <- rstan::stanc(model_code = template(x))
   )
-  capture.output(
+  capture_output(
     stan_model <- rstan::stan_model(
       stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
   )
