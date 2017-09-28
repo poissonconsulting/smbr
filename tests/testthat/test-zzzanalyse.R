@@ -58,6 +58,8 @@ test_that("analyse", {
   data <- bauw::peregrine
   data$Annual <- factor(data$Year)
 
+  set.seed(3457)
+
   # analyse
   analysis <- analyse(model, data = data, parallel = FALSE,
                       glance = FALSE, beep = FALSE,
@@ -73,13 +75,23 @@ test_that("analyse", {
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 
-  analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
-
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_identical(parameters(analysis, "random"), "bAnnual")
   expect_identical(parameters(analysis), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")))
   expect_identical(parameters(analysis, "primary"), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_error(parameters(analysis, "some"))
+
+  expect_is(as.mcmcr(analysis), "mcmcr")
+
+  monitor <- rstan::monitor(analysis$stanfit)
+  expect_identical(round(max(monitor[,"Rhat"]), 2L), rhat(analysis))
+
+  esr <- esr(as.mcmcr(analysis), by = "term")
+
+  expect_identical(esr$alpha, 0.59)
+  expect_identical(esr$log_sAnnual, 0.13)
+
+  analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
 
   expect_identical(ngens(analysis), 2000L)
   expect_identical(nsims(analysis), 8000L)
@@ -88,11 +100,9 @@ test_that("analyse", {
   expect_identical(nchains(analysis), 4L)
   expect_identical(nsamples(analysis), 2000L)
 
-  expect_is(as.mcmcr(analysis), "mcmcr")
-
   glance <- glance(analysis)
   expect_is(glance, "tbl")
-  expect_identical(colnames(glance), c("n", "K", "nsamples", "nchains", "nsims", "rhat", "converged"))
+  expect_identical(colnames(glance), c("n", "K", "nsamples", "nchains", "nsims", "rhat", "esr", "converged"))
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
 

@@ -82,20 +82,17 @@ set.seed(42)
 
 # analyse
 analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
-#> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
-#> http://mc-stan.org/misc/warnings.html#bfmi-low
-#> Warning: Examine the pairs() plot to diagnose sampling problems
 
 # coefficient table
 coef(analysis)
 #> # A tibble: 5 x 7
 #>          term    estimate         sd      zscore       lower       upper
 #> *  <S3: term>       <dbl>      <dbl>       <dbl>       <dbl>       <dbl>
-#> 1       alpha  4.20923921 0.04010467 104.9563556  4.13265307  4.28998159
-#> 2       beta1  1.19584854 0.07198905  16.6412853  1.06413797  1.34367373
-#> 3       beta2  0.01732761 0.03051702   0.5549338 -0.04213119  0.07525986
-#> 4       beta3 -0.27364650 0.03653887  -7.4983996 -0.34958522 -0.20570150
-#> 5 log_sAnnual -2.23663651 0.38230718  -6.0162425 -3.45408458 -1.75611897
+#> 1       alpha  4.20876558 0.04158448 101.1991128  4.12312410  4.28668673
+#> 2       beta1  1.19964590 0.07168500  16.7430901  1.06248515  1.34334649
+#> 3       beta2  0.01824134 0.03157242   0.5890368 -0.04338316  0.08101067
+#> 4       beta3 -0.27582458 0.03688657  -7.4838439 -0.34671537 -0.20573746
+#> 5 log_sAnnual -2.23469141 0.29689651  -7.6164480 -2.92188781 -1.75379163
 #> # ... with 1 more variables: pvalue <dbl>
 
 # trace plots

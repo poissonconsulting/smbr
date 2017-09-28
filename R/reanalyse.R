@@ -41,15 +41,15 @@ smb_reanalyse_internal <- function(object, parallel, quiet) {
   object
 }
 
-smb_reanalyse <- function(object, rhat, nreanalyses,
+smb_reanalyse <- function(object, rhat, esr, nreanalyses,
                           duration, quick, quiet, parallel, glance) {
 
-  if (quick || duration < elapsed(object) * 2 || converged(object, rhat)) {
+  if (quick || duration < elapsed(object) * 2 || converged(object, rhat, esr)) {
     if (glance) print(glance(object))
     return(object)
   }
 
-  while (nreanalyses > 0L && duration >= elapsed(object) * 2 && !converged(object, rhat)) {
+  while (nreanalyses > 0L && duration >= elapsed(object) * 2 && !converged(object, rhat, esr)) {
     object %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
     nreanalyses %<>% magrittr::subtract(1L)
     if (glance) print(glance(object))
@@ -61,6 +61,7 @@ smb_reanalyse <- function(object, rhat, nreanalyses,
 #'
 #' @param object The object to reanalyse.
 #' @param rhat A number specifying the rhat threshold.
+#' @param esr A number specifying the minimum effective sampling rate.
 #' @param nreanalyses A count between 1 and 6 specifying the maximum number of reanalyses.
 #' @param duration The maximum total time to spend on analysis and reanalysis.
 #' @param quick A flag indicating whether to quickly get unreliable values.
@@ -72,6 +73,7 @@ smb_reanalyse <- function(object, rhat, nreanalyses,
 #' @export
 reanalyse.smb_analysis <- function(object,
                                    rhat = getOption("mb.rhat", 1.1),
+                                   esr = getOption("mb.esr", 0.33),
                                    nreanalyses = getOption("mb.nreanalyses", 1L),
                                    duration = getOption("mb.duration", dhours(1)),
                                    parallel = getOption("mb.parallel", FALSE),
@@ -91,7 +93,7 @@ reanalyse.smb_analysis <- function(object,
   check_flag(glance)
   check_flag(beep)
 
-  smb_reanalyse(object, rhat = rhat, nreanalyses = nreanalyses,
+  smb_reanalyse(object, rhat = rhat, esr = esr, nreanalyses = nreanalyses,
                 duration = duration, quick = quick,
                 quiet = quiet, parallel = parallel, glance = glance)
 }

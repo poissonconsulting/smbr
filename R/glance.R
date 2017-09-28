@@ -1,9 +1,12 @@
 #' @export
-glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), ...) {
+glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), esr = getOption("mb.esr", 0.33), ...) {
   check_number(rhat)
 
   rhat_analysis <- rhat(x)
   rhat_arg <- rhat
+
+  esr_analysis <- esr(x)
+  esr_arg <- esr
 
   tibble::tibble(
     n = sample_size(x),
@@ -12,6 +15,7 @@ glance.smb_analysis <- function(x, n = NULL, rhat = getOption("mb.rhat", 1.1), .
     nchains = nchains(x),
     nsims = nsims(x),
     rhat = rhat_analysis,
-    converged = rhat_analysis <= rhat_arg
+    esr = esr_analysis,
+    converged = rhat_analysis < rhat_arg & esr_analysis > esr_arg
   )
 }
