@@ -44,12 +44,12 @@ smb_reanalyse_internal <- function(object, parallel, quiet) {
 smb_reanalyse <- function(object, rhat, esr, nreanalyses,
                           duration, quick, quiet, parallel, glance) {
 
-  if (quick || duration < elapsed(object) * 2 || converged(object, rhat, esr)) {
+  if (quick || duration < elapsed(object) * 2 || (converged(object, rhat) && esr(object) > esr)) {
     if (glance) print(glance(object))
     return(object)
   }
 
-  while (nreanalyses > 0L && duration >= elapsed(object) * 2 && !converged(object, rhat, esr)) {
+  while (nreanalyses > 0L && duration >= elapsed(object) * 2 && !(converged(object, rhat) && esr(object) > esr)) {
     object %<>% smb_reanalyse_internal(parallel = parallel, quiet = quiet)
     nreanalyses %<>% magrittr::subtract(1L)
     if (glance) print(glance(object))
@@ -92,6 +92,7 @@ reanalyse.smb_analysis <- function(object,
   check_flag(parallel)
   check_flag(glance)
   check_flag(beep)
+  check_number(esr, c(0, 1))
 
   smb_reanalyse(object, rhat = rhat, esr = esr, nreanalyses = nreanalyses,
                 duration = duration, quick = quick,

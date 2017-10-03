@@ -83,7 +83,7 @@ test_that("analyse", {
 
   expect_is(as.mcmcr(analysis), "mcmcr")
 
-  monitor <- rstan::monitor(analysis$stanfit)
+  monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   expect_identical(round(max(monitor[,"Rhat"]), 2L), rhat(analysis))
 
   esr <- esr(as.mcmcr(analysis), by = "term")
@@ -101,7 +101,7 @@ test_that("analyse", {
 
   glance <- glance(analysis)
   expect_is(glance, "tbl")
-  expect_identical(colnames(glance), c("n", "K", "nsamples", "nchains", "nsims", "rhat", "esr", "converged"))
+  expect_identical(colnames(glance), c("n", "K", "nchains", "nsims", "nsamples",  "ess", "rhat", "converged"))
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
 
