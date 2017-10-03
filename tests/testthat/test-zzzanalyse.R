@@ -86,10 +86,6 @@ test_that("analyse", {
   monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   expect_identical(round(max(monitor[,"Rhat"]), 2L), rhat(analysis))
 
-  esr <- esr(as.mcmcr(analysis), by = "term")
-
-  expect_identical(esr$alpha, 0.59)
-
   analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
 
   expect_identical(ngens(analysis), 2000L)
