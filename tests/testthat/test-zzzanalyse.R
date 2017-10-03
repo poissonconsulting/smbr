@@ -89,7 +89,6 @@ test_that("analyse", {
   esr <- esr(as.mcmcr(analysis), by = "term")
 
   expect_identical(esr$alpha, 0.59)
-  expect_identical(esr$log_sAnnual, 0.13)
 
   analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
 
