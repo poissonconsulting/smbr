@@ -18,6 +18,7 @@ library(bauw)
 library(ggplot2)
 library(magrittr)
 library(smbr)
+#> Warning: package 'dplyr' was built under R version 3.4.2
 ```
 
 ``` r
@@ -86,13 +87,13 @@ analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 # coefficient table
 coef(analysis)
 #> # A tibble: 5 x 7
-#>          term    estimate         sd      zscore       lower       upper
-#> *  <S3: term>       <dbl>      <dbl>       <dbl>       <dbl>       <dbl>
-#> 1       alpha  4.20876558 0.04158448 101.1991128  4.12312410  4.28668673
-#> 2       beta1  1.19964590 0.07168500  16.7430901  1.06248515  1.34334649
-#> 3       beta2  0.01824134 0.03157242   0.5890368 -0.04338316  0.08101067
-#> 4       beta3 -0.27582458 0.03688657  -7.4838439 -0.34671537 -0.20573746
-#> 5 log_sAnnual -2.23469141 0.29689651  -7.6164480 -2.92188781 -1.75379163
+#>          term    estimate         sd      zscore      lower       upper
+#> *  <S3: term>       <dbl>      <dbl>       <dbl>      <dbl>       <dbl>
+#> 1       alpha  4.21096441 0.04160161 101.1996741  4.1259704  4.29209918
+#> 2       beta1  1.19853248 0.07310233  16.4305127  1.0623713  1.35267915
+#> 3       beta2  0.01741736 0.03250136   0.5267154 -0.0460623  0.08181432
+#> 4       beta3 -0.27427852 0.03706820  -7.4468974 -0.3534727 -0.20556505
+#> 5 log_sAnnual -2.21391230 0.29386042  -7.6147622 -2.8805339 -1.74271342
 #> # ... with 1 more variables: pvalue <dbl>
 
 # trace plots

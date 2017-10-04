@@ -1,6 +1,8 @@
 context("analyse")
 
 test_that("analyse", {
+    set_analysis_mode("check")
+
   # define model in Stan language
   model <- model("
  data {
@@ -37,7 +39,7 @@ test_that("analyse", {
         ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                       beta3 * Year[i]^3 + bAnnual[Annual[i]]);
       }
-      target += poisson_lpmf(Pairs | ePairs);
+      Pairs ~ poisson(ePairs);
   }")
 
   # add R code to calculate derived parameters
@@ -58,22 +60,23 @@ test_that("analyse", {
   data <- bauw::peregrine
   data$Annual <- factor(data$Year)
 
-  set.seed(3457)
+  set.seed(34)
 
   # analyse
-  analysis <- analyse(model, data = data, parallel = FALSE,
-                      glance = FALSE, beep = FALSE,
-                      quiet = TRUE)
-
-  expect_identical(ngens(analysis), 1000L)
-  expect_identical(nsims(analysis), 4000L)
-
-  expect_identical(niters(analysis), 500L)
-  expect_identical(nchains(analysis), 4L)
-  expect_identical(nsamples(analysis), 2000L)
+  analysis <- analyse(model, data = data)
 
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
+
+  expect_identical(niters(analysis), 500L)
+  expect_identical(nchains(analysis), 2L)
+  expect_identical(nsims(analysis), 1000L)
+  expect_identical(ngens(analysis), 2000L)
+
+  analysis <- reanalyse(analysis)
+
+  expect_identical(niters(analysis), 500L)
+  expect_identical(ngens(analysis), 4000L)
 
   expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
   expect_identical(parameters(analysis, "random"), "bAnnual")
@@ -86,18 +89,9 @@ test_that("analyse", {
   monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   expect_identical(round(max(monitor[,"Rhat"]), 2L), rhat(analysis))
 
-  analysis <- reanalyse(analysis, beep = FALSE, glance = FALSE, parallel = FALSE, quiet = TRUE, rhat = 1.0)
-
-  expect_identical(ngens(analysis), 2000L)
-  expect_identical(nsims(analysis), 8000L)
-
-  expect_identical(niters(analysis), 500L)
-  expect_identical(nchains(analysis), 4L)
-  expect_identical(nsamples(analysis), 2000L)
-
   glance <- glance(analysis)
   expect_is(glance, "tbl")
-  expect_identical(colnames(glance), c("n", "K", "nchains", "nsims", "nsamples",  "ess", "rhat", "converged"))
+  expect_identical(colnames(glance), c("n", "K", "nchains", "nthin", "niters",  "ess", "rhat", "converged"))
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
 

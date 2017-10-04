@@ -1,13 +1,13 @@
 smb_analyse_chain <- function(inits_chainid, stan_model, data,
-                              monitor, seed, ngens, nthin, quiet) {
+                              monitor, seed, niters, nthin, quiet) {
 
-  capture_output <- if (quiet) capture.output else eval
+  capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else eval
 
   capture_output(
     stan_fit <- rstan::sampling(
       stan_model, data = data, init = inits_chainid$inits, pars = monitor,
       seed = seed,
-      chains = 1L, iter = ngens, thin = nthin,
+      chains = 1L, iter = niters * 2L * nthin, thin = nthin,
       cores = 1L, chain_id = inits_chainid$chain_id,
       show_messages = !quiet)
   )
@@ -16,26 +16,15 @@ smb_analyse_chain <- function(inits_chainid, stan_model, data,
 }
 
 
-smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel) {
+smb_analyse <- function(data, model, stan_model, nchains, niters, nthin, quiet, glance, parallel) {
   timer <- timer::Timer$new()
   timer$start()
-
-  nchains <- 4L
-  ngens <- model$ngens
-  nthin <- ngens * nchains / 4000L
-
-  if (quick) {
-    nchains <- 2L
-    ngens <- 10L
-    nthin <- 1L
-  }
 
   obj <- list(model = model, data = data)
 
   data %<>% modify_data(model = model, numericize_factors = TRUE)
 
   inits <- inits(data, model$gen_inits, nchains = nchains)
-
   inits_chainid <- purrr::imap(inits, function(x, n) {x <- list(inits = x, chain_id = n); x})
 
   monitor <- mbr::monitor(model)
@@ -48,28 +37,29 @@ smb_analyse <- function(data, model, stan_model, quick, quiet, glance, parallel)
                     stan_model = stan_model,
                     data = data,
                     monitor = monitor, seed = seed,
-                    ngens = ngens, nthin = nthin,
+                    niters = niters, nthin = nthin,
                     quiet = quiet) %>%
     rstan::sflist2stanfit()
 
   obj %<>% c(inits = list(inits),
              stanfit = list(stan_fit),
              mcmcr = list(as.mcmcr(stan_fit)),
-             ngens = ngens)
+             nthin = nthin)
 
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
 
-  if (glance) {
-    print(glance(obj))
-  }
+  if (glance) print(glance(obj))
+
   obj
 }
 
 #' @export
 analyse.smb_model <- function(x, data,
+                              nchains = getOption("mb.nchains", 3L),
+                              niters = getOption("mb.niters", 1000L),
+                              nthin = getOption("mb.thin", NULL),
                               parallel = getOption("mb.parallel", FALSE),
-                              quick = getOption("mb.quick", FALSE),
                               quiet = getOption("mb.quiet", TRUE),
                               glance = getOption("mb.glance", TRUE),
                               beep = getOption("mb.beep", TRUE),
@@ -84,12 +74,17 @@ analyse.smb_model <- function(x, data,
     llply(data, check_data2)
   } else error("data must be a data.frame or a list of data.frames")
 
-  check_flag(quick)
-  check_flag(quiet)
+  check_count(nchains, c(2L, 10L))
+  check_count(niters, c(10L, 100000L))
+  checkor(check_null(nthin), check_count(nthin, c(1L, 10000L)))
+
   check_flag(parallel)
+  check_flag(quiet)
   check_flag(glance)
 
-  capture_output <- if (quiet) capture.output else eval
+  if (is.null(nthin)) nthin <- nthin(x)
+
+  capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else eval
 
   capture_output(
     stanc <- rstan::stanc(model_code = template(x))
@@ -101,11 +96,11 @@ analyse.smb_model <- function(x, data,
 
   if (is.data.frame(data)) {
     return(smb_analyse(data = data, model = x, stan_model = stan_model,
-                       parallel = parallel,
-                       quick = quick, glance = glance, quiet = quiet))
+                       nchains = nchains, niters = niters, nthin = nthin,
+                       parallel = parallel, quiet = quiet, glance = glance))
   }
 
   plyr::llply(data, smb_analyse, model = x, stan_model = stan_model,
-              parallel = parallel,
-              quick = quick, glance = glance, quiet = quiet)
+              nchains = nchains, niters = niters, nthin = nthin,
+              parallel = parallel, quiet = quiet, glance = glance)
 }
