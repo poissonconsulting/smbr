@@ -6,7 +6,7 @@ reanalyse1.smb_analysis <- function(object, parallel, quiet, ...) {
   niters <- niters(object)
   nthin <- nthin(object) * 2L
 
-  stan_model <- load_model(object, quiet)
+  loaded <- load_model(object, quiet)
 
   data <- data_set(object, modify = TRUE, numericize_factors = TRUE)
 
@@ -19,7 +19,7 @@ reanalyse1.smb_analysis <- function(object, parallel, quiet, ...) {
 
   stan_fit <- llply(inits_chainid, .fun = smb_analyse_chain,
                     .parallel = parallel,
-                    stan_model = stan_model,
+                    loaded = loaded,
                     data = data,
                     monitor = monitor, seed = seed,
                     niters = niters, nthin = nthin,
