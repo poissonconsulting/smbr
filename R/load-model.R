@@ -13,8 +13,3 @@ load_model.smb_model <- function(x, quiet, ...) {
   )
   stan_model
 }
-
-#' @export
-load_model.smb_analysis <- function(x, quiet, ...) {
-  load_model(model(x), quiet, ...)
-}
