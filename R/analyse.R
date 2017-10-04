@@ -84,15 +84,7 @@ analyse.smb_model <- function(x, data,
 
   if (is.null(nthin)) nthin <- nthin(x)
 
-  capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else eval
-
-  capture_output(
-    stanc <- rstan::stanc(model_code = template(x))
-  )
-  capture_output(
-    stan_model <- rstan::stan_model(
-      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
-  )
+  stan_model <- load_model(x, quiet)
 
   if (is.data.frame(data)) {
     return(smb_analyse(data = data, model = x, stan_model = stan_model,
