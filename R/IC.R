@@ -1,13 +1,17 @@
 #' @export
 IC.smb_analysis <- function(object, ...) {
-  object %<>% log_lik_matrix()
 
-  logLik <- object %>%
-    logColMeansExp() %>%
+  logLik <- derive_logLik(object) %>%
+    mcmcr::collapse_chains() %>%
+    magrittr::use_series("logLik") %>%
+    matrix(ncol = sample_size(object))
+
+  npars <- logLik %>%
+    matrixStats::colVars() %>%
     sum()
 
-  npars <- object %>%
-    matrixStats::colVars() %>%
+  logLik %<>%
+    logColMeansExp() %>%
     sum()
 
   - 2 * (logLik - npars)

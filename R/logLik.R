@@ -1,7 +1,7 @@
-log_lik_matrix <- function(x) {
-  log_lik <- derive(x, term = "logLik")
+derive_logLik <- function(x) {
+  logLik <- derive(x, term = "logLik")
 
-  dim <- dim(log_lik[["logLik"]])
+  dim <- dim(logLik[["logLik"]])
 
   if (!identical(length(dim), 3L))
     error("logLik term 'logLik' must be a vector")
@@ -11,12 +11,7 @@ log_lik_matrix <- function(x) {
   if (!identical(n, sample_size(x)))
     warning("number of logLik terms does not equal number of rows of data")
 
-  log_lik %<>%
-    mcmcr::collapse_chains() %>%
-    magrittr::use_series("logLik") %>%
-    matrix(ncol = n)
-
-  log_lik
+  logLik
 }
 
 #' Log-Likelihood
@@ -27,8 +22,13 @@ log_lik_matrix <- function(x) {
 #' @param ... unused.
 #' @export
 logLik.smb_analysis <- function(object, ...) {
-  object %<>% log_lik_matrix() %>%
+
+  logLik <- derive_logLik(object) %>%
+    mcmcr::collapse_chains() %>%
+    magrittr::use_series("logLik") %>%
+    matrix(ncol = sample_size(object)) %>%
     logColMeansExp() %>%
     sum()
-  object
+
+  logLik
 }
