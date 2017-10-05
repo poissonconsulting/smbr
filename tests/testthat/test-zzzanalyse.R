@@ -113,8 +113,7 @@ test_that("analyse", {
   expect_identical(coef(analysis, "all")$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40,"]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
 
   tidy <- tidy(analysis)
-  expect_identical(colnames(tidy), c("term", "estimate", "std.error", "statistic", "p.value"))
-  expect_identical(tidy$estimate, coef$estimate)
+  expect_identical(colnames(tidy), c("term", "estimate", "lower", "upper", "esr", "rhat"))
 
   year <- predict(analysis, new_data = "Year")
 
