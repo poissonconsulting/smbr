@@ -99,13 +99,18 @@ get_par_type <- function(x, parameter, block_name = "parameters") {
   get_par_types(x, block_name)[get_par_names(x, block_name) == parameter]
 }
 
-paste_transformed_data <- function(x, text) {
-  text %<>% str_c("\ntransformed data{\n", .)
+paste_transformed_data <- function(x, text, top = TRUE) {
+  text %<>% rm_comments()
 
-  if (!has_block(x, "transformed data")) {
-    text %<>% str_c("\n}\nparameters{")
-    x %<>% str_replace("\\n\\s*parameters\\s*[{]", text)
-  } else
+  if (!has_block(x, "transformed data"))
+    x %<>% str_replace("\\n\\s*parameters\\s*[{]", "\ntransformed data{\n}\nparameters{")
+
+  if (top) {
+    text %<>% str_c("\ntransformed data{\n", .)
     x %<>% str_replace("\\n\\s*transformed data\\s*[{]", text)
+  } else {
+    text %<>% str_c("\n}\nparameters{")
+    x %<>% str_replace("[}]\\s*\\n\\s*parameters\\s*[{]", text)
+  }
   x
 }

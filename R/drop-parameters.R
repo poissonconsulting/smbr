@@ -10,9 +10,8 @@ drop_parameter <- function(x, parameter) {
   pattern <- str_c(type, "\\s*(<[^>]+>){0,1}\\s*", parameter, "\\s*;")
   x$template %<>% str_replace(pattern, "")
 
-  text <- str_c(type, " ", parameter, ";\n", parameter, " = 0;")
-
-  x$template %<>% paste_transformed_data(text)
+  x$template %<>% paste_transformed_data(str_c(type, " ", parameter, ";\n"))
+  x$template %<>% paste_transformed_data(str_c(parameter, " = 0;"), top = FALSE)
   x
 }
 

@@ -48,7 +48,7 @@ test_that("analyse", {
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
   }
-    logLik <- dpois(Pairs, prediction, log = TRUE)")
+    log_lik <- dpois(Pairs, prediction, log = TRUE)")
 
   # define data types and center year
   model <- update_model(model,
