@@ -95,6 +95,7 @@ test_that("analyse", {
   expect_identical(colnames(glance), c("n", "K", "nchains", "nthin", "niters",  "ess", "rhat", "converged"))
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
+  expect_identical(glance$nthin, 2L)
 
   waic <- IC(analysis)
   expect_gt(waic, 305)

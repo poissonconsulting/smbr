@@ -59,4 +59,17 @@ test_that("parameters", {
                    c("mu_y", "tau_y"))
 
   expect_identical(mbr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))
+
+  expect_error(drop_parameters(model, "foo"), "parameter 'foo'")
+  expect_error(drop_parameters(model, "sigma_y"), "parameter 'sigma_y'")
+
+  model <- update_model(model, drops = list("mu_y", "tau_y"))
+
+  models <- make_all_models(model)
+
+  expect_identical(models[[1]], model)
+
+  expect_identical(names(models), c("full", "base+tau_y", "base+mu_y", "base"))
+
+  expect_identical(parameters(models[["base"]], "primary"), "foo")
 })
