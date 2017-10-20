@@ -3,9 +3,12 @@ smb_analyse_chain <- function(inits_chainid, loaded, data,
 
   capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else eval
 
+  inits <- inits_chainid$inits
+  if(is.list(inits)) inits <- list(inits)
+
   capture_output(
     stan_fit <- rstan::sampling(
-      loaded, data = data, init = inits_chainid$inits, pars = monitor,
+      loaded, data = data, init = inits, pars = monitor,
       seed = seed,
       chains = 1L, iter = niters * 2L * nthin, thin = nthin,
       cores = 1L, chain_id = inits_chainid$chain_id,
