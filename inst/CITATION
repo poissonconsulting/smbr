@@ -1,12 +1,13 @@
 citHeader("To cite smbr in publications use:")
 
 citEntry(entry = "misc",
-  author       = as.person("Joe Thorley"),
+  author       = personList(as.person("Chris Muir"),
+                   as.person("Joe Thorley")),
   year         = "2018",
   title        = "smbr: Analyses Using STAN",
   doi          = "https://doi.org/10.5281/zenodo.1162382",
   textVersion  = paste(
-  "Joe Thorley (2018)",
+  "Chris Muir and Joe Thorley (2018)",
   "smbr: Analyses Using STAN.",
   "doi: https://doi.org/10.5281/zenodo.1162382."))
 

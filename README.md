@@ -136,13 +136,13 @@ devtools::install_github("poissonconsulting/smbr")
 
 To cite smbr in publications use:
 
-  Joe Thorley (2018) smbr: Analyses Using STAN. doi:
-  https://doi.org/10.5281/zenodo.1162382.
+  Chris Muir and Joe Thorley (2018) smbr: Analyses Using STAN.
+  doi: https://doi.org/10.5281/zenodo.1162382.
 
 A BibTeX entry for LaTeX users is
 
   @Misc{,
-    author = {Joe Thorley},
+    author = {Chris Muir and Joe Thorley},
     year = {2018},
     title = {smbr: Analyses Using STAN},
     doi = {https://doi.org/10.5281/zenodo.1162382},

@@ -35,9 +35,9 @@
   ],
   "maintainer": {
     "@type": "Person",
-    "givenName": "Chris",
-    "familyName": "Muir",
-    "email": "chris@poissonconsulting.ca"
+    "givenName": "Joe",
+    "familyName": "Thorley",
+    "email": "joe@poissonconsulting.ca"
   },
   "softwareSuggestions": [
     {
@@ -222,13 +222,18 @@
   ],
   "contIntegration": "https://travis-ci.org/poissonconsulting/smbr",
   "readme": "https://github.com/poissonconsulting/smbr/blob/master/README.md",
-  "fileSize": "201.601KB",
+  "fileSize": "201.627KB",
   "releaseNotes": "https://github.com/poissonconsulting/smbr/blob/master/NEWS.md",
   "citation": [
     {
       "@type": "CreativeWork",
       "datePublished": "2018",
       "author": [
+        {
+          "@type": "Person",
+          "givenName": "Chris",
+          "familyName": "Muir"
+        },
         {
           "@type": "Person",
           "givenName": "Joe",

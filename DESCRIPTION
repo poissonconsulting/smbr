@@ -2,8 +2,8 @@ Package: smbr
 Title: Facilitates Bayesian Analysis using STAN
 Version: 0.0.1
 Date: 2018-01-29
-Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut", "cre")),
-             person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
+Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut")),
+             person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = c("aut", "cre")))
 Description: Facilitates analyses using STAN.
 License: MIT + file LICENSE
 URL: https://github.com/poissonconsulting/smbr
