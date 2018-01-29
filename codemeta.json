@@ -1,5 +1,8 @@
 {
-  "@context": ["http://purl.org/codemeta/2.0", "http://schema.org"],
+  "@context": [
+    "http://purl.org/codemeta/2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "smbr",
   "description": "Facilitates analyses using STAN.",
@@ -219,5 +222,6 @@
   ],
   "contIntegration": "https://travis-ci.org/poissonconsulting/smbr",
   "readme": "https://github.com/poissonconsulting/smbr/blob/master/README.md",
-  "fileSize": "201.275KB"
+  "fileSize": "201.275KB",
+  "releaseNotes": "https://github.com/poissonconsulting/smbr/blob/master/NEWS.md"
 }
