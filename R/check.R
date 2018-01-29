@@ -1,9 +1,9 @@
 #' @export
 check_model_parameters.smb_code <- function(x, fixed, random, derived, drops) {
   check_string(fixed)
-  checkor(check_null(random), check_vector(random, character(0), min_length = 0))
-  checkor(check_null(derived), check_vector(derived, character(0), min_length = 0))
-  checkor(check_null(drops), check_vector(drops, character(0), min_length = 0))
+  checkor(check_null(random), check_vector(random, character(0)))
+  checkor(check_null(derived), check_vector(derived, character(0)))
+  checkor(check_null(drops), check_vector(drops, character(0)))
 
   if (!any(str_detect(parameters(x, param_type = "primary"), fixed)))
     error("fixed does not match any primary code parameters")

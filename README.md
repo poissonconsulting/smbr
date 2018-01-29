@@ -1,17 +1,25 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![stability-unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](https://github.com/joethorley/stability-badges#unstable) [![Travis-CI Build Status](https://travis-ci.org/poissonconsulting/smbr.svg?branch=master)](https://travis-ci.org/poissonconsulting/smbr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/poissonconsulting/smbr?branch=master&svg=true)](https://ci.appveyor.com/project/poissonconsulting/smbr) [![codecov](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mbr)](https://cran.r-project.org/package=mbr)
 
-smbr
-====
+[![stability-unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](https://github.com/joethorley/stability-badges#unstable)
+[![Travis-CI Build
+Status](https://travis-ci.org/poissonconsulting/smbr.svg?branch=master)](https://travis-ci.org/poissonconsulting/smbr)
+[![AppVeyor Build
+Status](https://ci.appveyor.com/api/projects/status/github/poissonconsulting/smbr?branch=master&svg=true)](https://ci.appveyor.com/project/poissonconsulting/smbr)
+[![codecov](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mbr)](https://cran.r-project.org/package=mbr)
 
-Introduction
-------------
+# smbr
 
-`smbr` (pronounced simber) is an R package to facilitate analyses using [STAN](http://mc-stan.org/about/). It is part of the [mbr](https://github.com/poissonconsulting/mbr) family of packages.
+## Introduction
 
-Demonstration
--------------
+`smbr` (pronounced simber) is an R package to facilitate analyses using
+[STAN](http://mc-stan.org/about/). It is part of the
+[mbr](https://github.com/poissonconsulting/mbr) family of packages.
+
+## Demonstration
 
 ``` r
 library(bauw)
@@ -86,20 +94,19 @@ analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 # coefficient table
 coef(analysis)
 #> # A tibble: 5 x 7
-#>          term    estimate         sd      zscore      lower       upper
-#> *  <S3: term>       <dbl>      <dbl>       <dbl>      <dbl>       <dbl>
-#> 1       alpha  4.26127656 0.04083992 104.3034391  4.1755584  4.33596286
-#> 2       beta1  1.19052503 0.07442792  16.0475508  1.0576670  1.35118711
-#> 3       beta2 -0.01817044 0.03047479  -0.5787077 -0.0761542  0.04199787
-#> 4       beta3 -0.27175548 0.03780783  -7.2262613 -0.3500290 -0.20373923
-#> 5 log_sAnnual -2.22369242 0.32208222  -7.0163248 -3.0688232 -1.73008248
-#> # ... with 1 more variables: pvalue <dbl>
+#>   term        estimate     sd   zscore   lower   upper   pvalue
+#> * <S3: term>     <dbl>  <dbl>    <dbl>   <dbl>   <dbl>    <dbl>
+#> 1 alpha         4.26   0.0408  104      4.18    4.34   0.000300
+#> 2 beta1         1.19   0.0744   16.0    1.06    1.35   0.000300
+#> 3 beta2        -0.0182 0.0305 -  0.579 -0.0762  0.0420 0.543   
+#> 4 beta3        -0.272  0.0378 -  7.23  -0.350  -0.204  0.000300
+#> 5 log_sAnnual  -2.22   0.322  -  7.02  -3.07   -1.73   0.000300
 
 # trace plots
 plot(analysis)
 ```
 
-![](tools/README-unnamed-chunk-3-1.png)![](tools/README-unnamed-chunk-3-2.png)
+![](tools/README-unnamed-chunk-3-1.png)<!-- -->![](tools/README-unnamed-chunk-3-2.png)<!-- -->
 
 ``` r
 # make predictions by varying year with other predictors including the random effect of Annual held constant
@@ -114,36 +121,35 @@ ggplot(data = year, aes(x = Year, y = estimate)) +
   expand_limits(y = 0)
 ```
 
-![](tools/README-unnamed-chunk-4-1.png)
+![](tools/README-unnamed-chunk-4-1.png)<!-- -->
 
-Installation
-------------
+## Installation
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("poissonconsulting/smbr")
 ```
 
-Contribution
-------------
+## Contribution
 
-Please report any [issues](https://github.com/poissonconsulting/smbr/issues).
+Please report any
+[issues](https://github.com/poissonconsulting/smbr/issues).
 
-[Pull requests](https://github.com/poissonconsulting/smbr/pulls) are always welcome.
+[Pull requests](https://github.com/poissonconsulting/smbr/pulls) are
+always welcome.
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of
+Conduct](CONDUCT.md). By participating in this project you agree to
+abide by its terms.
 
-Inspiration
------------
+## Inspiration
 
--   [jaggernaut](https://github.com/poissonconsulting/jaggernaut)
+  - [jaggernaut](https://github.com/poissonconsulting/jaggernaut)
 
-Creditation
------------
+## Creditation
 
--   [STAN](http://mc-stan.org)
+  - [STAN](http://mc-stan.org)
 
-Documentation
--------------
+## Documentation
 
--   [smbr](http://www.poissonconsulting.ca/smbr/)
+  - [smbr](http://www.poissonconsulting.ca/smbr/)

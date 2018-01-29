@@ -17,7 +17,7 @@ drop_parameter <- function(x, parameter) {
 
 #' @export
 drop_parameters.smb_code <- function(x, parameters = character(0), ...) {
-  check_vector(parameters, "", min_length = 0)
+  check_vector(parameters, "")
   check_unique(parameters)
 
   if (!length(parameters)) return(x)

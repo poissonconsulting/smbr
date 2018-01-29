@@ -1,4 +1,4 @@
-#' @import datacheckr mbr mcmcr utils
+#' @import checkr mbr mcmcr utils
 #' @importFrom broom glance
 #' @importFrom lubridate dminutes dhours is.duration
 #' @importFrom magrittr %<>% %>% extract2 set_rownames use_series

@@ -1,6 +1,6 @@
 #' @export
 parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
-  check_scalar(param_type, c("fixed", "random", "derived", "primary", "all"))
+  check_vector(param_type, c("fixed", "random", "derived", "primary", "all"), length = 1)
   check_flag(scalar_only)
 
   if (param_type %in% c("fixed", "random")) {
@@ -41,7 +41,8 @@ parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...)
 
 #' @export
 parameters.smb_model <- function(x, param_type = "all", scalar_only = FALSE, ...) {
-  check_scalar(param_type, c("fixed", "random", "derived", "primary", "all"))
+  check_vector(param_type, c("fixed", "random", "derived", "primary", "all"),
+               length = 1)
   check_flag(scalar_only)
 
   if (!param_type %in% c("fixed", "random"))
