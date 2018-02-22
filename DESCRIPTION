@@ -13,6 +13,7 @@ Depends: R (>= 3.2.0),
          mbr (>= 0.0.0.9071),
          rstan (>= 2.15.0)
 Imports: beepr,
+         coda,
          checkr,
          lubridate,
          magrittr,

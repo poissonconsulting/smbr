@@ -9,9 +9,9 @@
   "name": "smbr: Facilitates Bayesian Analysis using STAN",
   "codeRepository": "https://github.com/poissonconsulting/smbr",
   "issueTracker": "https://github.com/poissonconsulting/smbr/issues",
-  "datePublished": "2018-01-29",
+  "datePublished": "2018-02-06",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.0.1",
+  "version": "0.0.1.9000",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -73,6 +73,17 @@
       "@type": "SoftwareApplication",
       "identifier": "beepr",
       "name": "beepr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Central R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "coda",
+      "name": "coda",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -222,7 +233,7 @@
   ],
   "contIntegration": "https://travis-ci.org/poissonconsulting/smbr",
   "readme": "https://github.com/poissonconsulting/smbr/blob/master/README.md",
-  "fileSize": "201.634KB",
+  "fileSize": "201.257KB",
   "releaseNotes": "https://github.com/poissonconsulting/smbr/blob/master/NEWS.md",
   "citation": [
     {

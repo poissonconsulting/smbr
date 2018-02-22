@@ -95,7 +95,7 @@ analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 coef(analysis)
 #> # A tibble: 5 x 7
 #>   term        estimate     sd   zscore   lower   upper   pvalue
-#> * <S3: term>     <dbl>  <dbl>    <dbl>   <dbl>   <dbl>    <dbl>
+#>   <S3: term>     <dbl>  <dbl>    <dbl>   <dbl>   <dbl>    <dbl>
 #> 1 alpha         4.26   0.0408  104      4.18    4.34   0.000300
 #> 2 beta1         1.19   0.0744   16.0    1.06    1.35   0.000300
 #> 3 beta2        -0.0182 0.0305 -  0.579 -0.0762  0.0420 0.543   

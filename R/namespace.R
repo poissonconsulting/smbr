@@ -1,5 +1,6 @@
 #' @import checkr mbr mcmcr utils
 #' @importFrom broom glance
+#' @importFrom coda as.mcmc.list
 #' @importFrom lubridate dminutes dhours is.duration
 #' @importFrom magrittr %<>% %>% extract2 set_rownames use_series
 #' @importFrom plyr llply
