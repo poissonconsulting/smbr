@@ -8,14 +8,17 @@
 <title>Facilitates Bayesian Analysis using STAN • smbr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Facilitates Bayesian Analysis using STAN">
+<meta property="og:description" content="Facilitates analyses using STAN.">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">smbr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="index.html">smbr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9001</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -38,7 +45,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">News</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -58,18 +65,24 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     
 
     
     
-<div class="contents">
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<section id="smbr" class="level1"><div class="page-header"><h1>smbr</h1></div>
-<section id="introduction" class="level2"><h2>Introduction</h2>
+<div id="smbr" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#smbr" class="anchor"></a>smbr</h1></div>
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
 <p><code>smbr</code> (pronounced simber) is an R package to facilitate analyses using <a href="http://mc-stan.org"><code>STAN</code></a>. It is part of the <a href="https://github.com/poissonconsulting/mbr">mbr</a> family of packages.</p>
-</section><section id="demonstration" class="level2"><h2>Demonstration</h2>
+</div>
+<div id="demonstration" class="section level2">
+<h2 class="hasAnchor">
+<a href="#demonstration" class="anchor"></a>Demonstration</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(bauw)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(ggplot2)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(magrittr)</a>
@@ -141,15 +154,15 @@
 <a class="sourceLine" id="cb2-65" data-line-number="65"><span class="co">#&gt; # A tibble: 5 x 7</span></a>
 <a class="sourceLine" id="cb2-66" data-line-number="66"><span class="co">#&gt;   term        estimate     sd   zscore   lower   upper   pvalue</span></a>
 <a class="sourceLine" id="cb2-67" data-line-number="67"><span class="co">#&gt;   &lt;S3: term&gt;     &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb2-68" data-line-number="68"><span class="co">#&gt; 1 alpha         4.26   0.0408  104      4.18    4.34   0.000300</span></a>
+<a class="sourceLine" id="cb2-68" data-line-number="68"><span class="co">#&gt; 1 alpha         4.26   0.0408  104.     4.18    4.34   0.000300</span></a>
 <a class="sourceLine" id="cb2-69" data-line-number="69"><span class="co">#&gt; 2 beta1         1.19   0.0744   16.0    1.06    1.35   0.000300</span></a>
-<a class="sourceLine" id="cb2-70" data-line-number="70"><span class="co">#&gt; 3 beta2        -0.0182 0.0305 -  0.579 -0.0762  0.0420 0.543   </span></a>
-<a class="sourceLine" id="cb2-71" data-line-number="71"><span class="co">#&gt; 4 beta3        -0.272  0.0378 -  7.23  -0.350  -0.204  0.000300</span></a>
-<a class="sourceLine" id="cb2-72" data-line-number="72"><span class="co">#&gt; 5 log_sAnnual  -2.22   0.322  -  7.02  -3.07   -1.73   0.000300</span></a>
+<a class="sourceLine" id="cb2-70" data-line-number="70"><span class="co">#&gt; 3 beta2        -0.0182 0.0305   -0.579 -0.0762  0.0420 0.543   </span></a>
+<a class="sourceLine" id="cb2-71" data-line-number="71"><span class="co">#&gt; 4 beta3        -0.272  0.0378   -7.23  -0.350  -0.204  0.000300</span></a>
+<a class="sourceLine" id="cb2-72" data-line-number="72"><span class="co">#&gt; 5 log_sAnnual  -2.22   0.322    -7.02  -3.07   -1.73   0.000300</span></a>
 <a class="sourceLine" id="cb2-73" data-line-number="73"></a>
 <a class="sourceLine" id="cb2-74" data-line-number="74"><span class="co"># trace plots</span></a>
 <a class="sourceLine" id="cb2-75" data-line-number="75"><span class="kw">plot</span>(analysis)</a></code></pre></div>
-<p><img src="tools/README-unnamed-chunk-3-1.png" width="672"><img src="tools/README-unnamed-chunk-3-2.png" width="672"></p>
+<p><img src="tools/README-unnamed-chunk-3-1.png" width="700"><img src="tools/README-unnamed-chunk-3-2.png" width="700"></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">year &lt;-<span class="st"> </span><span class="kw">predict</span>(analysis, <span class="dt">new_data =</span> <span class="st">"Year"</span>)</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"></a>
@@ -160,11 +173,17 @@
 <a class="sourceLine" id="cb3-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">y =</span> lower), <span class="dt">linetype =</span> <span class="st">"dotted"</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb3-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">y =</span> upper), <span class="dt">linetype =</span> <span class="st">"dotted"</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb3-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/expand_limits">expand_limits</a></span>(<span class="dt">y =</span> <span class="dv">0</span>)</a></code></pre></div>
-<p><img src="tools/README-unnamed-chunk-4-1.png" width="672"></p>
-</section><section id="installation" class="level2"><h2>Installation</h2>
+<p><img src="tools/README-unnamed-chunk-4-1.png" width="700"></p>
+</div>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"poissonconsulting/smbr"</span>)</a></code></pre></div>
-</section><section id="citation" class="level2"><h2>Citation</h2>
+</div>
+<div id="citation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#citation" class="anchor"></a>Citation</h2>
 <pre><code>
 To cite smbr in publications use:
 
@@ -181,34 +200,49 @@ A BibTeX entry for LaTeX users is
   }
 
 Please also cite STAN.</code></pre>
-</section><section id="contribution" class="level2"><h2>Contribution</h2>
+</div>
+<div id="contribution" class="section level2">
+<h2 class="hasAnchor">
+<a href="#contribution" class="anchor"></a>Contribution</h2>
 <p>Please report any <a href="https://github.com/poissonconsulting/smbr/issues">issues</a>.</p>
 <p><a href="https://github.com/poissonconsulting/smbr/pulls">Pull requests</a> are always welcome.</p>
-<p>Please note that this project is released with a <a href="CONDUCT.md">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
-</section></section>
+<p>Please note that this project is released with a <a href="CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2 class="hasAnchor">
-<a href="#sidebar" class="anchor"></a>Links</h2>
+    <div class="links">
+<h2>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/poissonconsulting/smbr">https://​github.com/​poissonconsulting/​smbr</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/poissonconsulting/smbr/issues">https://​github.com/​poissonconsulting/​smbr/​issues</a>
 </li>
 </ul>
+</div>
+<div class="license">
 <h2>License</h2>
-<p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE.html">LICENSE</a></p>
+<ul class="list-unstyled">
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+</ul>
+</div>
+<div class="citation">
 <h2>Citation</h2>
 <ul class="list-unstyled">
 <li><a href="authors.html">Citing smbr</a></li>
 </ul>
+</div>
+<div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Chris Muir <br><small class="roles"> Author </small> </li>
-<li>Joe Thorley <br><small class="roles"> Author, maintainer </small> </li>
+<li>Chris Muir <br><small class="roles"> Author </small>  </li>
+<li>Joe Thorley <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
+</div>
+
+      <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a></li>
@@ -219,6 +253,7 @@ Please also cite STAN.</code></pre>
 <li><a href="https://doi.org/10.5281/zenodo.1162382"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.1162382.svg" alt="DOI"></a></li>
 </ul>
 </div>
+</div>
 
 </div>
 
@@ -228,11 +263,13 @@ Please also cite STAN.</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

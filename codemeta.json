@@ -9,16 +9,16 @@
   "name": "smbr: Facilitates Bayesian Analysis using STAN",
   "codeRepository": "https://github.com/poissonconsulting/smbr",
   "issueTracker": "https://github.com/poissonconsulting/smbr/issues",
-  "datePublished": "2018-02-06",
+  "datePublished": "2018-05-09",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.0.1.9000",
+  "version": "0.0.1.9001",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.4.3",
+    "version": "3.5.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.4.3 Patched (2017-12-05 r73849)",
+  "runtimePlatform": "R version 3.5.0 (2018-04-23)",
   "author": [
     {
       "@type": "Person",
@@ -139,7 +139,13 @@
       "@type": "SoftwareApplication",
       "identifier": "mcmcr",
       "name": "mcmcr",
-      "version": "0.0.0.9020"
+      "version": "0.0.0.9020",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Central R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      }
     },
     {
       "@type": "SoftwareApplication",
@@ -233,7 +239,7 @@
   ],
   "contIntegration": "https://travis-ci.org/poissonconsulting/smbr",
   "readme": "https://github.com/poissonconsulting/smbr/blob/master/README.md",
-  "fileSize": "201.257KB",
+  "fileSize": "409.616KB",
   "releaseNotes": "https://github.com/poissonconsulting/smbr/blob/master/NEWS.md",
   "citation": [
     {
