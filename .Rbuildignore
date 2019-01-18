@@ -7,6 +7,6 @@
 ^output$
 ^CONDUCT\.md$
 ^appveyor\.yml$
-^document.R$
+^build.R$
 ^docs$
 ^codemeta\.json$
