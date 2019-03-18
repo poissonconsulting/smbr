@@ -20,6 +20,7 @@ test_that("code", {
       real mu_y; // modeled param
       real<lower=0> tau_y; // modeled param
       vector<lower=0>[N] foo; // just for testing purposes
+      real<lower=0> foo2[N,N]; // just for testing purposes
     }
     transformed parameters {
       real<lower=0> sigma_y; // derived quantity (param)
@@ -43,10 +44,10 @@ test_that("code", {
   expect_identical(class(code), c("smb_code", "mb_code"))
   expect_true(is.smb_code(code))
 
-  expect_identical(parameters(code), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(parameters(code), c("bar", "foo", "foo2", "mu_y", "sigma_y", "tau_y"))
 
   expect_identical(parameters(code, "primary"),
-                   c("foo", "mu_y", "tau_y"))
+                   c("foo", "foo2", "mu_y", "tau_y"))
 
   expect_identical(parameters(code, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
 

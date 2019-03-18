@@ -21,19 +21,20 @@ parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...)
   if (param_type == "derived") {
     if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
         parameters <- get_par_names(x, "transformed parameters")
-        types <- get_par_types(x, "transformed parameters")
+        scalar <- get_par_scalar(x, "transformed parameters")
       } else {
         parameters <- character(0)
-        types <- character(0)
+        scalar <- logical(0)
       }
   }
   if (param_type == "primary") {
     parameters <- get_par_names(x, "parameters")
-    types <- get_par_types(x, "parameters")
+    scalar <- get_par_scalar(x, "parameters")
   }
 
-  if (scalar_only) parameters <- parameters[types %in% c("int", "real")]
-
+  if (scalar_only) {
+    parameters <- parameters[scalar]
+  }
   parameters %<>% sort()
 
   parameters

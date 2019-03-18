@@ -90,6 +90,7 @@ test_that("analyse", {
   rhat <- rhat(analysis, by = "term", as_df = TRUE)
   rhat_stan <- tibble::tibble(term = as.term(row.names(monitor)), rhat = round(monitor[,"Rhat"], 3))
   rhat_stan <- rhat_stan[rhat_stan$term != "lp__",]
+  rhat_stan$rhat[rhat_stan$rhat < 1] <- 1.00
   expect_equal(rhat, rhat_stan)
 
   glance <- glance(analysis)

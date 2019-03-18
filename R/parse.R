@@ -48,12 +48,33 @@ extract_pars <- function(x, block_location) {
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
 
-#  x <- "vector<lower=0>[N] name"
-  pattern <- str_c(type, "[<[^>]+>]*?\\s+(\\w+)$")
+  pattern <- str_c(type, "[<[^>]+>]*\\s+(\\w+)(\\[\\w+(,\\w+)*\\])?$")
   pars <- str_replace(x[str_detect(x, pattern)], pattern, "\\2")
 
   pars
 }
+
+extract_scalar <- function(x, block_location) {
+
+  x %<>% str_sub(block_location$start, block_location$end) %>%
+    str_trim() %>%
+    str_replace_all("([{]|[}])", "") %>%
+    str_trim() %>%
+    str_replace(";$", "") %>%
+    str_split(";", simplify = TRUE) %>%
+    str_trim(); x
+
+  type <- c("int", "real", "vector", "simplex", "ordered", "row_vector",
+            "matrix", "corr_matrix", "cov_matrix", "positive_ordered") %>%
+    str_c(collapse = "|") %>%
+    str_c("(", ., ")")
+
+  pattern <- str_c(type, "[<[^>]+>]*\\s+(\\w+)(\\[\\w+(,\\w+)*\\])?$")
+  x %<>% magrittr::extract(str_detect(x, pattern))
+
+  !str_detect(x, "\\[")
+}
+
 
 extract_types <- function(x, block_location) {
 
@@ -79,6 +100,7 @@ extract_types <- function(x, block_location) {
 
 }
 
+
 get_par_names <- function(x, block_name = "parameters") {
   x %<>% rm_comments() %>% clean_blocks()
   block_location <- get_block_location(x, block_name)
@@ -87,6 +109,12 @@ get_par_names <- function(x, block_name = "parameters") {
 
 has_block <- function(x, block_name) {
   length(get_block_location(x, block_name))
+}
+
+get_par_scalar <- function(x, block_name = "parameters") {
+  x %<>% rm_comments() %>% clean_blocks()
+  block_location <- get_block_location(x, block_name)
+  extract_scalar(x, block_location)
 }
 
 get_par_types <- function(x, block_name = "parameters") {
