@@ -21,13 +21,16 @@ Imports: beepr,
          stringr,
          tibble,
          timer,
-         utils
+         utils,
+         term,
+         nlist
 Suggests: bauw,
           ggplot2,
           testthat
-Remotes: poissonconsulting/checkr,
+Remotes: poissonconsulting/nlist,
          poissonconsulting/mcmcr,
-         poissonconsulting/timer
+         poissonconsulting/timer,
+         poissonconsulting/term
 URL: https://github.com/poissonconsulting/smbr
 BugReports: https://github.com/poissonconsulting/smbr/issues
 Encoding: UTF-8

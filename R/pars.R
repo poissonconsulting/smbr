@@ -1,5 +1,5 @@
 #' @export
-parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
+pars.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
   check_vector(param_type, c("fixed", "random", "derived", "primary", "all"), length = 1)
   check_flag(scalar_only)
 
@@ -41,7 +41,7 @@ parameters.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...)
 }
 
 #' @export
-parameters.smb_model <- function(x, param_type = "all", scalar_only = FALSE, ...) {
+pars.smb_model <- function(x, param_type = "all", scalar_only = FALSE, ...) {
   check_vector(param_type, c("fixed", "random", "derived", "primary", "all"),
                length = 1)
   check_flag(scalar_only)
