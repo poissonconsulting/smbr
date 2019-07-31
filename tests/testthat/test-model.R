@@ -1,6 +1,6 @@
 context("model")
 
-test_that("parameters", {
+test_that("pars(", {
 
   template <- ("
     data {
@@ -43,25 +43,25 @@ test_that("parameters", {
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))
 
-  expect_identical(parameters(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(pars(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
 
-  expect_identical(parameters(model, "primary"),
+  expect_identical(pars(model, "primary"),
                    c("foo", "mu_y", "tau_y"))
 
-  expect_identical(parameters(model, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
+  expect_identical(pars(model, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
 
-  expect_identical(parameters(model, param_type = "derived"),
+  expect_identical(pars(model, param_type = "derived"),
                    c("bar", "sigma_y"))
-  expect_identical(parameters(model, param_type = "derived", scalar_only = TRUE),
+  expect_identical(pars(model, param_type = "derived", scalar_only = TRUE),
                    c("sigma_y"))
 
-  expect_identical(parameters(model, "fixed", scalar_only = TRUE),
+  expect_identical(pars(model, "fixed", scalar_only = TRUE),
                    c("mu_y", "tau_y"))
 
   expect_identical(mbr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))
 
-  expect_error(drop_parameters(model, "foo"), "parameter 'foo'")
-  expect_error(drop_parameters(model, "sigma_y"), "parameter 'sigma_y'")
+  expect_error(drop_pars(model, "foo"), "parameter 'foo'")
+  expect_error(drop_pars(model, "sigma_y"), "parameter 'sigma_y'")
 
   model <- update_model(model, drops = list("mu_y", "tau_y"))
 
@@ -71,5 +71,5 @@ test_that("parameters", {
 
   expect_identical(names(models), c("full", "base+tau_y", "base+mu_y", "base"))
 
-  expect_identical(parameters(models[["base"]], "primary"), "foo")
+  expect_identical(pars(models[["base"]], "primary"), "foo")
 })

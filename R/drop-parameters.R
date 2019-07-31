@@ -1,9 +1,9 @@
 drop_parameter <- function(x, parameter) {
-  if (!parameter %in% parameters(x, "primary", scalar_only = TRUE))
+  if (!parameter %in% pars(x, "primary", scalar_only = TRUE))
     error("parameter '", parameter, "' is not an (untransformed) scalar (int or real) parameter in code")
 
-  parameters <- get_par_names(x)
-  if (length(parameters) == 1) error("attempting to drop last parameter!")
+  pars <- get_par_names(x)
+  if (length(pars) == 1) error("attempting to drop last parameter!")
 
   type <- get_par_types(x)[get_par_names(x) == parameter]
 
@@ -16,13 +16,13 @@ drop_parameter <- function(x, parameter) {
 }
 
 #' @export
-drop_parameters.smb_code <- function(x, parameters = character(0), ...) {
-  check_vector(parameters, "")
-  check_unique(parameters)
+drop_pars.smb_code <- function(x, pars = character(0), ...) {
+  check_vector(pars, "")
+  check_unique(pars)
 
-  if (!length(parameters)) return(x)
+  if (!length(pars)) return(x)
 
-  for (parameter in parameters) x %<>% drop_parameter(parameter)
+  for (parameter in pars) x %<>% drop_parameter(parameter)
 
   x
 }

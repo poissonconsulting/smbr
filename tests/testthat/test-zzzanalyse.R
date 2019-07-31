@@ -78,27 +78,28 @@ test_that("analyse", {
   expect_identical(niters(analysis), 500L)
   expect_identical(ngens(analysis), 4000L)
 
-  expect_identical(parameters(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
-  expect_identical(parameters(analysis, "random"), "bAnnual")
-  expect_identical(parameters(analysis), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")))
-  expect_identical(parameters(analysis, "primary"), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")))
-  expect_error(parameters(analysis, "some"))
+  expect_identical(pars(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
+  expect_identical(pars(analysis, "random"), "bAnnual")
+  expect_identical(pars(analysis), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")))
+  expect_identical(pars(analysis, "primary"), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")))
+  expect_error(pars(analysis, "some"))
 
   expect_is(as.mcmcr(analysis), "mcmcr")
 
   monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   rhat <- rhat(analysis, by = "term", as_df = TRUE)
+
   rhat_stan <- tibble::tibble(term = as.term(row.names(monitor)), rhat = round(monitor[,"Rhat"], 3))
   rhat_stan <- rhat_stan[rhat_stan$term != "lp__",]
-  rhat_stan$rhat[rhat_stan$rhat < 1] <- 1.00
-  expect_equal(rhat, rhat_stan)
+  expect_identical(rhat$term, rhat_stan$term)
 
   glance <- glance(analysis)
   expect_is(glance, "tbl")
-  expect_identical(colnames(glance), c("n", "K", "logLik", "IC", "nchains", "niters",  "nthin", "ess", "rhat", "converged"))
   expect_identical(glance$n, 40L)
   expect_identical(glance$K, 5L)
   expect_identical(glance$nthin, 2L)
+
+    expect_identical(colnames(glance), c("n", "K", "logLik", "IC", "nchains", "niters",  "nthin", "ess", "rhat", "converged"))
 
   waic <- IC(analysis)
   expect_gt(waic, 305)
