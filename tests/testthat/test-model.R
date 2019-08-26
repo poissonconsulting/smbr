@@ -48,14 +48,14 @@ test_that("pars(", {
   expect_identical(pars(model, "primary"),
                    c("foo", "mu_y", "tau_y"))
 
-  expect_identical(pars(model, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
+  expect_identical(pars(model, "primary", scalar = TRUE), c("mu_y", "tau_y"))
 
   expect_identical(pars(model, param_type = "derived"),
                    c("bar", "sigma_y"))
-  expect_identical(pars(model, param_type = "derived", scalar_only = TRUE),
+  expect_identical(pars(model, param_type = "derived", scalar = TRUE),
                    c("sigma_y"))
 
-  expect_identical(pars(model, "fixed", scalar_only = TRUE),
+  expect_identical(pars(model, "fixed", scalar = TRUE),
                    c("mu_y", "tau_y"))
 
   expect_identical(mbr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))

@@ -1,7 +1,8 @@
 #' @export
-pars.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
+pars.smb_code <- function(x, param_type = "all", scalar = NA, ...) {
   check_vector(param_type, c("fixed", "random", "derived", "primary", "all"), length = 1)
-  check_flag(scalar_only)
+  chk_lgl(scalar)
+  chk_unused(...)
 
   if (param_type %in% c("fixed", "random")) {
     error("pars.smb_code is not currently able to separate 'fixed' or 'random' parameter types - set param_type = 'primary' instead")
@@ -11,7 +12,7 @@ pars.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
     pars <- c("primary", "derived")
 
     pars %<>%
-      purrr::map(pars_arg2to1, x = x, scalar_only = scalar_only) %>%
+      purrr::map(pars_arg2to1, x = x, scalar = scalar) %>%
       unlist() %>%
       sort()
 
@@ -21,35 +22,37 @@ pars.smb_code <- function(x, param_type = "all", scalar_only = FALSE, ...) {
   if (param_type == "derived") {
     if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
         pars <- get_par_names(x, "transformed parameters")
-        scalar <- get_par_scalar(x, "transformed parameters")
+        scalars <- get_par_scalar(x, "transformed parameters")
       } else {
         pars <- character(0)
-        scalar <- logical(0)
+        scalars <- logical(0)
       }
   }
   if (param_type == "primary") {
     pars <- get_par_names(x, "parameters")
-    scalar <- get_par_scalar(x, "parameters")
+    scalars <- get_par_scalar(x, "parameters")
   }
+  if (isTRUE(scalar)) {
+    pars <- pars[scalars]
+  } else if (isFALSE(scalar))
+    pars <- pars[!scalars]
 
-  if (scalar_only) {
-    pars <- pars[scalar]
-  }
   pars %<>% sort()
 
   pars
 }
 
 #' @export
-pars.smb_model <- function(x, param_type = "all", scalar_only = FALSE, ...) {
+pars.smb_model <- function(x, param_type = "all", scalar = NA, ...) {
   check_vector(param_type, c("fixed", "random", "derived", "primary", "all"),
                length = 1)
-  check_flag(scalar_only)
+  chk_lgl(scalar)
+  chk_unused(...)
 
   if (!param_type %in% c("fixed", "random"))
-    return(pars(code(x), param_type = param_type, scalar_only = scalar_only))
+    return(pars(code(x), param_type = param_type, scalar = scalar))
 
-  pars <- pars(code(x), param_type = "primary", scalar_only = scalar_only)
+  pars <- pars(code(x), param_type = "primary", scalar = scalar)
 
   random <- names(random_effects(x))
   if (is.null(random)) random <- character(0)

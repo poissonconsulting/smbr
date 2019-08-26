@@ -49,10 +49,10 @@ test_that("code", {
   expect_identical(pars(code, "primary"),
                    c("foo", "foo2", "mu_y", "tau_y"))
 
-  expect_identical(pars(code, "primary", scalar_only = TRUE), c("mu_y", "tau_y"))
+  expect_identical(pars(code, "primary", scalar = TRUE), c("mu_y", "tau_y"))
 
   expect_identical(pars(code, param_type = "derived"),
                    c("bar", "sigma_y"))
-  expect_identical(pars(code, param_type = "derived", scalar_only = TRUE),
+  expect_identical(pars(code, param_type = "derived", scalar = TRUE),
                    c("sigma_y"))
 })

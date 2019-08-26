@@ -14,7 +14,7 @@ check_model_pars.smb_code <- function(x, fixed, random, derived, drops) {
   if (length(derived) && !all(derived %in% pars(x, param_type = "derived")))
     error("derived parameters missing from derived code parameters")
 
-  if (length(drops) && !all(unlist(drops) %in% pars(x, param_type = "primary", scalar_only = TRUE)))
+  if (length(drops) && !all(unlist(drops) %in% pars(x, param_type = "primary", scalar = TRUE)))
     error("drops parameters missing from primary scalar code parameters")
 
   pars(x, param_type = "derived")
