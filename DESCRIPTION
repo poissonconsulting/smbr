@@ -1,13 +1,13 @@
 Package: smbr
 Title: Facilitates Bayesian Analysis using STAN
-Version: 0.0.1.9003
+Version: 0.0.1.9004
 Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut")),
              person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = c("aut", "cre")))
 Description: Facilitates analyses using STAN.
 License: MIT + file LICENSE
 Depends: R (>= 3.2.0),
          broom,
-         mbr,
+         mbr (>= 0.0.1.9027),
          rstan,
 Imports: beepr,
          chk,
