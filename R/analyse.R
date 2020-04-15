@@ -1,7 +1,8 @@
 smb_analyse_chain <- function(inits_chainid, loaded, data,
                               monitor, seed, niters, nthin, quiet) {
 
-  capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else eval
+
+  capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else identity
 
   inits <- inits_chainid$inits
   if(is.list(inits)) inits <- list(inits)
