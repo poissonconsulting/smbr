@@ -25,9 +25,11 @@ Imports: beepr,
          utils,
          term,
          nlist
-Suggests: bauw,
-          ggplot2,
-          testthat
+Suggests: 
+    bauw,
+    ggplot2,
+    testthat,
+    covr
 Remotes: poissonconsulting/chk,
          poissonconsulting/nlist,
          poissonconsulting/mcmcr,
