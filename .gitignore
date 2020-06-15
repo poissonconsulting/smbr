@@ -2,9 +2,14 @@
 .Rhistory
 .RData
 .Ruserdata
+
 .DS_Store
+.Renviron
+.RProfile
+.httr-oauth
 
-models-test.R
-analyse-test.R
+*.html
 
-output/*
+docs/
+inst/docs/
+docs
