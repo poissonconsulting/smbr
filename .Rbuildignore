@@ -10,3 +10,4 @@
 ^build.R$
 ^docs$
 ^codemeta\.json$
+^\.github$
