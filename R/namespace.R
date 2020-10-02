@@ -1,5 +1,4 @@
-#' @import checkr mbr mcmcr utils term nlist
-#' @importFrom chk chk_unused chk_lgl chk_flag
+#' @import chk mbr mcmcr utils term nlist
 #' @importFrom broom glance
 #' @importFrom coda as.mcmc.list
 #' @importFrom lubridate dminutes dhours is.duration

@@ -1,6 +1,6 @@
 #' @export
 load_model.smb_model <- function(x, quiet, ...) {
-  check_flag(quiet)
+  chk_flag(quiet)
 
   capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else eval
 

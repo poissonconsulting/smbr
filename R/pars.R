@@ -1,6 +1,7 @@
 #' @export
 pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
-  check_vector(param_type, c("fixed", "random", "derived", "primary", "all"), length = 1)
+  chk_string(param_type)
+  chk_subset(param_type, c("fixed", "random", "derived", "primary", "all"))
   if(!is.null(scalar)) chk_flag(scalar)
   chk_unused(...)
 
@@ -44,9 +45,9 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
 
 #' @export
 pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
-  check_vector(param_type, c("fixed", "random", "derived", "primary", "all"),
-               length = 1)
-  if(!is.null(scalar)) chk_flag(scalar)
+  chk_string(param_type)
+  chk_subset(param_type, c("fixed", "random", "derived", "primary", "all"))
+  chk_null_or(scalar, chk_flag)
   chk_unused(...)
 
   if (!param_type %in% c("fixed", "random"))

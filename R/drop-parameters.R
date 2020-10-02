@@ -17,8 +17,8 @@ drop_parameter <- function(x, parameter) {
 
 #' @export
 drop_pars.smb_code <- function(x, pars = character(0), ...) {
-  check_vector(pars, "")
-  check_unique(pars)
+  chk_character(pars)
+  chk_unique(pars)
 
   if (!length(pars)) return(x)
 
