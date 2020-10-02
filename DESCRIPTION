@@ -31,6 +31,7 @@ Suggests:
     covr
 Remotes: 
     poissonconsulting/bauw,
+    poissonconsulting/mbr,
     poissonconsulting/timer
 URL: https://github.com/poissonconsulting/smbr
 BugReports: https://github.com/poissonconsulting/smbr/issues
