@@ -1,12 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![Travis-CI Build
-Status](https://travis-ci.com/poissonconsulting/smbr.svg?branch=master)](https://travis-ci.com/poissonconsulting/smbr)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/poissonconsulting/smbr?branch=master&svg=true)](https://ci.appveyor.com/project/poissonconsulting/smbr)
-[![codecov](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![R build
+status](https://github.com/poissonconsulting/smbr/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/smbr/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr?branch=master)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1162382.svg)](https://doi.org/10.5281/zenodo.1162382)
@@ -93,14 +93,17 @@ analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 
 # coefficient table
 coef(analysis)
+#> Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_warnings()` to see where this warning was generated.
 #> # A tibble: 5 x 7
 #>   term        estimate     sd  zscore   lower   upper   pvalue
 #>   <term>         <dbl>  <dbl>   <dbl>   <dbl>   <dbl>    <dbl>
-#> 1 alpha         4.26   0.0400 107.     4.19    4.34   0.000300
-#> 2 beta1         1.18   0.0771  15.4    1.05    1.35   0.000300
-#> 3 beta2        -0.0189 0.0301  -0.644 -0.0787  0.0411 0.491   
-#> 4 beta3        -0.267  0.0394  -6.82  -0.351  -0.199  0.000300
-#> 5 log_sAnnual  -2.26   0.716   -3.47  -4.51   -1.75   0.000300
+#> 1 alpha         4.26   0.0400 107.     4.19    4.34   0.000333
+#> 2 beta1         1.18   0.0771  15.4    1.05    1.35   0.000333
+#> 3 beta2        -0.0189 0.0301  -0.644 -0.0787  0.0411 0.492   
+#> 4 beta3        -0.267  0.0394  -6.82  -0.351  -0.199  0.000333
+#> 5 log_sAnnual  -2.26   0.716   -3.47  -4.51   -1.75   0.000333
 
 # trace plots
 plot(analysis)
@@ -111,10 +114,6 @@ plot(analysis)
 ``` r
 # make predictions by varying year with other predictors including the random effect of Annual held constant
 year <- predict(analysis, new_data = "Year")
-#> Warning: The following variables were not in expr and so were dropped from
-#> values: 'nAnnual' and 'nObs'.
-#> Warning: The following parameters were not in expr and so were dropped from
-#> object: 'log_sAnnual', 'sAnnual'.
 
 # plot those predictions
 ggplot(data = year, aes(x = Year, y = estimate)) +
@@ -136,24 +135,22 @@ devtools::install_github("poissonconsulting/smbr")
 
 ## Citation
 
-``` 
 
-To cite smbr in publications use:
+    To cite smbr in publications use:
 
-  Chris Muir and Joe Thorley (2018) smbr: Analyses Using STAN. doi:
-  https://doi.org/10.5281/zenodo.1162382.
+      Chris Muir and Joe Thorley (2018) smbr: Analyses Using STAN. doi:
+      https://doi.org/10.5281/zenodo.1162382.
 
-A BibTeX entry for LaTeX users is
+    A BibTeX entry for LaTeX users is
 
-  @Misc{,
-    author = {Chris Muir and Joe Thorley},
-    year = {2018},
-    title = {smbr: Analyses Using STAN},
-    doi = {https://doi.org/10.5281/zenodo.1162382},
-  }
+      @Misc{,
+        author = {Chris Muir and Joe Thorley},
+        year = {2018},
+        title = {smbr: Analyses Using STAN},
+        doi = {https://doi.org/10.5281/zenodo.1162382},
+      }
 
-Please also cite STAN.
-```
+    Please also cite STAN.
 
 ## Contribution
 
@@ -163,6 +160,9 @@ Please report any
 [Pull requests](https://github.com/poissonconsulting/smbr/pulls) are
 always welcome.
 
-Please note that this project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
+## Code of Conduct
+
+Please note that the smbr project is released with a [Contributor Code
+of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
