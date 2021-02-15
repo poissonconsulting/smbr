@@ -1,5 +1,3 @@
-context("model")
-
 test_that("pars(", {
 
   template <- ("

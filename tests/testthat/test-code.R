@@ -1,5 +1,3 @@
-context("code")
-
 test_that("code", {
 
   template <- ("
