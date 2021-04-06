@@ -28,11 +28,13 @@ Suggests:
     bauw,
     ggplot2,
     testthat,
-    covr
+    covr, 
+    mcmcdata
 Remotes: 
     poissonconsulting/bauw,
     poissonconsulting/mbr,
-    poissonconsulting/timer
+    poissonconsulting/timer,
+    poissonconsulting/mcmcdata
 URL: https://github.com/poissonconsulting/smbr
 BugReports: https://github.com/poissonconsulting/smbr/issues
 Encoding: UTF-8
