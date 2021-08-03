@@ -1,17 +1,18 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# smbr
+
+<!-- badges: start -->
+
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![R build
-status](https://github.com/poissonconsulting/smbr/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/smbr/actions)
+[![R-CMD-check](https://github.com/poissonconsulting/smbr/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/smbr/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr?branch=master)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1162382.svg)](https://doi.org/10.5281/zenodo.1162382)
-
-# smbr
+<!-- badges: end -->
 
 ## Introduction
 
@@ -90,20 +91,18 @@ set.seed(42)
 
 # analyse
 analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
+#> Trying to compile a simple C file
 
 # coefficient table
-coef(analysis)
-#> Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_warnings()` to see where this warning was generated.
-#> # A tibble: 5 x 7
-#>   term        estimate     sd  zscore   lower   upper   pvalue
-#>   <term>         <dbl>  <dbl>   <dbl>   <dbl>   <dbl>    <dbl>
-#> 1 alpha         4.26   0.0400 107.     4.19    4.34   0.000333
-#> 2 beta1         1.18   0.0771  15.4    1.05    1.35   0.000333
-#> 3 beta2        -0.0189 0.0301  -0.644 -0.0787  0.0411 0.492   
-#> 4 beta3        -0.267  0.0394  -6.82  -0.351  -0.199  0.000333
-#> 5 log_sAnnual  -2.26   0.716   -3.47  -4.51   -1.75   0.000333
+coef(analysis, simplify = TRUE)
+#> # A tibble: 5 × 5
+#>   term        estimate   lower   upper svalue
+#>   <term>         <dbl>   <dbl>   <dbl>  <dbl>
+#> 1 alpha         4.26    4.18    4.34   11.6  
+#> 2 beta1         1.20    1.06    1.36   11.6  
+#> 3 beta2        -0.0171 -0.0759  0.0430  0.874
+#> 4 beta3        -0.274  -0.359  -0.203  11.6  
+#> 5 log_sAnnual  -2.22   -2.92   -1.74   11.6
 
 # trace plots
 plot(analysis)
@@ -114,6 +113,7 @@ plot(analysis)
 ``` r
 # make predictions by varying year with other predictors including the random effect of Annual held constant
 year <- predict(analysis, new_data = "Year")
+#> Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.
 
 # plot those predictions
 ggplot(data = year, aes(x = Year, y = estimate)) +
