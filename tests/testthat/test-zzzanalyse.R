@@ -103,11 +103,11 @@ test_that("analyse", {
   expect_gt(waic, 305)
   expect_lt(waic, 315)
 
-  coef <- coef(analysis)
+  coef <- coef(analysis, simplify = TRUE)
 
   expect_is(coef, "tbl")
   expect_is(coef, "mb_analysis_coef")
-  expect_identical(colnames(coef), c("term", "estimate", "sd", "zscore", "lower", "upper", "pvalue"))
+  expect_identical(colnames(coef), c("term", "estimate", "lower", "upper", "svalue"))
 
   expect_identical(coef$term, sort(as.term(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))))
 
