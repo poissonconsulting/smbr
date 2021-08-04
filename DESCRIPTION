@@ -33,6 +33,7 @@ Suggests:
 Remotes: 
     poissonconsulting/bauw,
     poissonconsulting/mbr,
+    poissonconsulting/nlist,
     poissonconsulting/timer,
     poissonconsulting/mcmcdata
 URL: https://github.com/poissonconsulting/smbr
