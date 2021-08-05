@@ -1,43 +1,51 @@
 Package: smbr
 Title: Facilitates Bayesian Analysis using STAN
 Version: 0.0.1.9004
-Authors@R: c(person("Chris", "Muir", email = "chris@poissonconsulting.ca", role = c("aut")),
-             person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = c("aut", "cre")))
+Authors@R: 
+    c(person(given = "Chris",
+             family = "Muir",
+             role = "aut",
+             email = "chris@poissonconsulting.ca"),
+      person(given = "Joe",
+             family = "Thorley",
+             role = c("aut", "cre"),
+             email = "joe@poissonconsulting.ca"))
 Description: Facilitates analyses using STAN.
 License: MIT + file LICENSE
-Depends: R (>= 3.2.0),
-         broom,
-         mbr (>= 0.0.1.9027),
-         rstan,
-Imports: beepr,
-         chk,
-         coda,
-         lubridate,
-         magrittr,
-         matrixStats,
-         mcmcr,
-         plyr,
-         purrr,
-         stringr,
-         tibble,
-         timer,
-         utils,
-         term,
-         nlist
+URL: https://github.com/poissonconsulting/smbr
+BugReports: https://github.com/poissonconsulting/smbr/issues
+Depends: 
+    broom,
+    mbr,
+    R (>= 4.0),
+    rstan
+Imports: 
+    beepr,
+    chk,
+    coda,
+    lubridate,
+    magrittr,
+    matrixStats,
+    mcmcr,
+    nlist,
+    plyr,
+    purrr,
+    stringr,
+    term,
+    tibble,
+    timer,
+    utils
 Suggests: 
     bauw,
+    covr,
     ggplot2,
-    testthat,
-    covr, 
-    mcmcdata
+    mcmcdata,
+    testthat
 Remotes: 
     poissonconsulting/bauw,
     poissonconsulting/mbr,
-    poissonconsulting/nlist,
-    poissonconsulting/timer,
-    poissonconsulting/mcmcdata
-URL: https://github.com/poissonconsulting/smbr
-BugReports: https://github.com/poissonconsulting/smbr/issues
+    poissonconsulting/mcmcdata,
+    poissonconsulting/timer
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
