@@ -85,7 +85,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/poissonconsulting/smbr" class="external-link">smbr</a></span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># define model in Stan language</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mbr/man/model.html" class="external-link">model</a></span><span class="op">(</span><span class="st">"
+<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">model</span><span class="op">(</span><span class="st">"
   data {
       int nAnnual;
       int nObs;
@@ -124,7 +124,7 @@
   }"</span><span class="op">)</span>
 
 <span class="co"># add R code to calculate derived parameters</span>
-<span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mbr/man/update_model.html" class="external-link">update_model</a></span><span class="op">(</span>new_expr <span class="op">=</span> <span class="st">"
+<span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span>new_expr <span class="op">=</span> <span class="st">"
   for (i in 1:length(Pairs)) {
     prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
@@ -132,7 +132,7 @@
 "</span><span class="op">)</span>
 
 <span class="co"># define data types and center year</span>
-<span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mbr/man/update_model.html" class="external-link">update_model</a></span><span class="op">(</span>
+<span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span>
   select_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Pairs"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Year*"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, 
                      Annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
   derived <span class="op">=</span> <span class="st">"sAnnual"</span>,
@@ -144,7 +144,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
 
 <span class="co"># analyse</span>
-<span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mbr/man/analyse.html" class="external-link">analyse</a></span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span>, seed <span class="op">=</span> <span class="fl">3L</span>, glance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu">analyse</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span>, seed <span class="op">=</span> <span class="fl">3L</span>, glance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; Trying to compile a simple C file</span>
 
 <span class="co"># coefficient table</span>
