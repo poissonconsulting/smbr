@@ -4,8 +4,7 @@ Version: 0.0.1.9005
 Authors@R: 
     c(person(given = "Chris",
              family = "Muir",
-             role = "aut",
-             email = "chris@poissonconsulting.ca"),
+             role = "aut"),
       person(given = "Joe",
              family = "Thorley",
              role = c("aut", "cre"),
