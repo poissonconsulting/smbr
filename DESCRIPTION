@@ -39,7 +39,8 @@ Suggests:
     covr,
     ggplot2,
     mcmcdata,
-    testthat
+    testthat,
+    universals
 Remotes: 
     poissonconsulting/bauw,
     poissonconsulting/mbr,

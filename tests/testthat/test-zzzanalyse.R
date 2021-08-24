@@ -1,8 +1,8 @@
 test_that("analyse", {
-    set_analysis_mode("check")
+    mbr::set_analysis_mode("check")
 
   # define model in Stan language
-  model <- model("
+  model <- mbr::model("
  data {
       int nAnnual;
       int nObs;
@@ -41,7 +41,7 @@ test_that("analyse", {
   }")
 
   # add R code to calculate derived parameters
-  model <- update_model(model, new_expr = "
+  model <- mbr::update_model(model, new_expr = "
   for (i in 1:length(Pairs)) {
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
@@ -49,11 +49,12 @@ test_that("analyse", {
     log_lik <- dpois(Pairs, prediction, log = TRUE)")
 
   # define data types and center year
-  model <- update_model(model,
+  model <- mbr::update_model(model,
                         select_data = list("Pairs" = integer(), "Year*" = integer(),
                                            Annual = factor()),
                         derived = "sAnnual",
-                        random_effects = list(bAnnual = "Annual"))
+                        random_effects = list(bAnnual = "Annual"),
+                        gen_inits = function(data) { list(log_sAnnual =  20) })
 
   data <- bauw::peregrine
   data$Annual <- factor(data$Year)
@@ -61,15 +62,15 @@ test_that("analyse", {
   set.seed(34)
 
   # analyse
-  analysis <- analyse(model, data = data)
+  analysis <- mbr::analyse(model, data = data)
 
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
 
-  expect_identical(niters(analysis), 500L)
-  expect_identical(nchains(analysis), 2L)
-  expect_identical(nsims(analysis), 1000L)
-  expect_identical(ngens(analysis), 2000L)
+  expect_identical(universals::niters(analysis), 500L)
+  expect_identical(universals::nchains(analysis), 2L)
+  expect_identical(universals::nsims(analysis), 1000L)
+  expect_identical(mbr::ngens(analysis), 2000L)
 
   analysis <- reanalyse(analysis)
 
