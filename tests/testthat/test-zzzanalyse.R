@@ -112,8 +112,8 @@ test_that("analyse", {
 
   expect_identical(coef$term, sort(as.term(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))))
 
-  expect_identical(coef(analysis, "derived")$term, as.term("sAnnual"))
-  expect_identical(coef(analysis, "all")$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40,"]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
+  expect_identical(coef(analysis, "derived", simplify = TRUE)$term, as.term("sAnnual"))
+  expect_identical(coef(analysis, "all", simplify = TRUE)$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40,"]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
 
   tidy <- tidy(analysis)
   expect_identical(colnames(tidy), c("term", "estimate", "lower", "upper", "esr", "rhat"))
@@ -122,7 +122,7 @@ test_that("analyse", {
 
   expect_is(year, "tbl")
   expect_identical(colnames(year), c("Year", "Pairs", "R.Pairs", "Eyasses", "Annual",
-                                     "estimate", "sd", "zscore", "lower", "upper", "pvalue"))
+                                     "estimate","lower", "upper", "svalue"))
   expect_true(all(year$estimate > year$lower))
   expect_true(all(year$estimate < year$upper))
 
