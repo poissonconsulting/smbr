@@ -1,9 +1,9 @@
 #' @export
 check_model_pars.smb_code <- function(x, fixed, random, derived, drops) {
   chk_string(fixed)
-  chk_null_or(random, chk_character)
-  chk_null_or(derived, chk_character)
-  chk_null_or(drops, chk_character)
+  chk_null_or(random, vld = vld_character)
+  chk_null_or(derived, vld = vld_character)
+  chk_null_or(drops, vld = vld_character)
 
   if (!any(str_detect(pars(x, param_type = "primary"), fixed)))
     error("fixed does not match any primary code parameters")
