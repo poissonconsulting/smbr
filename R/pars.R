@@ -21,7 +21,7 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
   }
 
   if (param_type == "derived") {
-    if (str_detect(x, "transformed parameters\\s*[{]{1}")) {
+    if (str_detect(template(x), "transformed parameters\\s*[{]{1}")) {
         pars <- get_par_names(x, "transformed parameters")
         scalars <- get_par_scalar(x, "transformed parameters")
       } else {
@@ -47,7 +47,7 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
 pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
   chk_string(param_type)
   chk_subset(param_type, c("fixed", "random", "derived", "primary", "all"))
-  chk_null_or(scalar, chk_flag)
+  chk_null_or(scalar, vld = vld_flag)
   chk_unused(...)
 
   if (!param_type %in% c("fixed", "random"))

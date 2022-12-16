@@ -1,5 +1,6 @@
 clean_blocks <- function(x) {
-  x %<>% str_replace_all(";.*\n", ";\n") %>%
+  x %<>% template() %>%
+    str_replace_all(";.*\n", ";\n") %>%
     str_replace_all("\n", "") %>%
     str_replace_all("\\s{2,}", " ")
   x
