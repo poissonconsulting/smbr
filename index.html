@@ -69,6 +69,7 @@
 <div class="page-header"><h1 id="smbr">smbr<a class="anchor" aria-label="anchor" href="#smbr"></a>
 </h1></div>
 <!-- badges: start -->
+
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -78,127 +79,127 @@
 <h2 id="demonstration">Demonstration<a class="anchor" aria-label="anchor" href="#demonstration"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">bauw</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/poissonconsulting/smbr" class="external-link">smbr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">bauw</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/poissonconsulting/smbr" class="external-link">smbr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># define model in Stan language</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">model</span><span class="op">(</span><span class="st">"
-  data {
-      int nAnnual;
-      int nObs;
-      int Annual[nObs];
-      int Pairs[nObs];
-      real Year[nObs];
-  }
-  parameters {
-      vector[nAnnual] bAnnual;
-      real log_sAnnual;
-      real alpha;
-      real beta1;
-      real beta2;
-      real beta3;
-  }
-  transformed parameters {
-    real sAnnual;
-    sAnnual = exp(log_sAnnual);
-  }
-  model {
-      vector[nObs] ePairs;
-    
-      log_sAnnual ~ normal(0, 10);
-      bAnnual ~ normal(0, sAnnual);
-
-      alpha ~ normal(0, 10);
-      beta1 ~ normal(0, 10);
-      beta2 ~ normal(0, 10);
-      beta3 ~ normal(0, 10);
-
-      for (i in 1:nObs) {
-        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);
-      }
-      target += poisson_lpmf(Pairs | ePairs);
-  }"</span><span class="op">)</span>
-
-<span class="co"># add R code to calculate derived parameters</span>
-<span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span>new_expr <span class="op">=</span> <span class="st">"
-  for (i in 1:length(Pairs)) {
-    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                       beta3 * Year[i]^3 + bAnnual[Annual[i]])
-  }
-"</span><span class="op">)</span>
-
-<span class="co"># define data types and center year</span>
-<span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span>
-  select_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Pairs"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Year*"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, 
-                     Annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  derived <span class="op">=</span> <span class="st">"sAnnual"</span>,
-  random_effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>bAnnual <span class="op">=</span> <span class="st">"Annual"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">bauw</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/bauw/man/peregrine.html" class="external-link">peregrine</a></span>
-<span class="va">data</span><span class="op">$</span><span class="va">Annual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Year</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>
-
-<span class="co"># analyse</span>
-<span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu">analyse</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span>, seed <span class="op">=</span> <span class="fl">3L</span>, glance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Trying to compile a simple C file</span>
-
-<span class="co"># coefficient table</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">analysis</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 5 × 5</span>
-<span class="co">#&gt;   term        estimate   lower   upper svalue</span>
-<span class="co">#&gt;   &lt;term&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 alpha         4.26    4.18    4.34   11.6  </span>
-<span class="co">#&gt; 2 beta1         1.20    1.06    1.36   11.6  </span>
-<span class="co">#&gt; 3 beta2        -0.0171 -0.0759  0.0430  0.874</span>
-<span class="co">#&gt; 4 beta3        -0.274  -0.359  -0.203  11.6  </span>
-<span class="co">#&gt; 5 log_sAnnual  -2.22   -2.92   -1.74   11.6</span>
-
-<span class="co"># trace plots</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">analysis</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># define model in Stan language</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">model</span><span class="op">(</span><span class="st">"</span></span>
+<span><span class="st">  data {</span></span>
+<span><span class="st">      int nAnnual;</span></span>
+<span><span class="st">      int nObs;</span></span>
+<span><span class="st">      int Annual[nObs];</span></span>
+<span><span class="st">      int Pairs[nObs];</span></span>
+<span><span class="st">      real Year[nObs];</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">  parameters {</span></span>
+<span><span class="st">      vector[nAnnual] bAnnual;</span></span>
+<span><span class="st">      real log_sAnnual;</span></span>
+<span><span class="st">      real alpha;</span></span>
+<span><span class="st">      real beta1;</span></span>
+<span><span class="st">      real beta2;</span></span>
+<span><span class="st">      real beta3;</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">  transformed parameters {</span></span>
+<span><span class="st">    real sAnnual;</span></span>
+<span><span class="st">    sAnnual = exp(log_sAnnual);</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">  model {</span></span>
+<span><span class="st">      vector[nObs] ePairs;</span></span>
+<span><span class="st">    </span></span>
+<span><span class="st">      log_sAnnual ~ normal(0, 10);</span></span>
+<span><span class="st">      bAnnual ~ normal(0, sAnnual);</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">      alpha ~ normal(0, 10);</span></span>
+<span><span class="st">      beta1 ~ normal(0, 10);</span></span>
+<span><span class="st">      beta2 ~ normal(0, 10);</span></span>
+<span><span class="st">      beta3 ~ normal(0, 10);</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">      for (i in 1:nObs) {</span></span>
+<span><span class="st">        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span></span>
+<span><span class="st">                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);</span></span>
+<span><span class="st">      }</span></span>
+<span><span class="st">      target += poisson_lpmf(Pairs | ePairs);</span></span>
+<span><span class="st">  }"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add R code to calculate derived parameters</span></span>
+<span><span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span>new_expr <span class="op">=</span> <span class="st">"</span></span>
+<span><span class="st">  for (i in 1:length(Pairs)) {</span></span>
+<span><span class="st">    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span></span>
+<span><span class="st">                       beta3 * Year[i]^3 + bAnnual[Annual[i]])</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># define data types and center year</span></span>
+<span><span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span></span>
+<span>  select_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Pairs"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Year*"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, </span>
+<span>                     Annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  derived <span class="op">=</span> <span class="st">"sAnnual"</span>,</span>
+<span>  random_effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>bAnnual <span class="op">=</span> <span class="st">"Annual"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">bauw</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/bauw/man/peregrine.html" class="external-link">peregrine</a></span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">Annual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Year</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># analyse</span></span>
+<span><span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu">analyse</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span>, seed <span class="op">=</span> <span class="fl">3L</span>, glance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Trying to compile a simple C file</span></span>
+<span></span>
+<span><span class="co"># coefficient table</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">analysis</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 5</span></span>
+<span><span class="co">#&gt;   term        estimate   lower   upper svalue</span></span>
+<span><span class="co">#&gt;   &lt;term&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 alpha         4.26    4.18    4.34   11.6  </span></span>
+<span><span class="co">#&gt; 2 beta1         1.20    1.06    1.36   11.6  </span></span>
+<span><span class="co">#&gt; 3 beta2        -0.0171 -0.0759  0.0430  0.874</span></span>
+<span><span class="co">#&gt; 4 beta3        -0.274  -0.359  -0.203  11.6  </span></span>
+<span><span class="co">#&gt; 5 log_sAnnual  -2.22   -2.92   -1.74   11.6</span></span>
+<span></span>
+<span><span class="co"># trace plots</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">analysis</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tools/README-unnamed-chunk-3-1.png"><!-- --><img src="tools/README-unnamed-chunk-3-2.png"><!-- --></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span>
-<span class="va">year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">analysis</span>, new_data <span class="op">=</span> <span class="st">"Year"</span><span class="op">)</span>
-<span class="co">#&gt; Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.</span>
-
-<span class="co"># plot those predictions</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">year</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">bauw</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/bauw/man/peregrine.html" class="external-link">peregrine</a></span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Pairs</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">lower</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">upper</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expand_limits.html" class="external-link">expand_limits</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span></span>
+<span><span class="va">year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">analysis</span>, new_data <span class="op">=</span> <span class="st">"Year"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.</span></span>
+<span></span>
+<span><span class="co"># plot those predictions</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">year</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">bauw</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/bauw/man/peregrine.html" class="external-link">peregrine</a></span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Pairs</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">lower</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">upper</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expand_limits.html" class="external-link">expand_limits</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tools/README-unnamed-chunk-4-1.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"poissonconsulting/smbr"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"poissonconsulting/smbr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>To cite smbr <span class="cf">in</span> publications use<span class="op">:</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="st">  </span>Chris Muir and Joe <span class="kw">Thorley</span> (<span class="dv">2018</span>) smbr<span class="op">:</span><span class="st"> </span>Analyses Using STAN. doi<span class="op">:</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="st">  </span>https<span class="op">:</span><span class="er">//</span>doi.org<span class="op">/</span><span class="fl">10.5281</span><span class="op">/</span>zenodo.<span class="fl">1162382.</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a>A BibTeX entry <span class="cf">for</span> LaTeX users is</span>
-<span id="cb5-7"><a href="#cb5-7"></a></span>
-<span id="cb5-8"><a href="#cb5-8"></a>  <span class="op">@</span>Misc{,</span>
-<span id="cb5-9"><a href="#cb5-9"></a>    author =<span class="st"> </span>{Chris Muir and Joe Thorley},</span>
-<span id="cb5-10"><a href="#cb5-10"></a>    year =<span class="st"> </span>{<span class="dv">2018</span>},</span>
-<span id="cb5-11"><a href="#cb5-11"></a>    title =<span class="st"> </span>{smbr<span class="op">:</span><span class="st"> </span>Analyses Using STAN},</span>
-<span id="cb5-12"><a href="#cb5-12"></a>    doi =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>doi.org<span class="op">/</span><span class="fl">10.5281</span><span class="op">/</span>zenodo<span class="fl">.1162382</span>},</span>
-<span id="cb5-13"><a href="#cb5-13"></a>  }</span>
-<span id="cb5-14"><a href="#cb5-14"></a></span>
-<span id="cb5-15"><a href="#cb5-15"></a>Please also cite STAN.</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>To cite smbr <span class="cf">in</span> publications use<span class="sc">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  Chris Muir and Joe <span class="fu">Thorley</span> (<span class="dv">2018</span>) smbr<span class="sc">:</span> Analyses Using STAN. doi<span class="sc">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5281</span><span class="sc">/</span>zenodo.<span class="fl">1162382.</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>A BibTeX entry <span class="cf">for</span> LaTeX users is</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">@</span>Misc{,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    author <span class="ot">=</span> {Chris Muir and Joe Thorley},</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    year <span class="ot">=</span> {<span class="dv">2018</span>},</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    title <span class="ot">=</span> {smbr<span class="sc">:</span> Analyses Using STAN},</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    doi <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5281</span><span class="sc">/</span>zenodo<span class="fl">.1162382</span>},</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>Please also cite STAN.</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="contribution">Contribution<a class="anchor" aria-label="anchor" href="#contribution"></a>
@@ -276,7 +277,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
