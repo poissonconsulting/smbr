@@ -38,6 +38,7 @@ Suggests:
     covr,
     ggplot2,
     mcmcdata,
+    RcppEigen,
     testthat,
     universals
 Remotes: 
