@@ -34,9 +34,11 @@ Imports:
     utils
 Suggests: 
     bauw,
+    BH,
     covr,
     ggplot2,
     mcmcdata,
+    RcppEigen,
     testthat,
     universals
 Remotes: 
