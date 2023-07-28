@@ -73,7 +73,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><code>smbr</code> (pronounced simber) is an R package to facilitate analyses using <a href="http://mc-stan.org" class="external-link"><code>STAN</code></a>. It is part of the <a href="https://github.com/poissonconsulting/mbr" class="external-link">mbr</a> family of packages.</p>
+<p><code>smbr</code> (pronounced simber) is an R package to facilitate analyses using <a href="http://mc-stan.org" class="external-link"><code>STAN</code></a>. It is part of the <a href="https://github.com/poissonconsulting/embr" class="external-link">embr</a> family of packages.</p>
 </div>
 <div class="section level2">
 <h2 id="demonstration">Demonstration<a class="anchor" aria-label="anchor" href="#demonstration"></a>
@@ -82,10 +82,11 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">bauw</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/poissonconsulting/embr" class="external-link">embr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/poissonconsulting/smbr" class="external-link">smbr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define model in Stan language</span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">model</span><span class="op">(</span><span class="st">"</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/embr/man/model.html" class="external-link">model</a></span><span class="op">(</span><span class="st">"</span></span>
 <span><span class="st">  data {</span></span>
 <span><span class="st">      int nAnnual;</span></span>
 <span><span class="st">      int nObs;</span></span>
@@ -124,7 +125,7 @@
 <span><span class="st">  }"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add R code to calculate derived parameters</span></span>
-<span><span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span>new_expr <span class="op">=</span> <span class="st">"</span></span>
+<span><span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/embr/man/update_model.html" class="external-link">update_model</a></span><span class="op">(</span>new_expr <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  for (i in 1:length(Pairs)) {</span></span>
 <span><span class="st">    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + </span></span>
 <span><span class="st">                       beta3 * Year[i]^3 + bAnnual[Annual[i]])</span></span>
@@ -132,7 +133,7 @@
 <span><span class="st">"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># define data types and center year</span></span>
-<span><span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu">update_model</span><span class="op">(</span></span>
+<span><span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/embr/man/update_model.html" class="external-link">update_model</a></span><span class="op">(</span></span>
 <span>  select_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Pairs"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Year*"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, </span>
 <span>                     Annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  derived <span class="op">=</span> <span class="st">"sAnnual"</span>,</span>
@@ -144,7 +145,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># analyse</span></span>
-<span><span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu">analyse</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span>, seed <span class="op">=</span> <span class="fl">3L</span>, glance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/embr/man/analyse.html" class="external-link">analyse</a></span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span>, seed <span class="op">=</span> <span class="fl">3L</span>, glance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Trying to compile a simple C file</span></span>
 <span></span>
 <span><span class="co"># coefficient table</span></span>
@@ -152,11 +153,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 5</span></span>
 <span><span class="co">#&gt;   term        estimate   lower   upper svalue</span></span>
 <span><span class="co">#&gt;   &lt;term&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 alpha         4.26    4.18    4.34   11.6  </span></span>
-<span><span class="co">#&gt; 2 beta1         1.20    1.06    1.36   11.6  </span></span>
-<span><span class="co">#&gt; 3 beta2        -0.0171 -0.0759  0.0430  0.874</span></span>
-<span><span class="co">#&gt; 4 beta3        -0.274  -0.359  -0.203  11.6  </span></span>
-<span><span class="co">#&gt; 5 log_sAnnual  -2.22   -2.92   -1.74   11.6</span></span>
+<span><span class="co">#&gt; 1 alpha         4.26    4.19    4.34   11.6  </span></span>
+<span><span class="co">#&gt; 2 beta1         1.20    1.07    1.35   11.6  </span></span>
+<span><span class="co">#&gt; 3 beta2        -0.0189 -0.0791  0.0396  0.880</span></span>
+<span><span class="co">#&gt; 4 beta3        -0.275  -0.354  -0.207  11.6  </span></span>
+<span><span class="co">#&gt; 5 log_sAnnual  -2.21   -2.83   -1.72   11.6</span></span>
 <span></span>
 <span><span class="co"># trace plots</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">analysis</span><span class="op">)</span></span></code></pre></div>
@@ -164,7 +165,6 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span></span>
 <span><span class="va">year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">analysis</span>, new_data <span class="op">=</span> <span class="st">"Year"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.</span></span>
 <span></span>
 <span><span class="co"># plot those predictions</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">year</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -260,7 +260,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
-<li><a href="https://github.com/poissonconsulting/smbr/actions" class="external-link"><img src="https://github.com/poissonconsulting/smbr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/gh/poissonconsulting/smbr?branch=master" class="external-link"><img src="https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a></li>
 </ul>
