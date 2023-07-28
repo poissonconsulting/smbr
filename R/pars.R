@@ -50,6 +50,10 @@ pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
   chk_null_or(scalar, vld = vld_flag)
   chk_unused(...)
 
+  if(param_type == "derived") {
+    return(sort(x$derived))
+  }
+
   if (!param_type %in% c("fixed", "random"))
     return(pars(code(x), param_type = param_type, scalar = scalar))
 

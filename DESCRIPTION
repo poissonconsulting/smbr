@@ -21,7 +21,7 @@ Imports:
     coda,
     lubridate,
     magrittr,
-    embr,
+    embr (>= 0.0.1.9035),
     mcmcr,
     nlist,
     plyr,
