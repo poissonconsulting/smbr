@@ -56,7 +56,7 @@ test_that("pars(", {
   expect_identical(pars(model, "fixed", scalar = TRUE),
                    c("mu_y", "tau_y"))
 
-  expect_identical(mbr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(embr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))
 
   expect_error(drop_pars(model, "foo"), "parameter 'foo'")
   expect_error(drop_pars(model, "sigma_y"), "parameter 'sigma_y'")

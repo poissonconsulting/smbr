@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 ## Introduction
 
 `smbr` (pronounced simber) is an R package to facilitate analyses using [`STAN`](http://mc-stan.org).
-It is part of the [mbr](https://github.com/poissonconsulting/mbr) family of packages.
+It is part of the [embr](https://github.com/poissonconsulting/embr) family of packages.
 
 ## Demonstration
 
@@ -32,6 +32,7 @@ It is part of the [mbr](https://github.com/poissonconsulting/mbr) family of pack
 library(bauw)
 library(ggplot2)
 library(magrittr)
+library(embr)
 library(smbr)
 ```
 

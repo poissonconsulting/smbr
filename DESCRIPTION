@@ -21,7 +21,7 @@ Imports:
     coda,
     lubridate,
     magrittr,
-    mbr,
+    embr,
     mcmcr,
     nlist,
     plyr,
@@ -43,7 +43,7 @@ Suggests:
     universals
 Remotes: 
     poissonconsulting/bauw,
-    poissonconsulting/mbr,
+    poissonconsulting/embr,
     poissonconsulting/mcmcdata,
     poissonconsulting/timer
 Encoding: UTF-8

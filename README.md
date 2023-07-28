@@ -7,7 +7,7 @@
 
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![R-CMD-check](https://github.com/poissonconsulting/smbr/workflows/R-CMD-check/badge.svg)](https://github.com/poissonconsulting/smbr/actions)
+[![R-CMD-check](https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr?branch=master)
 [![License:
@@ -18,7 +18,7 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 
 `smbr` (pronounced simber) is an R package to facilitate analyses using
 [`STAN`](http://mc-stan.org). It is part of the
-[mbr](https://github.com/poissonconsulting/mbr) family of packages.
+[embr](https://github.com/poissonconsulting/embr) family of packages.
 
 ## Demonstration
 
@@ -26,6 +26,7 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 library(bauw)
 library(ggplot2)
 library(magrittr)
+library(embr)
 library(smbr)
 ```
 
@@ -98,11 +99,11 @@ coef(analysis, simplify = TRUE)
 #> # A tibble: 5 × 5
 #>   term        estimate   lower   upper svalue
 #>   <term>         <dbl>   <dbl>   <dbl>  <dbl>
-#> 1 alpha         4.26    4.18    4.34   11.6  
-#> 2 beta1         1.20    1.06    1.36   11.6  
-#> 3 beta2        -0.0171 -0.0759  0.0430  0.874
-#> 4 beta3        -0.274  -0.359  -0.203  11.6  
-#> 5 log_sAnnual  -2.22   -2.92   -1.74   11.6
+#> 1 alpha         4.26    4.19    4.34   11.6  
+#> 2 beta1         1.20    1.07    1.35   11.6  
+#> 3 beta2        -0.0189 -0.0791  0.0396  0.880
+#> 4 beta3        -0.275  -0.354  -0.207  11.6  
+#> 5 log_sAnnual  -2.21   -2.83   -1.72   11.6
 
 # trace plots
 plot(analysis)
@@ -113,7 +114,6 @@ plot(analysis)
 ``` r
 # make predictions by varying year with other predictors including the random effect of Annual held constant
 year <- predict(analysis, new_data = "Year")
-#> Warning: The `simplify` argument of `coef()` must be TRUE as of mcmcr 0.4.1.
 
 # plot those predictions
 ggplot(data = year, aes(x = Year, y = estimate)) +
@@ -134,7 +134,6 @@ devtools::install_github("poissonconsulting/smbr")
 ```
 
 ## Citation
-
 
     To cite smbr in publications use:
 

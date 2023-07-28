@@ -33,7 +33,7 @@ analyse1.smb_model <- function(model, data, loaded, nchains, niters, nthin, quie
   inits <- inits(data, model$gen_inits, nchains = nchains)
   inits_chainid <- purrr::imap(inits, function(x, n) {x <- list(inits = x, chain_id = n); x})
 
-  monitor <- mbr::monitor(model)
+  monitor <- embr::monitor(model)
 
   # share seed as different chain_ids
   seed <- sample.int(.Machine$integer.max, 1)

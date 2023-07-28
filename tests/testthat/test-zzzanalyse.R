@@ -1,8 +1,8 @@
 test_that("analyse", {
-    mbr::set_analysis_mode("check")
+    embr::set_analysis_mode("check")
 
   # define model in Stan language
-  model <- mbr::model("
+  model <- embr::model("
  data {
       int nAnnual;
       int nObs;
@@ -20,7 +20,9 @@ test_that("analyse", {
   }
   transformed parameters {
     real sAnnual;
+    real eAnnual;
     sAnnual = exp(log_sAnnual);
+    eAnnual = exp(log_sAnnual);
   }
   model {
       vector[nObs] ePairs;
@@ -41,7 +43,7 @@ test_that("analyse", {
   }")
 
   # add R code to calculate derived parameters
-  model <- mbr::update_model(model, new_expr = "
+  model <- embr::update_model(model, new_expr = "
   for (i in 1:length(Pairs)) {
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
@@ -49,12 +51,19 @@ test_that("analyse", {
     log_lik <- dpois(Pairs, prediction, log = TRUE)")
 
   # define data types and center year
-  model <- mbr::update_model(model,
+  model <- embr::update_model(model,
                         select_data = list("Pairs" = integer(), "Year*" = integer(),
                                            Annual = factor()),
                         derived = "sAnnual",
                         random_effects = list(bAnnual = "Annual"),
                         gen_inits = function(data) { list(log_sAnnual =  20) })
+
+  expect_identical(pars(model, "fixed"), c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))
+  expect_identical(pars(model, "random"), "bAnnual")
+  expect_identical(pars(model, "primary"), c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual"))
+  expect_identical(pars(model, "derived"), "sAnnual")
+  expect_identical(pars(model, "all"), c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))
+  expect_identical(pars(model), pars(model, "all"))
 
   data <- bauw::peregrine
   data$Annual <- factor(data$Year)
@@ -62,7 +71,7 @@ test_that("analyse", {
   set.seed(34)
 
   # analyse
-  analysis <- mbr::analyse(model, data = data)
+  analysis <- embr::analyse(model, data = data)
 
   expect_identical(class(analysis), c("smb_analysis", "mb_analysis"))
   expect_true(is.smb_analysis(analysis))
@@ -70,20 +79,26 @@ test_that("analyse", {
   expect_identical(universals::niters(analysis), 500L)
   expect_identical(universals::nchains(analysis), 2L)
   expect_identical(universals::nsims(analysis), 1000L)
-  expect_identical(mbr::ngens(analysis), 2000L)
-
-  analysis <- reanalyse(analysis)
+  expect_identical(embr::ngens(analysis), 2000L)
 
   expect_identical(niters(analysis), 500L)
-  expect_identical(ngens(analysis), 4000L)
+  expect_identical(ngens(analysis), 2000L)
 
-  expect_identical(pars(analysis, "fixed"), sort(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
+  expect_identical(pars(analysis, "fixed"), pars(model, "fixed"))
+  expect_identical(pars(analysis, "random"), pars(model, "random"))
+  expect_identical(pars(analysis, "all"), pars(model, "all"))
+  expect_identical(pars(analysis), pars(model))
+  expect_identical(pars(analysis, "primary"), pars(model, "primary"))
+  expect_identical(pars(analysis, "derived"), pars(model, "derived"))
   expect_identical(pars(analysis, "random"), "bAnnual")
-  expect_identical(pars(analysis), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")))
-  expect_identical(pars(analysis, "primary"), sort(c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")))
-  expect_error(pars(analysis, "some"))
 
   expect_is(as.mcmcr(analysis), "mcmcr")
+
+  analysis <- reanalyse(analysis)
+  expect_identical(universals::niters(analysis), 500L)
+  expect_identical(universals::nchains(analysis), 2L)
+  expect_identical(universals::nsims(analysis), 1000L)
+  expect_identical(embr::ngens(analysis), 4000L)
 
   monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   rhat <- rhat(analysis, by = "term", as_df = TRUE)
