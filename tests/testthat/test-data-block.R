@@ -122,11 +122,15 @@ test_that("create data block with no nObs", {
     quadrat = c(1L, 3L),
     kelpline = logical(1),
     temp = c(-5, 20)
-  )
+  ),
+  modify_data = function(data) {
+    data$nObs <- NULL
+    data
+  }
   )
 
   mod_data <- modify_data(data, model)
-  mod_data$nObs <- NULL
+
 
   output <- data_block(mod_data)
 
@@ -165,11 +169,14 @@ test_that("create data block with a scalar real", {
     X = c(0L, 10L),
     Y = 1,
     Z = factor(1)
-  )
+  ),
+  modify_data = function(data) {
+    data$nZ <- as.double(data$nZ)
+    data
+  }
   )
 
   mod_data <- modify_data(data, model)
-  mod_data$nZ <- as.double(mod_data$nZ)
 
   output <- data_block(mod_data)
 
@@ -208,12 +215,15 @@ test_that("create data block with a scalar real and no nObs", {
     X = c(0L, 10L),
     Y = 1,
     Z = factor(1)
-  )
+  ),
+  modify_data = function(data) {
+    data$nZ <- as.double(data$nZ)
+    data$nObs <- NULL
+    data
+  }
   )
 
   mod_data <- modify_data(data, model)
-  mod_data$nZ <- as.double(mod_data$nZ)
-  mod_data$nObs <- NULL
 
   output <- data_block(mod_data)
 
