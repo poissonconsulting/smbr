@@ -135,3 +135,91 @@ test_that("create data block with no nObs", {
     "data {int annual[12];int site[12];int quadrat[12];int kelpline[12];real temp[12];int nsite;}"
   )
 })
+
+test_that("create data block with a scalar real", {
+
+  data <- data.frame(
+    X = c(1L, 2L, 3L, 4L),
+    Y = c(1.2, 7.3, 8.9, 2.6),
+    Z = factor(c(1, 1, 2, 3))
+  )
+
+  model <- model("model {
+    bY ~ dnorm(0, 2^-2)
+    bX ~ dnorm(0, 2^-2)
+    bZ ~ dnorm(0, 2^-2)
+    sY ~ dnorm(0, 2^-2) T(0,)
+
+    for (i in 1:nObs) {
+      eY[i] <- bY + bX * X[i] + bZ * Z[i]
+      Y[i] ~ dnorm(eY[i], sY^-2)
+    }
+  }",
+  new_expr = "
+    for(i in 1:nObs) {
+      prediction[i] <- bY + bX * X[i] + bZ * Z[i]
+      fit[i] <- prediction[i]
+    }
+  ",
+  select_data = list(
+    X = c(0L, 10L),
+    Y = 1,
+    Z = factor(1)
+  )
+  )
+
+  mod_data <- modify_data(data, model)
+  mod_data$nZ <- as.double(mod_data$nZ)
+
+  output <- data_block(mod_data)
+
+  expect_equal(
+    output,
+    "data {int X[nObs];real Y[nObs];int Z[nObs];real nZ;int nObs;}"
+  )
+})
+
+test_that("create data block with a scalar real and no nObs", {
+
+  data <- data.frame(
+    X = c(1L, 2L, 3L, 4L),
+    Y = c(1.2, 7.3, 8.9, 2.6),
+    Z = factor(c(1, 1, 2, 3))
+  )
+
+  model <- model("model {
+    bY ~ dnorm(0, 2^-2)
+    bX ~ dnorm(0, 2^-2)
+    bZ ~ dnorm(0, 2^-2)
+    sY ~ dnorm(0, 2^-2) T(0,)
+
+    for (i in 1:nObs) {
+      eY[i] <- bY + bX * X[i] + bZ * Z[i]
+      Y[i] ~ dnorm(eY[i], sY^-2)
+    }
+  }",
+  new_expr = "
+    for(i in 1:nObs) {
+      prediction[i] <- bY + bX * X[i] + bZ * Z[i]
+      fit[i] <- prediction[i]
+    }
+  ",
+  select_data = list(
+    X = c(0L, 10L),
+    Y = 1,
+    Z = factor(1)
+  )
+  )
+
+  mod_data <- modify_data(data, model)
+  mod_data$nZ <- as.double(mod_data$nZ)
+  mod_data$nObs <- NULL
+
+  output <- data_block(mod_data)
+
+  expect_equal(
+    output,
+    "data {int X[4];real Y[4];int Z[4];real nZ;}"
+  )
+})
+

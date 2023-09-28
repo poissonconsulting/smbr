@@ -36,8 +36,13 @@ data_block <- function(data) {
         }
       }
       if (inherits(data[[i]], "numeric")) {
-        msg <- paste0("real ", i, "[nObs]", ";")
-        block <- c(block, msg)
+        if (length(data[[i]]) > 1) {
+          msg <- paste0("real ", i, "[nObs]", ";")
+          block <- c(block, msg)
+        } else {
+          msg <- paste0("real ", i, ";")
+          block <- c(block, msg)
+        }
       }
     }
     block <- c(block, "}")
@@ -55,8 +60,13 @@ data_block <- function(data) {
         }
       }
       if (inherits(data[[i]], "numeric")) {
-        msg <- paste0("real ", i, "[", length(data[[i]]), "]", ";")
-        block <- c(block, msg)
+        if (length(data[[i]]) > 1) {
+          msg <- paste0("real ", i, "[", length(data[[i]]), "]", ";")
+          block <- c(block, msg)
+        } else {
+          msg <- paste0("real ", i, ";")
+          block <- c(block, msg)
+        }
       }
     }
     block <- c(block, "}")
