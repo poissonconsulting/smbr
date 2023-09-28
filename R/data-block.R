@@ -24,26 +24,45 @@ data_block <- function(data) {
   parm_names <- names(data)
 
   block <- c("data {")
-  for (i in parm_names) {
-
-    if (inherits(data[[i]], "integer")) {
-      if (i != "nObs") {
-        msg <- paste0("int ", i, "[nObs]", ";")
-        block <- c(block, msg)
-      } else {
-        msg <- paste0("int ", i, ";")
+  if ("nObs" %in% parm_names) {
+    for (i in parm_names) {
+      if (inherits(data[[i]], "integer")) {
+        if (length(data[[i]]) == data[["nObs"]]) {
+          msg <- paste0("int ", i, "[nObs]", ";")
+          block <- c(block, msg)
+        } else {
+          msg <- paste0("int ", i, ";")
+          block <- c(block, msg)
+        }
+      }
+      if (inherits(data[[i]], "numeric")) {
+        msg <- paste0("real ", i, "[nObs]", ";")
         block <- c(block, msg)
       }
     }
-
-    if (inherits(data[[i]], "numeric")) {
-      msg <- paste0("real ", i, "[nObs]" ,";")
-      block <- c(block, msg)
+    block <- c(block, "}")
+    block <- paste0(block, collapse = "")
+    block
+  } else {
+    for (i in parm_names) {
+      if (inherits(data[[i]], "integer")) {
+        if (length(data[[i]]) > 1) {
+          msg <- paste0("int ", i, "[", length(data[[i]]), "]", ";")
+          block <- c(block, msg)
+        } else {
+          msg <- paste0("int ", i, ";")
+          block <- c(block, msg)
+        }
+      }
+      if (inherits(data[[i]], "numeric")) {
+        msg <- paste0("real ", i, "[", length(data[[i]]), "]", ";")
+        block <- c(block, msg)
+      }
     }
+    block <- c(block, "}")
+    block <- paste0(block, collapse = "")
+    block
   }
-  block <- c(block, "}")
-  block <- paste0(block, collapse = "")
-  block
 }
 
 
@@ -94,3 +113,4 @@ data_block <- function(data) {
 #     int count[nObs];
 #     real temp[nObs];
 #   }"
+
