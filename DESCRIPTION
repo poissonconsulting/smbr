@@ -19,20 +19,20 @@ Imports:
     broom,
     chk,
     coda,
+    embr (>= 0.0.1.9035),
     lubridate,
     magrittr,
-    embr (>= 0.0.1.9035),
     mcmcr,
     nlist,
     plyr,
     purrr,
+    rlang,
     rstan,
     stringr,
     term,
     tibble,
     timer,
-    utils,
-    rlang
+    utils
 Suggests: 
     bauw,
     BH,
