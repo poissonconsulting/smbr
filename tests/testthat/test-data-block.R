@@ -33,7 +33,7 @@ test_that("create simple data block with X as integer and Y as double", {
 
   expect_equal(
     output,
-    "data {int X[nObs];real Y[nObs];int nObs;}"
+    "data {\n int X[nObs];\n real Y[nObs];\n int nObs;\n}"
   )
 })
 
@@ -82,7 +82,7 @@ test_that("create data block with integer, double, logical and factor present in
 
   expect_equal(
     output,
-    "data {int annual[nObs];int site[nObs];int quadrat[nObs];int kelpline[nObs];real temp[nObs];int nsite;int nObs;}"
+    "data {\n int annual[nObs];\n int site[nObs];\n int quadrat[nObs];\n int kelpline[nObs];\n real temp[nObs];\n int nsite;\n int nObs;\n}"
   )
 })
 
@@ -135,7 +135,7 @@ test_that("create data block with no nObs", {
 
   expect_equal(
     output,
-    "data {int annual[12];int site[12];int quadrat[12];int kelpline[12];real temp[12];int nsite;}"
+    "data {\n int annual[12];\n int site[12];\n int quadrat[12];\n int kelpline[12];\n real temp[12];\n int nsite;\n}"
   )
 })
 
@@ -181,7 +181,7 @@ test_that("create data block with a scalar real", {
 
   expect_equal(
     output,
-    "data {int X[nObs];real Y[nObs];int Z[nObs];real nZ;int nObs;}"
+    "data {\n int X[nObs];\n real Y[nObs];\n int Z[nObs];\n real nZ;\n int nObs;\n}"
   )
 })
 
@@ -228,14 +228,14 @@ test_that("create data block with a scalar real and no nObs", {
 
   expect_equal(
     output,
-    "data {int X[4];real Y[4];int Z[4];real nZ;}"
+    "data {\n int X[4];\n real Y[4];\n int Z[4];\n real nZ;\n}"
   )
 })
 
 test_that("output empty data block with empty nlist passed", {
   expect_equal(
     data_block(nlist::as_nlist(list())),
-    "data {}"
+    "data {\n}"
   )
 })
 
@@ -252,7 +252,7 @@ test_that("create data block when zero length vectors in the list", {
 
   expect_equal(
     output,
-    "data {int X;real Y;int Z;}"
+    "data {\n int X;\n real Y;\n int Z;\n}"
   )
 })
 
@@ -267,7 +267,7 @@ test_that("passes when one zero length integer vector in the list", {
 
   expect_equal(
     output,
-    "data {int X;}"
+    "data {\n int X;\n}"
   )
 })
 
@@ -282,7 +282,7 @@ test_that("passes when one zero length double vector in the list", {
 
   expect_equal(
     output,
-    "data {real X;}"
+    "data {\n real X;\n}"
   )
 })
 
