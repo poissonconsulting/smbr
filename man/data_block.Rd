@@ -4,10 +4,10 @@
 \alias{data_block}
 \title{Create Data Block from Data List}
 \usage{
-data_block(data)
+data_block(x)
 }
 \arguments{
-\item{data}{A nlist}
+\item{x}{A nlist}
 }
 \value{
 A string
