@@ -1,5 +1,4 @@
 test_that("create simple data block with X as integer and Y as double", {
-
   data <- data.frame(
     X = c(1L, 2L, 3L, 4L),
     Y = c(1.2, 7.3, 8.9, 2.6)
@@ -38,7 +37,6 @@ test_that("create simple data block with X as integer and Y as double", {
 })
 
 test_that("create data block with integer, double, logical and factor present in data set", {
-
   data <- data.frame(
     annual = c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L),
     site = factor(c(1L, 1L, 1L, 2L, 2L, 2L, 1L, 1L, 1L, 2L, 2L, 2L)),
@@ -87,7 +85,6 @@ test_that("create data block with integer, double, logical and factor present in
 })
 
 test_that("create data block with no nObs", {
-
   data <- data.frame(
     annual = c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L),
     site = factor(c(1L, 1L, 1L, 2L, 2L, 2L, 1L, 1L, 1L, 2L, 2L, 2L)),
@@ -140,7 +137,6 @@ test_that("create data block with no nObs", {
 })
 
 test_that("create data block with a scalar real", {
-
   data <- data.frame(
     X = c(1L, 2L, 3L, 4L),
     Y = c(1.2, 7.3, 8.9, 2.6),
@@ -186,7 +182,6 @@ test_that("create data block with a scalar real", {
 })
 
 test_that("create data block with a scalar real and no nObs", {
-
   data <- data.frame(
     X = c(1L, 2L, 3L, 4L),
     Y = c(1.2, 7.3, 8.9, 2.6),
