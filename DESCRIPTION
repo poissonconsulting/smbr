@@ -45,7 +45,6 @@ Remotes:
     poissonconsulting/embr,
     poissonconsulting/mcmcdata,
     poissonconsulting/timer,
-    stan-dev/rstan/rstan/rstan,
-    stan-dev/rstan/StanHeaders
+    stan-dev/rstan/rstan/rstan@4722caee9675f1b03232121816de5b9796c15028
 Encoding: UTF-8
 RoxygenNote: 7.2.3
