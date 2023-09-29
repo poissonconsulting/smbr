@@ -1,4 +1,3 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # smbr
@@ -22,116 +21,110 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 
 ## Demonstration
 
-``` r
-library(bauw)
-library(ggplot2)
-library(magrittr)
-library(embr)
-library(smbr)
-```
+    library(bauw)
+    library(ggplot2)
+    library(magrittr)
+    library(embr)
+    library(smbr)
 
-``` r
-# define model in Stan language
-model <- model("
-  data {
-      int nAnnual;
-      int nObs;
-      int Annual[nObs];
-      int Pairs[nObs];
-      real Year[nObs];
-  }
-  parameters {
-      vector[nAnnual] bAnnual;
-      real log_sAnnual;
-      real alpha;
-      real beta1;
-      real beta2;
-      real beta3;
-  }
-  transformed parameters {
-    real sAnnual;
-    sAnnual = exp(log_sAnnual);
-  }
-  model {
-      vector[nObs] ePairs;
-    
-      log_sAnnual ~ normal(0, 10);
-      bAnnual ~ normal(0, sAnnual);
-
-      alpha ~ normal(0, 10);
-      beta1 ~ normal(0, 10);
-      beta2 ~ normal(0, 10);
-      beta3 ~ normal(0, 10);
-
-      for (i in 1:nObs) {
-        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                      beta3 * Year[i]^3 + bAnnual[Annual[i]]);
+    # define model in Stan language
+    model <- model("
+      data {
+          int nAnnual;
+          int nObs;
+          int Annual[nObs];
+          int Pairs[nObs];
+          real Year[nObs];
       }
-      target += poisson_lpmf(Pairs | ePairs);
-  }")
+      parameters {
+          vector[nAnnual] bAnnual;
+          real log_sAnnual;
+          real alpha;
+          real beta1;
+          real beta2;
+          real beta3;
+      }
+      transformed parameters {
+        real sAnnual;
+        sAnnual = exp(log_sAnnual);
+      }
+      model {
+          vector[nObs] ePairs;
 
-# add R code to calculate derived parameters
-model %<>% update_model(new_expr = "
-  for (i in 1:length(Pairs)) {
-    prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
-                       beta3 * Year[i]^3 + bAnnual[Annual[i]])
-  }
-")
+          log_sAnnual ~ normal(0, 10);
+          bAnnual ~ normal(0, sAnnual);
 
-# define data types and center year
-model %<>% update_model(
-  select_data = list("Pairs" = integer(), "Year*" = integer(), 
-                     Annual = factor()),
-  derived = "sAnnual",
-  random_effects = list(bAnnual = "Annual"))
+          alpha ~ normal(0, 10);
+          beta1 ~ normal(0, 10);
+          beta2 ~ normal(0, 10);
+          beta3 ~ normal(0, 10);
 
-data <- bauw::peregrine
-data$Annual <- factor(data$Year)
+          for (i in 1:nObs) {
+            ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
+                          beta3 * Year[i]^3 + bAnnual[Annual[i]]);
+          }
+          target += poisson_lpmf(Pairs | ePairs);
+      }")
 
-set.seed(42)
+    # add R code to calculate derived parameters
+    model %<>% update_model(new_expr = "
+      for (i in 1:length(Pairs)) {
+        prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
+                           beta3 * Year[i]^3 + bAnnual[Annual[i]])
+      }
+    ")
 
-# analyse
-analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
-#> Trying to compile a simple C file
+    # define data types and center year
+    model %<>% update_model(
+      select_data = list(
+        "Pairs" = integer(), "Year*" = integer(),
+        Annual = factor()
+      ),
+      derived = "sAnnual",
+      random_effects = list(bAnnual = "Annual")
+    )
 
-# coefficient table
-coef(analysis, simplify = TRUE)
-#> # A tibble: 5 × 5
-#>   term        estimate   lower   upper svalue
-#>   <term>         <dbl>   <dbl>   <dbl>  <dbl>
-#> 1 alpha         4.26    4.19    4.34   11.6  
-#> 2 beta1         1.20    1.07    1.35   11.6  
-#> 3 beta2        -0.0189 -0.0791  0.0396  0.880
-#> 4 beta3        -0.275  -0.354  -0.207  11.6  
-#> 5 log_sAnnual  -2.21   -2.83   -1.72   11.6
+    data <- bauw::peregrine
+    data$Annual <- factor(data$Year)
 
-# trace plots
-plot(analysis)
-```
+    set.seed(42)
 
-![](tools/README-unnamed-chunk-3-1.png)<!-- -->![](tools/README-unnamed-chunk-3-2.png)<!-- -->
+    # analyse
+    analysis <- analyse(model, data = data, seed = 3L, glance = FALSE)
 
-``` r
-# make predictions by varying year with other predictors including the random effect of Annual held constant
-year <- predict(analysis, new_data = "Year")
+    # coefficient table
+    coef(analysis, simplify = TRUE)
+    #> # A tibble: 5 × 5
+    #>   term        estimate   lower   upper svalue
+    #>   <term>         <dbl>   <dbl>   <dbl>  <dbl>
+    #> 1 alpha         4.26    4.18    4.34    9.97 
+    #> 2 beta1         1.19    1.07    1.36    9.97 
+    #> 3 beta2        -0.0191 -0.0777  0.0393  0.976
+    #> 4 beta3        -0.272  -0.356  -0.208   9.97 
+    #> 5 log_sAnnual  -2.23   -2.87   -1.70    9.97
 
-# plot those predictions
-ggplot(data = year, aes(x = Year, y = estimate)) +
-  geom_point(data = bauw::peregrine, aes(y = Pairs)) +
-  geom_line() +
-  geom_line(aes(y = lower), linetype = "dotted") +
-  geom_line(aes(y = upper), linetype = "dotted") +
-  expand_limits(y = 0)
-```
+    # trace plots
+    plot(analysis)
 
-![](tools/README-unnamed-chunk-4-1.png)<!-- -->
+![](tools/README-unnamed-chunk-3-1.png)![](tools/README-unnamed-chunk-3-2.png)
+
+    # make predictions by varying year with other predictors including the random effect of Annual held constant
+    year <- predict(analysis, new_data = "Year")
+
+    # plot those predictions
+    ggplot(data = year, aes(x = Year, y = estimate)) +
+      geom_point(data = bauw::peregrine, aes(y = Pairs)) +
+      geom_line() +
+      geom_line(aes(y = lower), linetype = "dotted") +
+      geom_line(aes(y = upper), linetype = "dotted") +
+      expand_limits(y = 0)
+
+![](tools/README-unnamed-chunk-4-1.png)
 
 ## Installation
 
-``` r
-# install.packages("devtools")
-devtools::install_github("poissonconsulting/smbr")
-```
+    # install.packages("devtools")
+    devtools::install_github("poissonconsulting/smbr")
 
 ## Citation
 
