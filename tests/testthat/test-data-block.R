@@ -27,7 +27,7 @@ test_that("create simple data block with X as integer and Y as double", {
     )
   )
 
-  mod_data <- modify_data(data, model)
+  mod_data <- nlist::as_nlist(modify_data(data, model))
 
   output <- data_block(mod_data)
 
@@ -76,7 +76,7 @@ test_that("create data block with integer, double, logical and factor present in
   )
   )
 
-  mod_data <- modify_data(data, model)
+  mod_data <- nlist::as_nlist(modify_data(data, model))
 
   output <- data_block(mod_data)
 
@@ -129,8 +129,7 @@ test_that("create data block with no nObs", {
   }
   )
 
-  mod_data <- modify_data(data, model)
-
+  mod_data <- nlist::as_nlist(modify_data(data, model))
 
   output <- data_block(mod_data)
 
@@ -176,7 +175,7 @@ test_that("create data block with a scalar real", {
   }
   )
 
-  mod_data <- modify_data(data, model)
+  mod_data <- nlist::as_nlist(modify_data(data, model))
 
   output <- data_block(mod_data)
 
@@ -223,7 +222,7 @@ test_that("create data block with a scalar real and no nObs", {
   }
   )
 
-  mod_data <- modify_data(data, model)
+  mod_data <- nlist::as_nlist(modify_data(data, model))
 
   output <- data_block(mod_data)
 
@@ -233,3 +232,89 @@ test_that("create data block with a scalar real and no nObs", {
   )
 })
 
+test_that("outputs empty data block with empty nlist passed", {
+  expect_equal(
+    data_block(nlist::as_nlist(list())),
+    "data {}"
+  )
+})
+
+test_that("passes when zero length vectors in the list", {
+  data <- nlist::as_nlist(
+    list(
+      X = integer(),
+      Y = double(),
+      Z = factor()
+    )
+  )
+
+  output <- data_block(data)
+
+  expect_equal(
+    output,
+    "data {int X;real Y;int Z;}"
+  )
+})
+
+test_that("passes when zero length single integer vector in the list", {
+  data <- nlist::as_nlist(
+    list(
+      X = integer()
+    )
+  )
+
+  output <- data_block(data)
+
+  expect_equal(
+    output,
+    "data {int X;}"
+  )
+})
+
+test_that("passes when zero length single integer double in the list", {
+  data <- nlist::as_nlist(
+    list(
+      X = double()
+    )
+  )
+
+  output <- data_block(data)
+
+  expect_equal(
+    output,
+    "data {real X;}"
+  )
+})
+
+test_that("errors with no arguments passed", {
+  expect_error(
+    data_block(),
+    regexp = 'argument "data" is missing, with no default'
+  )
+})
+
+test_that("errors when NULL passed", {
+  expect_error(
+    data_block(NULL),
+    regexp = "`data` must inherit from S3 class 'nlist'."
+  )
+})
+
+test_that("errors when a number is passed as data argument", {
+  expect_error(
+    data_block(2),
+    regexp = "`data` must inherit from S3 class 'nlist'."
+  )
+})
+
+test_that("errors when a dataframe is passed", {
+  data <- data.frame(
+    X = c(1L, 2L, 3L, 4L),
+    Y = c(1.2, 7.3, 8.9, 2.6),
+    Z = factor(c(1, 1, 2, 3))
+  )
+  expect_error(
+    data_block(data),
+    regexp = "`data` must inherit from S3 class 'nlist'."
+  )
+})

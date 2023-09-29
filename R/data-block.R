@@ -2,7 +2,7 @@
 #'
 #' Automate the data block straight from your data.
 #'
-#' @param data A list of parameters
+#' @param data A nlist
 #'
 #' @return A string
 #' @export
@@ -15,10 +15,6 @@
 #' )
 #' data_block(mod_data)
 data_block <- function(data) {
-
-  chk::chk_list(data)
-  data <- as_nlist(data)
-  # this checks that they are named, valid prams names, and all numeric values
   nlist::chk_nlist(data)
 
   parm_names <- names(data)
