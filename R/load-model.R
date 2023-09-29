@@ -9,7 +9,8 @@ load_model.smb_model <- function(x, quiet, ...) {
   )
   capture_output(
     stan_model <- rstan::stan_model(
-      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE)
+      stanc_ret = stanc, save_dso = FALSE, auto_write = FALSE
+    )
   )
   stan_model
 }

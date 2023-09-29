@@ -1,5 +1,5 @@
 test_that("analyse", {
-    embr::set_analysis_mode("check")
+  embr::set_analysis_mode("check")
 
   # define model in Stan language
   model <- embr::model("
@@ -52,11 +52,16 @@ test_that("analyse", {
 
   # define data types and center year
   model <- embr::update_model(model,
-                        select_data = list("Pairs" = integer(), "Year*" = integer(),
-                                           Annual = factor()),
-                        derived = "sAnnual",
-                        random_effects = list(bAnnual = "Annual"),
-                        gen_inits = function(data) { list(log_sAnnual =  20) })
+    select_data = list(
+      "Pairs" = integer(), "Year*" = integer(),
+      Annual = factor()
+    ),
+    derived = "sAnnual",
+    random_effects = list(bAnnual = "Annual"),
+    gen_inits = function(data) {
+      list(log_sAnnual = 20)
+    }
+  )
 
   expect_identical(pars(model, "fixed"), c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))
   expect_identical(pars(model, "random"), "bAnnual")
@@ -103,8 +108,8 @@ test_that("analyse", {
   monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   rhat <- rhat(analysis, by = "term", as_df = TRUE)
 
-  rhat_stan <- tibble::tibble(term = as.term(row.names(monitor)), rhat = round(monitor[,"Rhat"], 3))
-  rhat_stan <- rhat_stan[rhat_stan$term != "lp__",]
+  rhat_stan <- tibble::tibble(term = as.term(row.names(monitor)), rhat = round(monitor[, "Rhat"], 3))
+  rhat_stan <- rhat_stan[rhat_stan$term != "lp__", ]
   expect_identical(rhat$term, rhat_stan$term)
 
   glance <- glance(analysis)
@@ -113,7 +118,7 @@ test_that("analyse", {
   expect_identical(glance$K, 5L)
   expect_identical(glance$nthin, 2L)
 
-    expect_identical(colnames(glance), c("n", "K", "logLik", "IC", "nchains", "niters",  "nthin", "ess", "rhat", "converged"))
+  expect_identical(colnames(glance), c("n", "K", "logLik", "IC", "nchains", "niters", "nthin", "ess", "rhat", "converged"))
 
   waic <- IC(analysis)
   expect_gt(waic, 305)
@@ -128,7 +133,7 @@ test_that("analyse", {
   expect_identical(coef$term, sort(as.term(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))))
 
   expect_identical(coef(analysis, "derived", simplify = TRUE)$term, as.term("sAnnual"))
-  expect_identical(coef(analysis, "all", simplify = TRUE)$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40,"]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
+  expect_identical(coef(analysis, "all", simplify = TRUE)$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40, "]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
 
   tidy <- tidy(analysis)
   expect_identical(colnames(tidy), c("term", "estimate", "lower", "upper", "esr", "rhat"))
@@ -136,8 +141,10 @@ test_that("analyse", {
   year <- predict(analysis, new_data = "Year")
 
   expect_is(year, "tbl")
-  expect_identical(colnames(year), c("Year", "Pairs", "R.Pairs", "Eyasses", "Annual",
-                                     "estimate","lower", "upper", "svalue"))
+  expect_identical(colnames(year), c(
+    "Year", "Pairs", "R.Pairs", "Eyasses", "Annual",
+    "estimate", "lower", "upper", "svalue"
+  ))
   expect_true(all(year$estimate > year$lower))
   expect_true(all(year$estimate < year$upper))
 

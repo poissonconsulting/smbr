@@ -19,7 +19,7 @@ data_block <- function(x) {
   nobs <- get_nobs(x)
   x <- purrr::keep(x, has_length)
   strings <- purrr::imap_chr(x, .f = data_block_element, nobs = nobs)
-  if(length(strings)) {
+  if (length(strings)) {
     strings <- paste0("  ", strings, ";\n", collapse = "")
   }
   paste0("data {\n", strings, "}", collapse = "")
@@ -31,6 +31,8 @@ has_length <- function(x) {
 
 get_nobs <- function(x) {
   nobs <- x$nObs
-  if(rlang::is_scalar_integer(nobs)) return(nobs)
+  if (rlang::is_scalar_integer(nobs)) {
+    return(nobs)
+  }
   0L
 }
