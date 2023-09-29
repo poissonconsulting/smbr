@@ -33,7 +33,7 @@ test_that("create simple data block with X as integer and Y as double", {
 
   expect_equal(
     output,
-    "data {\n int X[nObs];\n real Y[nObs];\n int nObs;\n}"
+    "data {\n  int X[nObs];\n  real Y[nObs];\n  int nObs;\n}"
   )
 })
 
@@ -82,7 +82,7 @@ test_that("create data block with integer, double, logical and factor present in
 
   expect_equal(
     output,
-    "data {\n int annual[nObs];\n int site[nObs];\n int quadrat[nObs];\n int kelpline[nObs];\n real temp[nObs];\n int nsite;\n int nObs;\n}"
+    "data {\n  int annual[nObs];\n  int site[nObs];\n  int quadrat[nObs];\n  int kelpline[nObs];\n  real temp[nObs];\n  int nsite;\n  int nObs;\n}"
   )
 })
 
@@ -135,7 +135,7 @@ test_that("create data block with no nObs", {
 
   expect_equal(
     output,
-    "data {\n int annual[12];\n int site[12];\n int quadrat[12];\n int kelpline[12];\n real temp[12];\n int nsite;\n}"
+    "data {\n  int annual[12];\n  int site[12];\n  int quadrat[12];\n  int kelpline[12];\n  real temp[12];\n  int nsite;\n}"
   )
 })
 
@@ -181,7 +181,7 @@ test_that("create data block with a scalar real", {
 
   expect_equal(
     output,
-    "data {\n int X[nObs];\n real Y[nObs];\n int Z[nObs];\n real nZ;\n int nObs;\n}"
+    "data {\n  int X[nObs];\n  real Y[nObs];\n  int Z[nObs];\n  real nZ;\n  int nObs;\n}"
   )
 })
 
@@ -228,82 +228,76 @@ test_that("create data block with a scalar real and no nObs", {
 
   expect_equal(
     output,
-    "data {\n int X[4];\n real Y[4];\n int Z[4];\n real nZ;\n}"
+    "data {\n  int X[4];\n  real Y[4];\n  int Z[4];\n  real nZ;\n}"
   )
 })
 
 test_that("output empty data block with empty nlist passed", {
   expect_equal(
-    data_block(nlist::as_nlist(list())),
+    data_block(nlist::nlist()),
     "data {\n}"
   )
 })
 
 test_that("create data block when zero length vectors in the list", {
-  data <- nlist::as_nlist(
-    list(
-      X = integer(),
-      Y = double(),
-      Z = factor()
-    )
+  data <- nlist::nlist(
+    X = integer(),
+    Y = double(),
+    Z = factor()
   )
 
   output <- data_block(data)
 
   expect_equal(
     output,
-    "data {\n int X;\n real Y;\n int Z;\n}"
+    "data {\n}"
   )
 })
 
 test_that("passes when one zero length integer vector in the list", {
-  data <- nlist::as_nlist(
-    list(
-      X = integer()
-    )
+  data <- nlist::nlist(
+    X = integer()
   )
 
   output <- data_block(data)
 
   expect_equal(
     output,
-    "data {\n int X;\n}"
+    "data {\n}"
   )
 })
 
 test_that("passes when one zero length double vector in the list", {
-  data <- nlist::as_nlist(
-    list(
-      X = double()
-    )
+  data <- nlist::nlist(
+    X = double()
   )
 
   output <- data_block(data)
 
   expect_equal(
     output,
-    "data {\n real X;\n}"
+    "data {\n}"
   )
 })
 
 test_that("errors with no arguments passed", {
   expect_error(
     data_block(),
-    regexp = 'argument "data" is missing, with no default'
+    regexp = 'argument "x" is missing, with no default'
   )
 })
 
 test_that("errors when NULL passed", {
   expect_error(
     data_block(NULL),
-    regexp = "`data` must inherit from S3 class 'nlist'."
+    regexp = "`x` must inherit from S3 class 'nlist'."
   )
 })
 
 test_that("errors when a number is passed as data argument", {
   expect_error(
     data_block(2),
-    regexp = "`data` must inherit from S3 class 'nlist'."
+    regexp = "`x` must inherit from S3 class 'nlist'."
   )
 })
 
@@ -315,38 +309,32 @@ test_that("errors when a dataframe is passed", {
   )
   expect_error(
     data_block(data),
-    regexp = "`data` must inherit from S3 class 'nlist'."
+    regexp = "`x` must inherit from S3 class 'nlist'."
   )
 })
 
 test_that("errors when matrix passed in nlist", {
-
-  data <- nlist::as_nlist(
-    list(
-      X = matrix(1:10, 2),
-      Y = double(),
-      Z = factor()
-    )
+  data <- nlist::nlist(
+    X = matrix(1:10, 2),
+    Y = double(),
+    Z = factor()
   )
 
   expect_error(
     data_block(data),
-    regexp = "Matrix data type not allowed"
+    regexp = "Matrix data type not currently implemented"
   )
 })
 
 test_that("errors when array passed in nlist", {
-
-  data <- nlist::as_nlist(
-    list(
-      X = integer(),
-      Y = array(1:10, 2),
-      Z = factor()
-    )
+  data <- nlist::nlist(
+    X = integer(),
+    Y = array(1:10, 2),
+    Z = factor()
   )
 
   expect_error(
     data_block(data),
-    regexp = "Array data type not allowed"
+    regexp = "Array data type not currently implemented"
   )
 })

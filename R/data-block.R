@@ -14,71 +14,75 @@
 #'   nObs = 4L
 #' ))
 #' data_block(mod_data)
-data_block <- function(data) {
-  nlist::chk_nlist(data)
-
-  parm_names <- names(data)
-
-  block <- c("data {\n")
-  if ("nObs" %in% parm_names) {
-    for (i in parm_names) {
-      if (inherits(data[[i]], "matrix")) {
-        err("Matrix data type not allowed")
-      }
-      if (inherits(data[[i]], "array")) {
-        err("Array data type not allowed")
-      }
-      if (inherits(data[[i]], "integer")) {
-        if (length(data[[i]]) == data[["nObs"]]) {
-          msg <- paste0(" int ", i, "[nObs]", ";", "\n")
-          block <- c(block, msg)
-        } else {
-          msg <- paste0(" int ", i, ";", "\n")
-          block <- c(block, msg)
-        }
-      }
-      if (inherits(data[[i]], "numeric")) {
-        if (length(data[[i]]) > 1) {
-          msg <- paste0(" real ", i, "[nObs]", ";", "\n")
-          block <- c(block, msg)
-        } else {
-          msg <- paste0(" real ", i, ";", "\n")
-          block <- c(block, msg)
-        }
-      }
-    }
-    block <- c(block, "}")
-    block <- paste0(block, collapse = "")
-    block
-  } else {
-    for (i in parm_names) {
-      if (inherits(data[[i]], "matrix")) {
-        err("Matrix data type not allowed")
-      }
-      if (inherits(data[[i]], "array")) {
-        err("Array data type not allowed")
-      }
-      if (inherits(data[[i]], "integer")) {
-        if (length(data[[i]]) > 1) {
-          msg <- paste0(" int ", i, "[", length(data[[i]]), "]", ";", "\n")
-          block <- c(block, msg)
-        } else {
-          msg <- paste0(" int ", i, ";", "\n")
-          block <- c(block, msg)
-        }
-      }
-      if (inherits(data[[i]], "numeric")) {
-        if (length(data[[i]]) > 1) {
-          msg <- paste0(" real ", i, "[", length(data[[i]]), "]", ";", "\n")
-          block <- c(block, msg)
-        } else {
-          msg <- paste0(" real ", i, ";", "\n")
-          block <- c(block, msg)
-        }
-      }
-    }
-    block <- c(block, "}")
-    block <- paste0(block, collapse = "")
-    block
+data_block <- function(x) {
+  nlist::chk_nlist(x)
+  nobs <- get_nobs(x)
+  x <- purrr::keep(x, has_length)
+  strings <- purrr::imap_chr(x, .f = data_block_element, nobs = nobs)
+  if(length(strings)) {
+    strings <- paste0("  ", strings, ";\n", collapse = "")
   }
+  paste0("data {\n", strings, "}", collapse = "")
+}
+
+data_block_element <- function(x, name, nobs = NULL, ...) {
+  chk_unused(...)
+  UseMethod("data_block_element")
+}
+
+# blow away zero lengths...
+data_block_element.array <- function(x, name, nobs = NULL, ...) {
+  err("array data type not currently implemented")
+}
+
+data_block_element.matrix <- function(x, name, nobs = NULL, ...) {
+  err("matrix data type not currently implemented")
+}
+
+data_block_element.integer <- function(x, name, nobs = NULL, ...) {
+  if(is.null(nobs)) {
+    nobs <- 0L
+  }
+  chk_count(nobs)
+
+  if(!length(x)) return(NULL)
+
+  if(rlang::is_scalar_integer(x)) {
+    out <- paste0("int ", name, sep = "")
+    return(out)
+  }
+  n <- length(x)
+  if(nobs == n) {
+    n <- "nObs"
+  }
+  paste0("int ", name, "[", n ,"]", sep = "")
+}
+
+data_block_element.double <- function(x, name, nobs = NULL, ...) {
+  if(is.null(nobs)) {
+    nobs <- 0L
+  }
+  chk_count(nobs)
+
+  if(!length(x)) return(NULL)
+
+  if(rlang::is_scalar_double(x)) {
+    out <- paste0("real ", name, sep = "")
+    return(out)
+  }
+  n <- length(x)
+  if(nobs == n) {
+    n <- "nObs"
+  }
+  paste0("real ", name, "[", n ,"]", sep = "")
+}
+
+has_length <- function(x) {
+  length(x) != 0
+}
+
+get_nobs <- function(x) {
+  nobs <- x$nObs
+  if(rlang::is_scalar_integer(nobs)) return(nobs)
+  0L
 }
