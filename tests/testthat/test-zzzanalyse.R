@@ -63,11 +63,20 @@ test_that("analyse", {
     }
   )
 
-  expect_identical(pars(model, "fixed"), c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))
+  expect_identical(
+    pars(model, "fixed"),
+    c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")
+  )
   expect_identical(pars(model, "random"), "bAnnual")
-  expect_identical(pars(model, "primary"), c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual"))
+  expect_identical(
+    pars(model, "primary"),
+    c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")
+  )
   expect_identical(pars(model, "derived"), "sAnnual")
-  expect_identical(pars(model, "all"), c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))
+  expect_identical(
+    pars(model, "all"),
+    c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")
+  )
   expect_identical(pars(model), pars(model, "all"))
 
   data <- bauw::peregrine
@@ -108,7 +117,10 @@ test_that("analyse", {
   monitor <- rstan::monitor(analysis$stanfit, print = FALSE)
   rhat <- rhat(analysis, by = "term", as_df = TRUE)
 
-  rhat_stan <- tibble::tibble(term = as.term(row.names(monitor)), rhat = round(monitor[, "Rhat"], 3))
+  rhat_stan <- tibble::tibble(
+    term = as.term(row.names(monitor)),
+    rhat = round(monitor[, "Rhat"], 3)
+  )
   rhat_stan <- rhat_stan[rhat_stan$term != "lp__", ]
   expect_identical(rhat$term, rhat_stan$term)
 
@@ -118,7 +130,13 @@ test_that("analyse", {
   expect_identical(glance$K, 5L)
   expect_identical(glance$nthin, 2L)
 
-  expect_identical(colnames(glance), c("n", "K", "logLik", "IC", "nchains", "niters", "nthin", "ess", "rhat", "converged"))
+  expect_identical(
+    colnames(glance),
+    c(
+      "n", "K", "logLik", "IC", "nchains", "niters", "nthin", "ess", "rhat",
+      "converged"
+      )
+    )
 
   waic <- IC(analysis)
   expect_gt(waic, 305)
@@ -128,15 +146,33 @@ test_that("analyse", {
 
   expect_is(coef, "tbl")
   expect_is(coef, "mb_analysis_coef")
-  expect_identical(colnames(coef), c("term", "estimate", "lower", "upper", "svalue"))
-
-  expect_identical(coef$term, sort(as.term(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual"))))
-
-  expect_identical(coef(analysis, "derived", simplify = TRUE)$term, as.term("sAnnual"))
-  expect_identical(coef(analysis, "all", simplify = TRUE)$term, sort(as.term(c("alpha", paste0("bAnnual[", 1:40, "]"), "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual"))))
+  expect_identical(
+    colnames(coef),
+    c("term", "estimate", "lower", "upper", "svalue")
+  )
+  expect_identical(
+    coef$term,
+    sort(as.term(c("alpha", "beta1", "beta2", "beta3", "log_sAnnual")))
+  )
+  expect_identical(
+    coef(analysis, "derived", simplify = TRUE)$term,
+    as.term("sAnnual")
+  )
+  expect_identical(
+    coef(analysis, "all", simplify = TRUE)$term,
+    sort(
+      as.term(
+        c("alpha", paste0("bAnnual[", 1:40, "]"), "beta1", "beta2", "beta3",
+          "log_sAnnual", "sAnnual")
+        )
+      )
+    )
 
   tidy <- tidy(analysis)
-  expect_identical(colnames(tidy), c("term", "estimate", "lower", "upper", "esr", "rhat"))
+  expect_identical(
+    colnames(tidy),
+    c("term", "estimate", "lower", "upper", "esr", "rhat")
+  )
 
   year <- predict(analysis, new_data = "Year")
 

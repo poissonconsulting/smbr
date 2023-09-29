@@ -41,8 +41,13 @@ test_that("create data block with integer, double, logical and factor present in
     annual = c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L),
     site = factor(c(1L, 1L, 1L, 2L, 2L, 2L, 1L, 1L, 1L, 2L, 2L, 2L)),
     quadrat = c(1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L),
-    kelpline = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE),
-    temp = c(10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5)
+    kelpline = c(
+      FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE,
+      FALSE
+    ),
+    temp = c(
+      10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5
+    )
   )
 
   model <- model("model {
@@ -89,8 +94,13 @@ test_that("create data block with no nObs", {
     annual = c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L),
     site = factor(c(1L, 1L, 1L, 2L, 2L, 2L, 1L, 1L, 1L, 2L, 2L, 2L)),
     quadrat = c(1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L),
-    kelpline = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE),
-    temp = c(10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5)
+    kelpline = c(
+      FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE,
+      FALSE
+    ),
+    temp = c(
+      10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5
+    )
   )
 
   model <- model("model {

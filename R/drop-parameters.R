@@ -1,6 +1,10 @@
 drop_parameter <- function(x, parameter) {
   if (!parameter %in% pars(x, "primary", scalar = TRUE)) {
-    error("parameter '", parameter, "' is not an (untransformed) scalar (int or real) parameter in code")
+    error(
+      "parameter '",
+      parameter,
+      "' is not an (untransformed) scalar (int or real) parameter in code"
+    )
   }
 
   pars <- get_par_names(x)

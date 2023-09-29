@@ -29,7 +29,8 @@ get_block_location <- function(x, block_name) {
   if (ncol(block_locs) != length(block_names)) stop("Number of Stan blocks does not match number of block names")
 
   n_block <- ncol(block_locs)
-  block_locs[1:(2 * n_block - 1)] <- block_locs %>% magrittr::extract(2:(2 * n_block))
+  block_locs[1:(2 * n_block - 1)] <- block_locs %>%
+    magrittr::extract(2:(2 * n_block))
   block_locs[2 * n_block] <- nchar(x)
   block_locs %<>% t() %>% set_rownames(block_names)
 
@@ -141,7 +142,10 @@ paste_transformed_data <- function(x, text, top = TRUE) {
   text %<>% rm_comments()
 
   if (!has_block(x, "transformed data")) {
-    x %<>% str_replace("\\n\\s*parameters\\s*[{]", "\ntransformed data{\n}\nparameters{")
+    x %<>% str_replace(
+      "\\n\\s*parameters\\s*[{]",
+      "\ntransformed data{\n}\nparameters{"
+    )
   }
 
   if (top) {

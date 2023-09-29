@@ -44,7 +44,10 @@ test_that("code", {
   expect_identical(class(code), c("smb_code", "mb_code"))
   expect_true(is.smb_code(code))
 
-  expect_identical(pars(code), c("bar", "foo", "foo2", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(
+    pars(code),
+    c("bar", "foo", "foo2", "mu_y", "sigma_y", "tau_y")
+  )
 
   expect_identical(
     pars(code, "primary"),
@@ -62,7 +65,11 @@ test_that("code", {
     c("sigma_y")
   )
 
-  code10 <- sd_priors_by(code, 10, distributions = c("logistic", "normal", "lognormal", "t"))
+  code10 <- sd_priors_by(
+    code,
+    10,
+    distributions = c("logistic", "normal", "lognormal", "t")
+  )
   expect_true(is.smb_code(code10))
   expect_identical(pars(code10), pars(code))
   expect_identical(
