@@ -2,7 +2,7 @@
 #'
 #' Automate writing the STAN data block from your data.
 #'
-#' @param data A nlist
+#' @param x A nlist
 #'
 #' @return A string
 #' @export
@@ -18,63 +18,12 @@ data_block <- function(x) {
   nlist::chk_nlist(x)
   nobs <- get_nobs(x)
   x <- purrr::keep(x, has_length)
+  browser()
   strings <- purrr::imap_chr(x, .f = data_block_element, nobs = nobs)
   if(length(strings)) {
     strings <- paste0("  ", strings, ";\n", collapse = "")
   }
   paste0("data {\n", strings, "}", collapse = "")
-}
-
-data_block_element <- function(x, name, nobs = NULL, ...) {
-  chk_unused(...)
-  UseMethod("data_block_element")
-}
-
-# blow away zero lengths...
-data_block_element.array <- function(x, name, nobs = NULL, ...) {
-  err("array data type not currently implemented")
-}
-
-data_block_element.matrix <- function(x, name, nobs = NULL, ...) {
-  err("matrix data type not currently implemented")
-}
-
-data_block_element.integer <- function(x, name, nobs = NULL, ...) {
-  if(is.null(nobs)) {
-    nobs <- 0L
-  }
-  chk_count(nobs)
-
-  if(!length(x)) return(NULL)
-
-  if(rlang::is_scalar_integer(x)) {
-    out <- paste0("int ", name, sep = "")
-    return(out)
-  }
-  n <- length(x)
-  if(nobs == n) {
-    n <- "nObs"
-  }
-  paste0("int ", name, "[", n ,"]", sep = "")
-}
-
-data_block_element.double <- function(x, name, nobs = NULL, ...) {
-  if(is.null(nobs)) {
-    nobs <- 0L
-  }
-  chk_count(nobs)
-
-  if(!length(x)) return(NULL)
-
-  if(rlang::is_scalar_double(x)) {
-    out <- paste0("real ", name, sep = "")
-    return(out)
-  }
-  n <- length(x)
-  if(nobs == n) {
-    n <- "nObs"
-  }
-  paste0("real ", name, "[", n ,"]", sep = "")
 }
 
 has_length <- function(x) {
