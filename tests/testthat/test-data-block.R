@@ -232,14 +232,14 @@ test_that("create data block with a scalar real and no nObs", {
   )
 })
 
-test_that("outputs empty data block with empty nlist passed", {
+test_that("output empty data block with empty nlist passed", {
   expect_equal(
     data_block(nlist::as_nlist(list())),
     "data {}"
   )
 })
 
-test_that("passes when zero length vectors in the list", {
+test_that("create data block when zero length vectors in the list", {
   data <- nlist::as_nlist(
     list(
       X = integer(),
@@ -256,7 +256,7 @@ test_that("passes when zero length vectors in the list", {
   )
 })
 
-test_that("passes when zero length single integer vector in the list", {
+test_that("passes when one zero length integer vector in the list", {
   data <- nlist::as_nlist(
     list(
       X = integer()
@@ -271,7 +271,7 @@ test_that("passes when zero length single integer vector in the list", {
   )
 })
 
-test_that("passes when zero length single integer double in the list", {
+test_that("passes when one zero length double vector in the list", {
   data <- nlist::as_nlist(
     list(
       X = double()
