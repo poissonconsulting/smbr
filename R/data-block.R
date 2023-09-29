@@ -34,4 +34,3 @@ get_nobs <- function(x) {
   if(rlang::is_scalar_integer(nobs)) return(nobs)
   0L
 }
-
