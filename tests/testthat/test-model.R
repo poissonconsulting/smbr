@@ -1,5 +1,4 @@
 test_that("pars(", {
-
   template <- ("
     data {
       int<lower=0> N; // unmodeled data
@@ -43,17 +42,23 @@ test_that("pars(", {
 
   expect_identical(pars(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
 
-  expect_identical(pars(model, "primary"),
-                   c("foo", "mu_y", "tau_y"))
+  expect_identical(
+    pars(model, "primary"),
+    c("foo", "mu_y", "tau_y")
+  )
 
   expect_identical(pars(model, "primary", scalar = TRUE), c("mu_y", "tau_y"))
 
   expect_identical(pars(model, param_type = "derived"), character(0))
-  expect_identical(pars(model, param_type = "derived", scalar = TRUE),
-                   character(0))
+  expect_identical(
+    pars(model, param_type = "derived", scalar = TRUE),
+    character(0)
+  )
 
-  expect_identical(pars(model, "fixed", scalar = TRUE),
-                   c("mu_y", "tau_y"))
+  expect_identical(
+    pars(model, "fixed", scalar = TRUE),
+    c("mu_y", "tau_y")
+  )
 
   expect_identical(embr::monitor(model), c("mu_y", "sigma_y", "tau_y"))
 
@@ -72,7 +77,6 @@ test_that("pars(", {
 })
 
 test_that("pars derived(", {
-
   template <- ("
     data {
       int<lower=0> N; // unmodeled data
@@ -116,14 +120,18 @@ test_that("pars derived(", {
 
   expect_identical(pars(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
 
-  expect_identical(pars(model, "primary"),
-                   c("foo", "mu_y", "tau_y"))
+  expect_identical(
+    pars(model, "primary"),
+    c("foo", "mu_y", "tau_y")
+  )
 
   expect_identical(pars(model, "primary", scalar = TRUE), c("mu_y", "tau_y"))
 
   expect_identical(pars(model, param_type = "derived"), c("bar", "sigma_y"))
-  expect_identical(pars(model, param_type = "derived", scalar = TRUE),
-                   "bar")
+  expect_identical(
+    pars(model, param_type = "derived", scalar = TRUE),
+    "bar"
+  )
 
   expect_identical(pars(model, "fixed", scalar = TRUE), c("mu_y", "tau_y"))
 
@@ -142,4 +150,3 @@ test_that("pars derived(", {
 
   expect_identical(pars(models[["base"]], "primary"), "foo")
 })
-

@@ -14,15 +14,15 @@ test_that("create simple data block with X as integer and Y as double", {
       Y[i] ~ dnorm(eY[i], sY^-2)
     }
   }",
-  new_expr = "
+    new_expr = "
     for(i in 1:nObs) {
       prediction[i] <- bY + bX * X[i]
       fit[i] <- prediction[i]
     }
   ",
-  select_data = list(
-    X = c(0L, 10L),
-    Y = 1
+    select_data = list(
+      X = c(0L, 10L),
+      Y = 1
     )
   )
 
@@ -41,8 +41,13 @@ test_that("create data block with integer, double, logical and factor present in
     annual = c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L),
     site = factor(c(1L, 1L, 1L, 2L, 2L, 2L, 1L, 1L, 1L, 2L, 2L, 2L)),
     quadrat = c(1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L),
-    kelpline = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE),
-    temp = c(10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5)
+    kelpline = c(
+      FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE,
+      FALSE
+    ),
+    temp = c(
+      10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5
+    )
   )
 
   model <- model("model {
@@ -59,19 +64,19 @@ test_that("create data block with integer, double, logical and factor present in
       temp[i] ~ dnorm(etemp[i], stemp^-2)
     }
   }",
-  new_expr = "
+    new_expr = "
     for(i in 1:nObs) {
       prediction[i] <- btemp + bannual * annual[i] + bsite * site[i] + bquadrat * quadrat[i] + bkelpline * kelpline[i]
       fit[i] <- prediction[i]
     }
   ",
-  select_data = list(
-    annual = c(0L, 10L),
-    site = factor(1),
-    quadrat = c(1L, 3L),
-    kelpline = logical(1),
-    temp = c(-5, 20)
-  )
+    select_data = list(
+      annual = c(0L, 10L),
+      site = factor(1),
+      quadrat = c(1L, 3L),
+      kelpline = logical(1),
+      temp = c(-5, 20)
+    )
   )
 
   mod_data <- nlist::as_nlist(modify_data(data, model))
@@ -89,8 +94,13 @@ test_that("create data block with no nObs", {
     annual = c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L),
     site = factor(c(1L, 1L, 1L, 2L, 2L, 2L, 1L, 1L, 1L, 2L, 2L, 2L)),
     quadrat = c(1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L),
-    kelpline = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE),
-    temp = c(10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5)
+    kelpline = c(
+      FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE,
+      FALSE
+    ),
+    temp = c(
+      10.2, -0.3, 12.7, 16.4, 10.3, 12.6, 14.3, 13.2, 17.3, 13.4, 12.5, 14.5
+    )
   )
 
   model <- model("model {
@@ -107,23 +117,23 @@ test_that("create data block with no nObs", {
       temp[i] ~ dnorm(etemp[i], stemp^-2)
     }
   }",
-  new_expr = "
+    new_expr = "
     for(i in 1:nObs) {
       prediction[i] <- btemp + bannual * annual[i] + bsite * site[i] + bquadrat * quadrat[i] + bkelpline * kelpline[i]
       fit[i] <- prediction[i]
     }
   ",
-  select_data = list(
-    annual = c(0L, 10L),
-    site = factor(1),
-    quadrat = c(1L, 3L),
-    kelpline = logical(1),
-    temp = c(-5, 20)
-  ),
-  modify_data = function(data) {
-    data$nObs <- NULL
-    data
-  }
+    select_data = list(
+      annual = c(0L, 10L),
+      site = factor(1),
+      quadrat = c(1L, 3L),
+      kelpline = logical(1),
+      temp = c(-5, 20)
+    ),
+    modify_data = function(data) {
+      data$nObs <- NULL
+      data
+    }
   )
 
   mod_data <- nlist::as_nlist(modify_data(data, model))
@@ -154,21 +164,21 @@ test_that("create data block with a scalar real", {
       Y[i] ~ dnorm(eY[i], sY^-2)
     }
   }",
-  new_expr = "
+    new_expr = "
     for(i in 1:nObs) {
       prediction[i] <- bY + bX * X[i] + bZ * Z[i]
       fit[i] <- prediction[i]
     }
   ",
-  select_data = list(
-    X = c(0L, 10L),
-    Y = 1,
-    Z = factor(1)
-  ),
-  modify_data = function(data) {
-    data$nZ <- as.double(data$nZ)
-    data
-  }
+    select_data = list(
+      X = c(0L, 10L),
+      Y = 1,
+      Z = factor(1)
+    ),
+    modify_data = function(data) {
+      data$nZ <- as.double(data$nZ)
+      data
+    }
   )
 
   mod_data <- nlist::as_nlist(modify_data(data, model))
@@ -199,22 +209,22 @@ test_that("create data block with a scalar real and no nObs", {
       Y[i] ~ dnorm(eY[i], sY^-2)
     }
   }",
-  new_expr = "
+    new_expr = "
     for(i in 1:nObs) {
       prediction[i] <- bY + bX * X[i] + bZ * Z[i]
       fit[i] <- prediction[i]
     }
   ",
-  select_data = list(
-    X = c(0L, 10L),
-    Y = 1,
-    Z = factor(1)
-  ),
-  modify_data = function(data) {
-    data$nZ <- as.double(data$nZ)
-    data$nObs <- NULL
-    data
-  }
+    select_data = list(
+      X = c(0L, 10L),
+      Y = 1,
+      Z = factor(1)
+    ),
+    modify_data = function(data) {
+      data$nZ <- as.double(data$nZ)
+      data$nObs <- NULL
+      data
+    }
   )
 
   mod_data <- nlist::as_nlist(modify_data(data, model))

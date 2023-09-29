@@ -60,7 +60,7 @@ model <- model("
   }
   model {
       vector[nObs] ePairs;
-    
+
       log_sAnnual ~ normal(0, 10);
       bAnnual ~ normal(0, sAnnual);
 
@@ -70,7 +70,7 @@ model <- model("
       beta3 ~ normal(0, 10);
 
       for (i in 1:nObs) {
-        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
+        ePairs[i] = exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                       beta3 * Year[i]^3 + bAnnual[Annual[i]]);
       }
       target += poisson_lpmf(Pairs | ePairs);
@@ -79,17 +79,20 @@ model <- model("
 # add R code to calculate derived parameters
 model %<>% update_model(new_expr = "
   for (i in 1:length(Pairs)) {
-    prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 + 
+    prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
   }
 ")
 
 # define data types and center year
 model %<>% update_model(
-  select_data = list("Pairs" = integer(), "Year*" = integer(), 
-                     Annual = factor()),
+  select_data = list(
+    "Pairs" = integer(), "Year*" = integer(),
+    Annual = factor()
+  ),
   derived = "sAnnual",
-  random_effects = list(bAnnual = "Annual"))
+  random_effects = list(bAnnual = "Annual")
+)
 
 data <- bauw::peregrine
 data$Annual <- factor(data$Year)
@@ -128,7 +131,7 @@ devtools::install_github("poissonconsulting/smbr")
 ## Citation
 
 ```{r, comment="", echo=FALSE}
-citation(package = 'smbr')
+citation(package = "smbr")
 ```
 
 ## Contribution

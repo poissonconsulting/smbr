@@ -30,40 +30,44 @@ data_block_element.matrix <- function(x, name, nobs = NULL, ...) {
 
 #' @export
 data_block_element.integer <- function(x, name, nobs = NULL, ...) {
-  if(is.null(nobs)) {
+  if (is.null(nobs)) {
     nobs <- 0L
   }
   chk::chk_count(nobs)
 
-  if(!length(x)) return(NULL)
+  if (!length(x)) {
+    return(NULL)
+  }
 
-  if(rlang::is_scalar_integer(x)) {
+  if (rlang::is_scalar_integer(x)) {
     out <- paste0("int ", name, sep = "")
     return(out)
   }
   n <- length(x)
-  if(nobs == n) {
+  if (nobs == n) {
     n <- "nObs"
   }
-  paste0("int ", name, "[", n ,"]", sep = "")
+  paste0("int ", name, "[", n, "]", sep = "")
 }
 
 #' @export
 data_block_element.double <- function(x, name, nobs = NULL, ...) {
-  if(is.null(nobs)) {
+  if (is.null(nobs)) {
     nobs <- 0L
   }
   chk::chk_count(nobs)
 
-  if(!length(x)) return(NULL)
+  if (!length(x)) {
+    return(NULL)
+  }
 
-  if(rlang::is_scalar_double(x)) {
+  if (rlang::is_scalar_double(x)) {
     out <- paste0("real ", name, sep = "")
     return(out)
   }
   n <- length(x)
-  if(nobs == n) {
+  if (nobs == n) {
     n <- "nObs"
   }
-  paste0("real ", name, "[", n ,"]", sep = "")
+  paste0("real ", name, "[", n, "]", sep = "")
 }

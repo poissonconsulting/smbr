@@ -2,7 +2,7 @@
 pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
   chk_string(param_type)
   chk_subset(param_type, c("fixed", "random", "derived", "primary", "all"))
-  if(!is.null(scalar)) chk_flag(scalar)
+  if (!is.null(scalar)) chk_flag(scalar)
   chk_unused(...)
 
   if (param_type %in% c("fixed", "random")) {
@@ -22,12 +22,12 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
 
   if (param_type == "derived") {
     if (str_detect(template(x), "transformed parameters\\s*[{]{1}")) {
-        pars <- get_par_names(x, "transformed parameters")
-        scalars <- get_par_scalar(x, "transformed parameters")
-      } else {
-        pars <- character(0)
-        scalars <- logical(0)
-      }
+      pars <- get_par_names(x, "transformed parameters")
+      scalars <- get_par_scalar(x, "transformed parameters")
+    } else {
+      pars <- character(0)
+      scalars <- logical(0)
+    }
   }
   if (param_type == "primary") {
     pars <- get_par_names(x, "parameters")
@@ -35,8 +35,9 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
   }
   if (isTRUE(scalar)) {
     pars <- pars[scalars]
-  } else if (isFALSE(scalar))
+  } else if (isFALSE(scalar)) {
     pars <- pars[!scalars]
+  }
 
   pars %<>% sort()
 
@@ -50,12 +51,13 @@ pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
   chk_null_or(scalar, vld = vld_flag)
   chk_unused(...)
 
-  if(param_type == "derived") {
+  if (param_type == "derived") {
     return(sort(x$derived))
   }
 
-  if (!param_type %in% c("fixed", "random"))
+  if (!param_type %in% c("fixed", "random")) {
     return(pars(code(x), param_type = param_type, scalar = scalar))
+  }
 
   pars <- pars(code(x), param_type = "primary", scalar = scalar)
 
@@ -65,7 +67,9 @@ pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
     intersect(pars) %>%
     sort()
 
-  if (param_type == "random") return(random)
+  if (param_type == "random") {
+    return(random)
+  }
 
   pars %<>%
     setdiff(random) %>%
