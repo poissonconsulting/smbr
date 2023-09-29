@@ -7,19 +7,19 @@
 data_block(data)
 }
 \arguments{
-\item{data}{A list of parameters}
+\item{data}{A nlist}
 }
 \value{
 A string
 }
 \description{
-Automate the data block straight from your data.
+Automate writing the STAN data block from your data.
 }
 \examples{
-mod_data <- list(
+mod_data <- nlist::as_nlist(list(
   X = c(1L, 2L, 3L, 4L),
   Y = c(1.2, 7.3, 8.9, 2.6),
   nObs = 4L
-)
+))
 data_block(mod_data)
 }

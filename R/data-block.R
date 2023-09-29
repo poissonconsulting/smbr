@@ -1,6 +1,6 @@
 #' Create Data Block from Data List
 #'
-#' Automate the data block straight from your data.
+#' Automate writing the STAN data block from your data.
 #'
 #' @param data A nlist
 #'
@@ -8,11 +8,11 @@
 #' @export
 #'
 #' @examples
-#' mod_data <- list(
+#' mod_data <- nlist::as_nlist(list(
 #'   X = c(1L, 2L, 3L, 4L),
 #'   Y = c(1.2, 7.3, 8.9, 2.6),
 #'   nObs = 4L
-#' )
+#' ))
 #' data_block(mod_data)
 data_block <- function(data) {
   nlist::chk_nlist(data)
