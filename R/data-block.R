@@ -18,7 +18,6 @@ data_block <- function(x) {
   nlist::chk_nlist(x)
   nobs <- get_nobs(x)
   x <- purrr::keep(x, has_length)
-  browser()
   strings <- purrr::imap_chr(x, .f = data_block_element, nobs = nobs)
   if(length(strings)) {
     strings <- paste0("  ", strings, ";\n", collapse = "")
