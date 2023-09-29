@@ -318,3 +318,35 @@ test_that("errors when a dataframe is passed", {
     regexp = "`data` must inherit from S3 class 'nlist'."
   )
 })
+
+test_that("errors when matrix passed in nlist", {
+
+  data <- nlist::as_nlist(
+    list(
+      X = matrix(1:10, 2),
+      Y = double(),
+      Z = factor()
+    )
+  )
+
+  expect_error(
+    data_block(data),
+    regexp = "Matrix data type not allowed"
+  )
+})
+
+test_that("errors when array passed in nlist", {
+
+  data <- nlist::as_nlist(
+    list(
+      X = integer(),
+      Y = array(1:10, 2),
+      Z = factor()
+    )
+  )
+
+  expect_error(
+    data_block(data),
+    regexp = "Array data type not allowed"
+  )
+})

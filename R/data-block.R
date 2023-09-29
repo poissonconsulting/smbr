@@ -22,6 +22,12 @@ data_block <- function(data) {
   block <- c("data {\n")
   if ("nObs" %in% parm_names) {
     for (i in parm_names) {
+      if (inherits(data[[i]], "matrix")) {
+        err("Matrix data type not allowed")
+      }
+      if (inherits(data[[i]], "array")) {
+        err("Array data type not allowed")
+      }
       if (inherits(data[[i]], "integer")) {
         if (length(data[[i]]) == data[["nObs"]]) {
           msg <- paste0(" int ", i, "[nObs]", ";", "\n")
@@ -46,6 +52,12 @@ data_block <- function(data) {
     block
   } else {
     for (i in parm_names) {
+      if (inherits(data[[i]], "matrix")) {
+        err("Matrix data type not allowed")
+      }
+      if (inherits(data[[i]], "array")) {
+        err("Array data type not allowed")
+      }
       if (inherits(data[[i]], "integer")) {
         if (length(data[[i]]) > 1) {
           msg <- paste0(" int ", i, "[", length(data[[i]]), "]", ";", "\n")
