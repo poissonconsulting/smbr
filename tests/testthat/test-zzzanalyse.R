@@ -135,8 +135,8 @@ test_that("analyse", {
     c(
       "n", "K", "logLik", "IC", "nchains", "niters", "nthin", "ess", "rhat",
       "converged"
-      )
     )
+  )
 
   waic <- IC(analysis)
   expect_gt(waic, 305)
@@ -162,11 +162,13 @@ test_that("analyse", {
     coef(analysis, "all", simplify = TRUE)$term,
     sort(
       as.term(
-        c("alpha", paste0("bAnnual[", 1:40, "]"), "beta1", "beta2", "beta3",
-          "log_sAnnual", "sAnnual")
+        c(
+          "alpha", paste0("bAnnual[", 1:40, "]"), "beta1", "beta2", "beta3",
+          "log_sAnnual", "sAnnual"
         )
       )
     )
+  )
 
   tidy <- tidy(analysis)
   expect_identical(
