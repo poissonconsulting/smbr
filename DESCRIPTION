@@ -31,7 +31,8 @@ Imports:
     term,
     tibble,
     timer,
-    utils
+    utils,
+    rlang
 Suggests: 
     bauw,
     BH,
