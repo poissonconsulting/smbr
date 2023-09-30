@@ -17,16 +17,12 @@
 data_block <- function(x) {
   nlist::chk_nlist(x)
   nobs <- get_nobs(x)
-  x <- purrr::keep(x, has_length)
+  x <- purrr::compact(x)
   strings <- purrr::imap_chr(x, .f = data_block_element, nobs = nobs)
   if (length(strings)) {
     strings <- paste0("  ", strings, ";\n", collapse = "")
   }
   paste0("data {\n", strings, "}", collapse = "")
-}
-
-has_length <- function(x) {
-  length(x) != 0
 }
 
 get_nobs <- function(x) {
