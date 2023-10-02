@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# smbr 0.0.1.9008
+
+- adding StanHeaders
+
+
 # smbr 0.0.1.9007
 
 - Added `data_block()` function.
