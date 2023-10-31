@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# smbr 0.0.1.9009
+
+- Fixed bug in pars caused by latest changes in embr.
+
+
 # smbr 0.0.1.9008
 
 - adding StanHeaders
