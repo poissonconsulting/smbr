@@ -55,6 +55,17 @@ pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
     return(sort(x$derived))
   }
 
+  if(param_type == "all") {
+    pars <- c("primary", "derived")
+
+    pars %<>%
+      purrr::map(pars_arg2to1, x = x, scalar = scalar) %>%
+      unlist() %>%
+      sort()
+
+    return(pars)
+  }
+
   if (!param_type %in% c("fixed", "random")) {
     return(pars(code(x), param_type = param_type, scalar = scalar))
   }

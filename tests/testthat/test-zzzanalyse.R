@@ -2,7 +2,7 @@ test_that("analyse", {
   embr::set_analysis_mode("check")
 
   # define model in Stan language
-  model <- embr::model("
+  model <- embr::model(mb_code("
  data {
       int nAnnual;
       int nObs;
@@ -40,7 +40,7 @@ test_that("analyse", {
                       beta3 * Year[i]^3 + bAnnual[Annual[i]]);
       }
       Pairs ~ poisson(ePairs);
-  }")
+  }"))
 
   # add R code to calculate derived parameters
   model <- embr::update_model(model, new_expr = "
@@ -73,10 +73,17 @@ test_that("analyse", {
     c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual")
   )
   expect_identical(pars(model, "derived"), "sAnnual")
+
   expect_identical(
     pars(model, "all"),
     c("alpha", "bAnnual", "beta1", "beta2", "beta3", "log_sAnnual", "sAnnual")
   )
+
+  expect_identical(
+    pars(code(model), "all"),
+  c("alpha", "bAnnual", "beta1", "beta2", "beta3", "eAnnual", "log_sAnnual", "sAnnual")
+  )
+
   expect_identical(pars(model), pars(model, "all"))
 
   data <- bauw::peregrine

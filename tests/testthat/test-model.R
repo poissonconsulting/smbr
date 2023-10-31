@@ -40,7 +40,8 @@ test_that("pars(", {
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))
 
-  expect_identical(pars(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(pars(model), c("foo", "mu_y", "tau_y"))
+  expect_identical(pars(code(model)), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
 
   expect_identical(
     pars(model, "primary"),
@@ -113,7 +114,7 @@ test_that("pars derived(", {
       variance_y = sigma_y * sigma_y;
     }")
 
-  model <- model(template, fixed = "_y$", derived = c("sigma_y", "bar"))
+  model <- model(code = template, fixed = "_y$", derived = c("sigma_y", "bar"))
 
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))
