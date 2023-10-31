@@ -61,7 +61,7 @@ test_that("pars(", {
     c("mu_y", "tau_y")
   )
 
-  expect_identical(embr::monitor(model), c("mu_y", "sigma_y", "tau_y"))
+  expect_identical(embr::monitor(model), c("mu_y", "tau_y"))
 
   expect_error(drop_pars(model, "foo"), "parameter 'foo'")
   expect_error(drop_pars(model, "sigma_y"), "parameter 'sigma_y'")
