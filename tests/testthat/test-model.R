@@ -35,7 +35,7 @@ test_that("pars(", {
       variance_y = sigma_y * sigma_y;
     }")
 
-  model <- model(template, fixed = "_y$")
+  model <- model(code = template, fixed = "_y$")
 
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))

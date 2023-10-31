@@ -4,7 +4,7 @@ test_that("create simple data block with X as integer and Y as double", {
     Y = c(1.2, 7.3, 8.9, 2.6)
   )
 
-  model <- model("model {
+  model <- model(code = "model {
     bY ~ dnorm(0, 2^-2)
     bX ~ dnorm(0, 2^-2)
     sY ~ dnorm(0, 2^-2) T(0,)
@@ -50,7 +50,7 @@ test_that("create data block with integer, double, logical and factor present in
     )
   )
 
-  model <- model("model {
+  model <- model(mb_code("model {
     bannual ~ dnorm(0, 2^-2)
     bsite ~ dnorm(0, 2^-2)
     bquadrat ~ dnorm(0, 2^-2)
@@ -63,7 +63,7 @@ test_that("create data block with integer, double, logical and factor present in
       etemp[i] <- btemp + bannual * annual[i] + bsite * site[i] + bquadrat * quadrat[i] + bkelpline * kelpline[i]
       temp[i] ~ dnorm(etemp[i], stemp^-2)
     }
-  }",
+  }"),
     new_expr = "
     for(i in 1:nObs) {
       prediction[i] <- btemp + bannual * annual[i] + bsite * site[i] + bquadrat * quadrat[i] + bkelpline * kelpline[i]
@@ -103,7 +103,7 @@ test_that("create data block with no nObs", {
     )
   )
 
-  model <- model("model {
+  model <- model(code = "model {
     bannual ~ dnorm(0, 2^-2)
     bsite ~ dnorm(0, 2^-2)
     bquadrat ~ dnorm(0, 2^-2)
@@ -153,7 +153,7 @@ test_that("create data block with a scalar real", {
     Z = factor(c(1, 1, 2, 3))
   )
 
-  model <- model("model {
+  model <- model(code = "model {
     bY ~ dnorm(0, 2^-2)
     bX ~ dnorm(0, 2^-2)
     bZ ~ dnorm(0, 2^-2)
@@ -198,7 +198,7 @@ test_that("create data block with a scalar real and no nObs", {
     Z = factor(c(1, 1, 2, 3))
   )
 
-  model <- model("model {
+  model <- model(code = "model {
     bY ~ dnorm(0, 2^-2)
     bX ~ dnorm(0, 2^-2)
     bZ ~ dnorm(0, 2^-2)
