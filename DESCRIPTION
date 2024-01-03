@@ -44,8 +44,7 @@ Remotes:
     poissonconsulting/bauw,
     poissonconsulting/embr,
     poissonconsulting/mcmcdata,
-    poissonconsulting/timer,
-    stan-dev/rstan/rstan/rstan@4722caee9675f1b03232121816de5b9796c15028
+    poissonconsulting/timer
 Encoding: UTF-8
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
