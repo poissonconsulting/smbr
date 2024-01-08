@@ -2,9 +2,7 @@
 
 # smbr 0.0.1.9010
 
-- Merge pull request #28 from poissonconsulting/rstanversion.
-
-  Remove dependency on rstan branch
+- Removed dependency on rstan branch.
 
 
 # smbr 0.0.1.9009
