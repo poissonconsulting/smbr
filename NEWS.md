@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# smbr 0.0.1.9010
+
+- Merge pull request #28 from poissonconsulting/rstanversion.
+
+  Remove dependency on rstan branch
+
+
 # smbr 0.0.1.9009
 
 - Fixed bug in pars caused by latest changes in embr.
