@@ -131,7 +131,7 @@ test_that("pars derived(", {
   expect_identical(pars(model, param_type = "derived"), c("bar", "sigma_y"))
   expect_identical(
     pars(model, param_type = "derived", scalar = TRUE),
-    "bar"
+    c("bar", "sigma_y")
   )
 
   expect_identical(pars(model, "fixed", scalar = TRUE), c("mu_y", "tau_y"))
