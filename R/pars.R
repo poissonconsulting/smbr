@@ -55,7 +55,7 @@ pars.smb_model <- function(x, param_type = "all", scalar = NULL, ...) {
     return(sort(x$derived))
   }
 
-  if(param_type == "all") {
+  if (param_type == "all") {
     pars <- c("primary", "derived")
 
     pars %<>%

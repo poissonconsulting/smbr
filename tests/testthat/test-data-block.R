@@ -4,7 +4,8 @@ test_that("create simple data block with X as integer and Y as double", {
     Y = c(1.2, 7.3, 8.9, 2.6)
   )
 
-  model <- model(code = "model {
+  model <- model(
+    code = "model {
     bY ~ dnorm(0, 2^-2)
     bX ~ dnorm(0, 2^-2)
     sY ~ dnorm(0, 2^-2) T(0,)
@@ -103,7 +104,8 @@ test_that("create data block with no nObs", {
     )
   )
 
-  model <- model(code = "model {
+  model <- model(
+    code = "model {
     bannual ~ dnorm(0, 2^-2)
     bsite ~ dnorm(0, 2^-2)
     bquadrat ~ dnorm(0, 2^-2)
@@ -153,7 +155,8 @@ test_that("create data block with a scalar real", {
     Z = factor(c(1, 1, 2, 3))
   )
 
-  model <- model(code = "model {
+  model <- model(
+    code = "model {
     bY ~ dnorm(0, 2^-2)
     bX ~ dnorm(0, 2^-2)
     bZ ~ dnorm(0, 2^-2)
@@ -198,7 +201,8 @@ test_that("create data block with a scalar real and no nObs", {
     Z = factor(c(1, 1, 2, 3))
   )
 
-  model <- model(code = "model {
+  model <- model(
+    code = "model {
     bY ~ dnorm(0, 2^-2)
     bX ~ dnorm(0, 2^-2)
     bZ ~ dnorm(0, 2^-2)

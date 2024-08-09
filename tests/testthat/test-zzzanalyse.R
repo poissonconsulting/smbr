@@ -81,7 +81,7 @@ test_that("analyse", {
 
   expect_identical(
     pars(code(model), "all"),
-  c("alpha", "bAnnual", "beta1", "beta2", "beta3", "eAnnual", "log_sAnnual", "sAnnual")
+    c("alpha", "bAnnual", "beta1", "beta2", "beta3", "eAnnual", "log_sAnnual", "sAnnual")
   )
 
   expect_identical(pars(model), pars(model, "all"))
