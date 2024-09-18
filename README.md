@@ -8,7 +8,7 @@
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg)](https://codecov.io/gh/poissonconsulting/smbr?branch=master)
+coverage](https://codecov.io/gh/poissonconsulting/smbr/graph/badge.svg)](https://app.codecov.io/gh/poissonconsulting/smbr)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
@@ -65,6 +65,11 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
           }
           target += poisson_lpmf(Pairs | ePairs);
       }")
+    #> Warning: The `x` argument of `model()` character() as of embr 0.0.1.9036.
+    #> ℹ Please use the `code` argument instead.
+    #> ℹ Passing a string to model() is deprecated. Use model(code = ...) or model(mb_code("..."), ...) instead.
+    #> This warning is displayed once every 8 hours.
+    #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
 
     # add R code to calculate derived parameters
     model %<>% update_model(new_expr = "
@@ -105,8 +110,16 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 
     # trace plots
     plot(analysis)
+    #> Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'
+    #> Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'
+    #> Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'
 
-![](tools/README-unnamed-chunk-3-1.png)![](tools/README-unnamed-chunk-3-2.png)
+![](tools/README-unnamed-chunk-3-1.png)
+
+    #> Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'
+    #> Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'
+
+![](tools/README-unnamed-chunk-3-2.png)
 
     # make predictions by varying year with other predictors including the random effect of Annual held constant
     year <- predict(analysis, new_data = "Year")
