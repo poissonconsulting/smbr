@@ -122,83 +122,94 @@
 <span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a><span class="st">      }</span></span>
 <span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a><span class="st">      target += poisson_lpmf(Pairs | ePairs);</span></span>
 <span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a><span class="st">  }"</span>)</span>
-<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a></span>
-<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a><span class="co"># add R code to calculate derived parameters</span></span>
-<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a>model <span class="sc">%&lt;&gt;%</span> <span class="fu">update_model</span>(<span class="at">new_expr =</span> <span class="st">"</span></span>
-<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a><span class="st">  for (i in 1:length(Pairs)) {</span></span>
-<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a><span class="st">    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +</span></span>
-<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a><span class="st">                       beta3 * Year[i]^3 + bAnnual[Annual[i]])</span></span>
-<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a><span class="st">"</span>)</span>
-<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a><span class="co"># define data types and center year</span></span>
-<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a>model <span class="sc">%&lt;&gt;%</span> <span class="fu">update_model</span>(</span>
-<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a>  <span class="at">select_data =</span> <span class="fu">list</span>(</span>
-<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a>    <span class="st">"Pairs"</span> <span class="ot">=</span> <span class="fu">integer</span>(), <span class="st">"Year*"</span> <span class="ot">=</span> <span class="fu">integer</span>(),</span>
-<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a>    <span class="at">Annual =</span> <span class="fu">factor</span>()</span>
-<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a>  ),</span>
-<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a>  <span class="at">derived =</span> <span class="st">"sAnnual"</span>,</span>
-<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>  <span class="at">random_effects =</span> <span class="fu">list</span>(<span class="at">bAnnual =</span> <span class="st">"Annual"</span>)</span>
-<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a>)</span>
-<span id="cb1-63"><a href="#cb1-63" tabindex="-1"></a></span>
-<span id="cb1-64"><a href="#cb1-64" tabindex="-1"></a>data <span class="ot">&lt;-</span> bauw<span class="sc">::</span>peregrine</span>
-<span id="cb1-65"><a href="#cb1-65" tabindex="-1"></a>data<span class="sc">$</span>Annual <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>Year)</span>
-<span id="cb1-66"><a href="#cb1-66" tabindex="-1"></a></span>
-<span id="cb1-67"><a href="#cb1-67" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a><span class="co">#&gt; Warning: The `x` argument of `model()` character() as of embr 0.0.1.9036.</span></span>
+<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a><span class="co">#&gt; ℹ Please use the `code` argument instead.</span></span>
+<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a><span class="co">#&gt; ℹ Passing a string to model() is deprecated. Use model(code = ...) or model(mb_code("..."), ...) instead.</span></span>
+<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span></span>
+<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a><span class="co"># add R code to calculate derived parameters</span></span>
+<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a>model <span class="sc">%&lt;&gt;%</span> <span class="fu">update_model</span>(<span class="at">new_expr =</span> <span class="st">"</span></span>
+<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a><span class="st">  for (i in 1:length(Pairs)) {</span></span>
+<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a><span class="st">    prediction[i] &lt;- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +</span></span>
+<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a><span class="st">                       beta3 * Year[i]^3 + bAnnual[Annual[i]])</span></span>
+<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a><span class="co"># define data types and center year</span></span>
+<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a>model <span class="sc">%&lt;&gt;%</span> <span class="fu">update_model</span>(</span>
+<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>  <span class="at">select_data =</span> <span class="fu">list</span>(</span>
+<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a>    <span class="st">"Pairs"</span> <span class="ot">=</span> <span class="fu">integer</span>(), <span class="st">"Year*"</span> <span class="ot">=</span> <span class="fu">integer</span>(),</span>
+<span id="cb1-63"><a href="#cb1-63" tabindex="-1"></a>    <span class="at">Annual =</span> <span class="fu">factor</span>()</span>
+<span id="cb1-64"><a href="#cb1-64" tabindex="-1"></a>  ),</span>
+<span id="cb1-65"><a href="#cb1-65" tabindex="-1"></a>  <span class="at">derived =</span> <span class="st">"sAnnual"</span>,</span>
+<span id="cb1-66"><a href="#cb1-66" tabindex="-1"></a>  <span class="at">random_effects =</span> <span class="fu">list</span>(<span class="at">bAnnual =</span> <span class="st">"Annual"</span>)</span>
+<span id="cb1-67"><a href="#cb1-67" tabindex="-1"></a>)</span>
 <span id="cb1-68"><a href="#cb1-68" tabindex="-1"></a></span>
-<span id="cb1-69"><a href="#cb1-69" tabindex="-1"></a><span class="co"># analyse</span></span>
-<span id="cb1-70"><a href="#cb1-70" tabindex="-1"></a>analysis <span class="ot">&lt;-</span> <span class="fu">analyse</span>(model, <span class="at">data =</span> data, <span class="at">seed =</span> <span class="dv">3</span><span class="dt">L</span>, <span class="at">glance =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-69"><a href="#cb1-69" tabindex="-1"></a>data <span class="ot">&lt;-</span> bauw<span class="sc">::</span>peregrine</span>
+<span id="cb1-70"><a href="#cb1-70" tabindex="-1"></a>data<span class="sc">$</span>Annual <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>Year)</span>
 <span id="cb1-71"><a href="#cb1-71" tabindex="-1"></a></span>
-<span id="cb1-72"><a href="#cb1-72" tabindex="-1"></a><span class="co"># coefficient table</span></span>
-<span id="cb1-73"><a href="#cb1-73" tabindex="-1"></a><span class="fu">coef</span>(analysis, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-74"><a href="#cb1-74" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 5</span></span>
-<span id="cb1-75"><a href="#cb1-75" tabindex="-1"></a><span class="co">#&gt;   term        estimate   lower   upper svalue</span></span>
-<span id="cb1-76"><a href="#cb1-76" tabindex="-1"></a><span class="co">#&gt;   &lt;term&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span id="cb1-77"><a href="#cb1-77" tabindex="-1"></a><span class="co">#&gt; 1 alpha         4.26    4.18    4.34    9.97 </span></span>
-<span id="cb1-78"><a href="#cb1-78" tabindex="-1"></a><span class="co">#&gt; 2 beta1         1.19    1.07    1.36    9.97 </span></span>
-<span id="cb1-79"><a href="#cb1-79" tabindex="-1"></a><span class="co">#&gt; 3 beta2        -0.0191 -0.0777  0.0393  0.976</span></span>
-<span id="cb1-80"><a href="#cb1-80" tabindex="-1"></a><span class="co">#&gt; 4 beta3        -0.272  -0.356  -0.208   9.97 </span></span>
-<span id="cb1-81"><a href="#cb1-81" tabindex="-1"></a><span class="co">#&gt; 5 log_sAnnual  -2.23   -2.87   -1.70    9.97</span></span>
-<span id="cb1-82"><a href="#cb1-82" tabindex="-1"></a></span>
-<span id="cb1-83"><a href="#cb1-83" tabindex="-1"></a><span class="co"># trace plots</span></span>
-<span id="cb1-84"><a href="#cb1-84" tabindex="-1"></a><span class="fu">plot</span>(analysis)</span></code></pre></div>
-<p><img src="tools/README-unnamed-chunk-3-1.png"><img src="tools/README-unnamed-chunk-3-2.png"></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>year <span class="ot">&lt;-</span> <span class="fu">predict</span>(analysis, <span class="at">new_data =</span> <span class="st">"Year"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># plot those predictions</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> year, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> bauw<span class="sc">::</span>peregrine, <span class="fu">aes</span>(<span class="at">y =</span> Pairs)) <span class="sc">+</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> lower), <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> upper), <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="dv">0</span>)</span></code></pre></div>
+<span id="cb1-72"><a href="#cb1-72" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-73"><a href="#cb1-73" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" tabindex="-1"></a><span class="co"># analyse</span></span>
+<span id="cb1-75"><a href="#cb1-75" tabindex="-1"></a>analysis <span class="ot">&lt;-</span> <span class="fu">analyse</span>(model, <span class="at">data =</span> data, <span class="at">seed =</span> <span class="dv">3</span><span class="dt">L</span>, <span class="at">glance =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-76"><a href="#cb1-76" tabindex="-1"></a></span>
+<span id="cb1-77"><a href="#cb1-77" tabindex="-1"></a><span class="co"># coefficient table</span></span>
+<span id="cb1-78"><a href="#cb1-78" tabindex="-1"></a><span class="fu">coef</span>(analysis, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-79"><a href="#cb1-79" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 5</span></span>
+<span id="cb1-80"><a href="#cb1-80" tabindex="-1"></a><span class="co">#&gt;   term        estimate   lower   upper svalue</span></span>
+<span id="cb1-81"><a href="#cb1-81" tabindex="-1"></a><span class="co">#&gt;   &lt;term&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb1-82"><a href="#cb1-82" tabindex="-1"></a><span class="co">#&gt; 1 alpha         4.26    4.18    4.34    9.97 </span></span>
+<span id="cb1-83"><a href="#cb1-83" tabindex="-1"></a><span class="co">#&gt; 2 beta1         1.19    1.07    1.36    9.97 </span></span>
+<span id="cb1-84"><a href="#cb1-84" tabindex="-1"></a><span class="co">#&gt; 3 beta2        -0.0191 -0.0777  0.0393  0.976</span></span>
+<span id="cb1-85"><a href="#cb1-85" tabindex="-1"></a><span class="co">#&gt; 4 beta3        -0.272  -0.356  -0.208   9.97 </span></span>
+<span id="cb1-86"><a href="#cb1-86" tabindex="-1"></a><span class="co">#&gt; 5 log_sAnnual  -2.23   -2.87   -1.70    9.97</span></span>
+<span id="cb1-87"><a href="#cb1-87" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" tabindex="-1"></a><span class="co"># trace plots</span></span>
+<span id="cb1-89"><a href="#cb1-89" tabindex="-1"></a><span class="fu">plot</span>(analysis)</span>
+<span id="cb1-90"><a href="#cb1-90" tabindex="-1"></a><span class="co">#&gt; Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'</span></span>
+<span id="cb1-91"><a href="#cb1-91" tabindex="-1"></a><span class="co">#&gt; Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'</span></span>
+<span id="cb1-92"><a href="#cb1-92" tabindex="-1"></a><span class="co">#&gt; Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'</span></span></code></pre></div>
+<p><img src="tools/README-unnamed-chunk-3-1.png"></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co">#&gt; Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; Warning in rep(col, length = nchain(x)): partial argument match of 'length' to 'length.out'</span></span></code></pre></div>
+<p><img src="tools/README-unnamed-chunk-3-2.png"></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># make predictions by varying year with other predictors including the random effect of Annual held constant</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>year <span class="ot">&lt;-</span> <span class="fu">predict</span>(analysis, <span class="at">new_data =</span> <span class="st">"Year"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># plot those predictions</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> year, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> bauw<span class="sc">::</span>peregrine, <span class="fu">aes</span>(<span class="at">y =</span> Pairs)) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> lower), <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> upper), <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="dv">0</span>)</span></code></pre></div>
 <p><img src="tools/README-unnamed-chunk-4-1.png"></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"poissonconsulting/smbr"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"poissonconsulting/smbr"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>To cite smbr <span class="cf">in</span> publications use<span class="sc">:</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  Chris Muir and Joe <span class="fu">Thorley</span> (<span class="dv">2018</span>) smbr<span class="sc">:</span> Analyses Using STAN. doi<span class="sc">:</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5281</span><span class="sc">/</span>zenodo.<span class="fl">1162382.</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>A BibTeX entry <span class="cf">for</span> LaTeX users is</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="sc">@</span>Misc{,</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    author <span class="ot">=</span> {Chris Muir and Joe Thorley},</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    year <span class="ot">=</span> {<span class="dv">2018</span>},</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    title <span class="ot">=</span> {smbr<span class="sc">:</span> Analyses Using STAN},</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    doi <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5281</span><span class="sc">/</span>zenodo<span class="fl">.1162382</span>},</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  }</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>Please also cite STAN.</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>To cite smbr <span class="cf">in</span> publications use<span class="sc">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  Chris Muir and Joe <span class="fu">Thorley</span> (<span class="dv">2018</span>) smbr<span class="sc">:</span> Analyses Using STAN. doi<span class="sc">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5281</span><span class="sc">/</span>zenodo.<span class="fl">1162382.</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>A BibTeX entry <span class="cf">for</span> LaTeX users is</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="sc">@</span>Misc{,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    author <span class="ot">=</span> {Chris Muir and Joe Thorley},</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    year <span class="ot">=</span> {<span class="dv">2018</span>},</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    title <span class="ot">=</span> {smbr<span class="sc">:</span> Analyses Using STAN},</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    doi <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5281</span><span class="sc">/</span>zenodo<span class="fl">.1162382</span>},</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  }</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>Please also cite STAN.</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="contribution">Contribution<a class="anchor" aria-label="anchor" href="#contribution"></a>
@@ -261,7 +272,7 @@
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/poissonconsulting/smbr/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/poissonconsulting/smbr?branch=master" class="external-link"><img src="https://codecov.io/gh/poissonconsulting/smbr/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/poissonconsulting/smbr" class="external-link"><img src="https://codecov.io/gh/poissonconsulting/smbr/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a></li>
 </ul>
 </div>
@@ -277,7 +288,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
