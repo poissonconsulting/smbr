@@ -1,16 +1,20 @@
 smb_analyse_chain <- function(inits_chainid, loaded, data,
-                              monitor, seed, niters, nthin, quiet) {
+                              monitor, seed, niters, nthin, quiet,
+                              niters_warmup) {
   capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else identity
 
   inits <- inits_chainid$inits
   if (is.list(inits)) inits <- list(inits)
 
+  iter <- niters * nthin + niters_warmup
+
   capture_output(
     stan_fit <- rstan::sampling(
       loaded,
       data = data, init = inits, pars = monitor,
+      warmup = niters_warmup,
       seed = seed,
-      chains = 1L, iter = niters * 2L * nthin, thin = nthin,
+      chains = 1L, iter = iter, thin = nthin,
       cores = 1L, chain_id = inits_chainid$chain_id,
       show_messages = !quiet
     )
@@ -22,7 +26,7 @@ smb_analyse_chain <- function(inits_chainid, loaded, data,
 
 #' @export
 analyse1.smb_model <- function(model, data, loaded, nchains, niters, nthin,
-                               quiet, glance, parallel, ...) {
+                               quiet, glance, parallel, seed, niters_warmup, ...) {
   timer <- timer::Timer$new()
   timer$start()
 
@@ -38,9 +42,6 @@ analyse1.smb_model <- function(model, data, loaded, nchains, niters, nthin,
 
   monitor <- embr::monitor(model)
 
-  # share seed as different chain_ids
-  seed <- sample.int(.Machine$integer.max, 1)
-
   stan_fit <- llply(inits_chainid,
     .fun = smb_analyse_chain,
     .parallel = parallel,
@@ -48,7 +49,7 @@ analyse1.smb_model <- function(model, data, loaded, nchains, niters, nthin,
     data = data,
     monitor = monitor, seed = seed,
     niters = niters, nthin = nthin,
-    quiet = quiet
+    quiet = quiet, niters_warmup = niters_warmup
   ) %>%
     rstan::sflist2stanfit()
 
