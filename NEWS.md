@@ -1,5 +1,20 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# smbr 0.0.1.9011
+
+- Merge pull request #25 from poissonconsulting/compact.
+
+- Merge pull request #29 from poissonconsulting/upkeep.
+
+  Upkeep
+
+- Merge pull request #28 from poissonconsulting/rstanversion.
+
+  Remove dependency on rstan branch
+
+- Load test make all models.
+
+
 # smbr 0.0.1.9010
 
 - Removed dependency on rstan branch.
