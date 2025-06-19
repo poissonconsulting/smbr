@@ -2,17 +2,7 @@
 
 # smbr 0.0.1.9011
 
-- Merge pull request #25 from poissonconsulting/compact.
-
-- Merge pull request #29 from poissonconsulting/upkeep.
-
-  Upkeep
-
-- Merge pull request #28 from poissonconsulting/rstanversion.
-
-  Remove dependency on rstan branch
-
-- Load test make all models.
+- Added `seed` and `niters_warmup` arguments to analyse1.smb_model
 
 
 # smbr 0.0.1.9010
