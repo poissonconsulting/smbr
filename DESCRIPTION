@@ -5,7 +5,9 @@ Authors@R: c(
     person("Chris", "Muir", role = "aut"),
     person("Joe", "Thorley", , "joe@poissonconsulting.ca", role = c("aut", "cre")),
     person("Ayla", "Pearson", , "ayla@poissonconsulting.ca", role = "ctb",
-           comment = c(ORCID = "0000-0001-7388-1222"))
+           comment = c(ORCID = "0000-0001-7388-1222")),
+    person("Seb", "Dalgarno", , "seb@poissonconsulting.ca", role = "ctb",
+           comment = c(ORCID = "0000-0002-3658-4517"))
   )
 Description: Facilitates analyses using STAN.
 License: MIT + file LICENSE
