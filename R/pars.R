@@ -4,29 +4,33 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
   chk_subset(param_type, c("fixed", "random", "derived", "primary", "all"))
   if (!is.null(scalar)) chk_flag(scalar)
   chk_unused(...)
-
   if (param_type %in% c("fixed", "random")) {
     error("pars.smb_code is not currently able to separate 'fixed' or 'random' parameter types - set param_type = 'primary' instead")
   }
-
   if (param_type == "all") {
     pars <- c("primary", "derived")
-
     pars %<>%
       purrr::map(pars_arg2to1, x = x, scalar = scalar) %>%
       unlist() %>%
       sort()
-
     return(pars)
   }
-
   if (param_type == "derived") {
+    pars <- character(0)
+    scalars <- logical(0)
+
     if (str_detect(template(x), "transformed parameters\\s*[{]{1}")) {
-      pars <- get_par_names(x, "transformed parameters")
-      scalars <- get_par_scalar(x, "transformed parameters")
-    } else {
-      pars <- character(0)
-      scalars <- logical(0)
+      tp_pars <- get_par_names(x, "transformed parameters")
+      tp_scalars <- get_par_scalar(x, "transformed parameters")
+      pars <- c(pars, tp_pars)
+      scalars <- c(scalars, tp_scalars)
+    }
+
+    if (str_detect(template(x), "generated quantities\\s*[{]{1}")) {
+      gq_pars <- get_par_names(x, "generated quantities")
+      gq_scalars <- get_par_scalar(x, "generated quantities")
+      pars <- c(pars, gq_pars)
+      scalars <- c(scalars, gq_scalars)
     }
   }
   if (param_type == "primary") {
@@ -38,9 +42,7 @@ pars.smb_code <- function(x, param_type = "all", scalar = NULL, ...) {
   } else if (isFALSE(scalar)) {
     pars <- pars[!scalars]
   }
-
   pars %<>% sort()
-
   pars
 }
 
