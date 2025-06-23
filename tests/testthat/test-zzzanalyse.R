@@ -140,7 +140,7 @@ test_that("analyse", {
   expect_identical(
     colnames(glance),
     c(
-      "n", "K", "logLik", "IC", "nchains", "niters", "nthin", "ess", "rhat",
+      "n", "K", "nchains", "niters", "nthin", "ess", "rhat",
       "converged"
     )
   )

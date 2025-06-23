@@ -46,7 +46,7 @@ test_that("code", {
 
   expect_identical(
     pars(code),
-    c("bar", "foo", "foo2", "mu_y", "sigma_y", "tau_y")
+    c("bar", "foo", "foo2", "mu_y", "sigma_y", "tau_y", "variance_y")
   )
 
   expect_identical(
@@ -58,11 +58,11 @@ test_that("code", {
 
   expect_identical(
     pars(code, param_type = "derived"),
-    c("bar", "sigma_y")
+    c("bar", "sigma_y", "variance_y")
   )
   expect_identical(
     pars(code, param_type = "derived", scalar = TRUE),
-    c("sigma_y")
+    c("sigma_y", "variance_y")
   )
 
   code10 <- sd_priors_by(

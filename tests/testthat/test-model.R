@@ -41,7 +41,7 @@ test_that("pars(", {
   expect_true(is.smb_model(model))
 
   expect_identical(pars(model), c("foo", "mu_y", "tau_y"))
-  expect_identical(pars(code(model)), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(pars(code(model)), c("bar", "foo", "mu_y", "sigma_y", "tau_y", "variance_y"))
 
   expect_identical(
     pars(model, "primary"),
@@ -114,12 +114,12 @@ test_that("pars derived(", {
       variance_y = sigma_y * sigma_y;
     }")
 
-  model <- model(code = template, fixed = "_y$", derived = c("sigma_y", "bar"))
+  model <- model(code = template, fixed = "_y$", derived = c("sigma_y", "bar", "variance_y"))
 
   expect_identical(class(model), c("smb_model", "mb_model"))
   expect_true(is.smb_model(model))
 
-  expect_identical(pars(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(pars(model), c("bar", "foo", "mu_y", "sigma_y", "tau_y", "variance_y"))
 
   expect_identical(
     pars(model, "primary"),
@@ -128,15 +128,15 @@ test_that("pars derived(", {
 
   expect_identical(pars(model, "primary", scalar = TRUE), c("mu_y", "tau_y"))
 
-  expect_identical(pars(model, param_type = "derived"), c("bar", "sigma_y"))
+  expect_identical(pars(model, param_type = "derived"), c("bar", "sigma_y", "variance_y"))
   expect_identical(
     pars(model, param_type = "derived", scalar = TRUE),
-    c("bar", "sigma_y")
+    c("bar", "sigma_y", "variance_y")
   )
 
   expect_identical(pars(model, "fixed", scalar = TRUE), c("mu_y", "tau_y"))
 
-  expect_identical(embr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y"))
+  expect_identical(embr::monitor(model), c("bar", "mu_y", "sigma_y", "tau_y", "variance_y"))
 
   expect_error(drop_pars(model, "foo"), "parameter 'foo'")
   expect_error(drop_pars(model, "sigma_y"), "parameter 'sigma_y'")
