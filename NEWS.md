@@ -2,7 +2,7 @@
 
 # smbr 0.0.1.9011
 
-- Added `seed` and `niters_warmup` arguments to analyse1.smb_model
+- Added `seed` and `niters_warmup` arguments to analyse1.smb_model.
 
 
 # smbr 0.0.1.9010
