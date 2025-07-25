@@ -51,7 +51,7 @@ extract_pars <- function(x, block_location) {
 
   type <- c(
     "int", "real", "vector", "simplex", "ordered", "row_vector",
-    "matrix", "corr_matrix", "cov_matrix", "positive_ordered"
+    "matrix", "corr_matrix", "cov_matrix", "positive_ordered", "array"
   ) %>%
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
@@ -74,7 +74,7 @@ extract_scalar <- function(x, block_location) {
 
   type <- c(
     "int", "real", "vector", "simplex", "ordered", "row_vector",
-    "matrix", "corr_matrix", "cov_matrix", "positive_ordered"
+    "matrix", "corr_matrix", "cov_matrix", "positive_ordered", "array"
   ) %>%
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
@@ -98,7 +98,7 @@ extract_types <- function(x, block_location) {
 
   type <- c(
     "int", "real", "vector", "simplex", "ordered", "row_vector",
-    "matrix", "corr_matrix", "cov_matrix", "positive_ordered"
+    "matrix", "corr_matrix", "cov_matrix", "positive_ordered", "array"
   ) %>%
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
