@@ -8,7 +8,9 @@ drop_parameter <- function(x, parameter) {
   }
 
   pars <- get_par_names(x)
-  if (length(pars) == 1) error("attempting to drop last parameter!")
+  if (length(pars) == 1) {
+    error("attempting to drop last parameter!")
+  }
 
   type <- get_par_types(x)[get_par_names(x) == parameter]
 
@@ -29,7 +31,9 @@ drop_pars.smb_code <- function(x, pars = character(0), ...) {
     return(x)
   }
 
-  for (parameter in pars) x %<>% drop_parameter(parameter)
+  for (parameter in pars) {
+    x %<>% drop_parameter(parameter)
+  }
 
   x
 }

@@ -1,16 +1,26 @@
 #' @export
 sd_priors_by.smb_code <- function(
-    x, by = 10, distributions = c("normal", "lognormal", "t"), ...) {
+  x,
+  by = 10,
+  distributions = c("normal", "lognormal", "t"),
+  ...
+) {
   chk_number(by)
   chk_range(by, c(0.001, 1000))
   chk_unused(...)
 
   chk_s3_class(distributions, "character")
   chk_unique(distributions)
-  chk_subset(distributions, c(
-    "laplace", "logistic", "lognormal",
-    "normal", "t"
-  ))
+  chk_subset(
+    distributions,
+    c(
+      "laplace",
+      "logistic",
+      "lognormal",
+      "normal",
+      "t"
+    )
+  )
 
   if (!length(distributions)) {
     wrn("No prior distributions included.")

@@ -1,21 +1,40 @@
-smb_analyse_chain <- function(inits_chainid, loaded, data,
-                              monitor, seed, niters, nthin, quiet,
-                              niters_warmup) {
-  capture_output <- if (quiet) function(x) suppressWarnings(capture.output(x)) else identity
+smb_analyse_chain <- function(
+  inits_chainid,
+  loaded,
+  data,
+  monitor,
+  seed,
+  niters,
+  nthin,
+  quiet,
+  niters_warmup
+) {
+  capture_output <- if (quiet) {
+    function(x) suppressWarnings(capture.output(x))
+  } else {
+    identity
+  }
 
   inits <- inits_chainid$inits
-  if (is.list(inits)) inits <- list(inits)
+  if (is.list(inits)) {
+    inits <- list(inits)
+  }
 
   iter <- niters * nthin + niters_warmup
 
   capture_output(
     stan_fit <- rstan::sampling(
       loaded,
-      data = data, init = inits, pars = monitor,
+      data = data,
+      init = inits,
+      pars = monitor,
       warmup = niters_warmup,
       seed = seed,
-      chains = 1L, iter = iter, thin = nthin,
-      cores = 1L, chain_id = inits_chainid$chain_id,
+      chains = 1L,
+      iter = iter,
+      thin = nthin,
+      cores = 1L,
+      chain_id = inits_chainid$chain_id,
       show_messages = !quiet
     )
   )
@@ -25,8 +44,20 @@ smb_analyse_chain <- function(inits_chainid, loaded, data,
 
 
 #' @export
-analyse1.smb_model <- function(model, data, loaded, nchains, niters, nthin,
-                               quiet, glance, parallel, seed, niters_warmup, ...) {
+analyse1.smb_model <- function(
+  model,
+  data,
+  loaded,
+  nchains,
+  niters,
+  nthin,
+  quiet,
+  glance,
+  parallel,
+  seed,
+  niters_warmup,
+  ...
+) {
   timer <- timer::Timer$new()
   timer$start()
 
@@ -42,28 +73,35 @@ analyse1.smb_model <- function(model, data, loaded, nchains, niters, nthin,
 
   monitor <- embr::monitor(model)
 
-  stan_fit <- llply(inits_chainid,
+  stan_fit <- llply(
+    inits_chainid,
     .fun = smb_analyse_chain,
     .parallel = parallel,
     loaded = loaded,
     data = data,
-    monitor = monitor, seed = seed,
-    niters = niters, nthin = nthin,
-    quiet = quiet, niters_warmup = niters_warmup
+    monitor = monitor,
+    seed = seed,
+    niters = niters,
+    nthin = nthin,
+    quiet = quiet,
+    niters_warmup = niters_warmup
   ) %>%
     rstan::sflist2stanfit()
 
-  obj %<>% c(
-    inits = list(inits),
-    stanfit = list(stan_fit),
-    mcmcr = list(as.mcmcr(stan_fit)),
-    nthin = nthin
-  )
+  obj %<>%
+    c(
+      inits = list(inits),
+      stanfit = list(stan_fit),
+      mcmcr = list(as.mcmcr(stan_fit)),
+      nthin = nthin
+    )
 
   obj$duration <- timer$elapsed()
   class(obj) <- c("smb_analysis", "mb_analysis")
 
-  if (glance) print(glance(obj))
+  if (glance) {
+    print(glance(obj))
+  }
 
   obj
 }
