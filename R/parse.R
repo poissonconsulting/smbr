@@ -1,5 +1,6 @@
 clean_blocks <- function(x) {
-  x %<>% template() %>%
+  x %<>%
+    template() %>%
     str_replace_all(";.*\n", ";\n") %>%
     str_replace_all("\n", "") %>%
     str_replace_all("\\s{2,}", " ")
@@ -26,7 +27,9 @@ get_block_location <- function(x, block_name) {
 
   block_locs <- str_locate_all(x, "(^|[}])[^(}|{)]+[{]")[[1]] %>% t()
 
-  if (ncol(block_locs) != length(block_names)) stop("Number of Stan blocks does not match number of block names")
+  if (ncol(block_locs) != length(block_names)) {
+    stop("Number of Stan blocks does not match number of block names")
+  }
 
   n_block <- ncol(block_locs)
   block_locs[1:(2 * n_block - 1)] <- block_locs %>%
@@ -40,7 +43,8 @@ get_block_location <- function(x, block_name) {
 }
 
 extract_pars <- function(x, block_location) {
-  x %<>% str_sub(block_location$start, block_location$end) %>%
+  x %<>%
+    str_sub(block_location$start, block_location$end) %>%
     str_trim() %>%
     str_replace_all("([{]|[}])", "") %>%
     str_trim() %>%
@@ -50,8 +54,17 @@ extract_pars <- function(x, block_location) {
   x
 
   type <- c(
-    "int", "real", "vector", "simplex", "ordered", "row_vector",
-    "matrix", "corr_matrix", "cov_matrix", "positive_ordered", "array"
+    "int",
+    "real",
+    "vector",
+    "simplex",
+    "ordered",
+    "row_vector",
+    "matrix",
+    "corr_matrix",
+    "cov_matrix",
+    "positive_ordered",
+    "array"
   ) %>%
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
@@ -63,7 +76,8 @@ extract_pars <- function(x, block_location) {
 }
 
 extract_scalar <- function(x, block_location) {
-  x %<>% str_sub(block_location$start, block_location$end) %>%
+  x %<>%
+    str_sub(block_location$start, block_location$end) %>%
     str_trim() %>%
     str_replace_all("([{]|[}])", "") %>%
     str_trim() %>%
@@ -73,8 +87,17 @@ extract_scalar <- function(x, block_location) {
   x
 
   type <- c(
-    "int", "real", "vector", "simplex", "ordered", "row_vector",
-    "matrix", "corr_matrix", "cov_matrix", "positive_ordered", "array"
+    "int",
+    "real",
+    "vector",
+    "simplex",
+    "ordered",
+    "row_vector",
+    "matrix",
+    "corr_matrix",
+    "cov_matrix",
+    "positive_ordered",
+    "array"
   ) %>%
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
@@ -87,7 +110,8 @@ extract_scalar <- function(x, block_location) {
 
 
 extract_types <- function(x, block_location) {
-  x %<>% str_sub(block_location$start, block_location$end) %>%
+  x %<>%
+    str_sub(block_location$start, block_location$end) %>%
     str_trim() %>%
     str_replace_all("([{]|[}])", "") %>%
     str_trim() %>%
@@ -97,8 +121,17 @@ extract_types <- function(x, block_location) {
   x
 
   type <- c(
-    "int", "real", "vector", "simplex", "ordered", "row_vector",
-    "matrix", "corr_matrix", "cov_matrix", "positive_ordered", "array"
+    "int",
+    "real",
+    "vector",
+    "simplex",
+    "ordered",
+    "row_vector",
+    "matrix",
+    "corr_matrix",
+    "cov_matrix",
+    "positive_ordered",
+    "array"
   ) %>%
     str_c(collapse = "|") %>%
     str_c("(", ., ")")
@@ -142,10 +175,11 @@ paste_transformed_data <- function(x, text, top = TRUE) {
   text %<>% rm_comments()
 
   if (!has_block(x, "transformed data")) {
-    x %<>% str_replace(
-      "\\n\\s*parameters\\s*[{]",
-      "\ntransformed data{\n}\nparameters{"
-    )
+    x %<>%
+      str_replace(
+        "\\n\\s*parameters\\s*[{]",
+        "\ntransformed data{\n}\nparameters{"
+      )
   }
 
   if (top) {

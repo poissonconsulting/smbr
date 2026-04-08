@@ -2,7 +2,8 @@ test_that("analyse", {
   embr::set_analysis_mode("check")
 
   # define model in Stan language
-  model <- embr::model(mb_code("
+  model <- embr::model(mb_code(
+    "
  data {
       int nAnnual;
       int nObs;
@@ -40,20 +41,26 @@ test_that("analyse", {
                       beta3 * Year[i]^3 + bAnnual[Annual[i]]);
       }
       Pairs ~ poisson(ePairs);
-  }"))
+  }"
+  ))
 
   # add R code to calculate derived parameters
-  model <- embr::update_model(model, new_expr = "
+  model <- embr::update_model(
+    model,
+    new_expr = "
   for (i in 1:length(Pairs)) {
     prediction[i] <- exp(alpha + beta1 * Year[i] + beta2 * Year[i]^2 +
                        beta3 * Year[i]^3 + bAnnual[Annual[i]])
   }
-    log_lik <- dpois(Pairs, prediction, log = TRUE)")
+    log_lik <- dpois(Pairs, prediction, log = TRUE)"
+  )
 
   # define data types and center year
-  model <- embr::update_model(model,
+  model <- embr::update_model(
+    model,
     select_data = list(
-      "Pairs" = integer(), "Year*" = integer(),
+      "Pairs" = integer(),
+      "Year*" = integer(),
       Annual = factor()
     ),
     derived = "sAnnual",
@@ -81,7 +88,16 @@ test_that("analyse", {
 
   expect_identical(
     pars(code(model), "all"),
-    c("alpha", "bAnnual", "beta1", "beta2", "beta3", "eAnnual", "log_sAnnual", "sAnnual")
+    c(
+      "alpha",
+      "bAnnual",
+      "beta1",
+      "beta2",
+      "beta3",
+      "eAnnual",
+      "log_sAnnual",
+      "sAnnual"
+    )
   )
 
   expect_identical(pars(model), pars(model, "all"))
@@ -140,7 +156,13 @@ test_that("analyse", {
   expect_identical(
     colnames(glance),
     c(
-      "n", "K", "nchains", "niters", "nthin", "ess", "rhat",
+      "n",
+      "K",
+      "nchains",
+      "niters",
+      "nthin",
+      "ess",
+      "rhat",
       "converged"
     )
   )
@@ -170,8 +192,13 @@ test_that("analyse", {
     sort(
       as.term(
         c(
-          "alpha", paste0("bAnnual[", 1:40, "]"), "beta1", "beta2", "beta3",
-          "log_sAnnual", "sAnnual"
+          "alpha",
+          paste0("bAnnual[", 1:40, "]"),
+          "beta1",
+          "beta2",
+          "beta3",
+          "log_sAnnual",
+          "sAnnual"
         )
       )
     )
@@ -186,10 +213,20 @@ test_that("analyse", {
   year <- predict(analysis, new_data = "Year")
 
   expect_is(year, "tbl")
-  expect_identical(colnames(year), c(
-    "Year", "Pairs", "R.Pairs", "Eyasses", "Annual",
-    "estimate", "lower", "upper", "svalue"
-  ))
+  expect_identical(
+    colnames(year),
+    c(
+      "Year",
+      "Pairs",
+      "R.Pairs",
+      "Eyasses",
+      "Annual",
+      "estimate",
+      "lower",
+      "upper",
+      "svalue"
+    )
+  )
   expect_true(all(year$estimate > year$lower))
   expect_true(all(year$estimate < year$upper))
 
