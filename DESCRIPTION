@@ -48,6 +48,6 @@ Remotes:
     poissonconsulting/mcmcdata,
     poissonconsulting/timer
 Encoding: UTF-8
-RoxygenNote: 7.3.2.9000
+RoxygenNote: 7.3.3.9000
 Roxygen: list(markdown = TRUE)
 Config/Needs/website: poissonconsulting/poissontemplate
