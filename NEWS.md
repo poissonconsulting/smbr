@@ -1,5 +1,14 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# smbr 0.0.1.9012
+
+- Added following addition parameter types
+  - "cholesky_factor_cov"
+  - "cholesky_factor_corr"
+  - "unit_vector"
+  - "sum_to_zero_vector"
+  - "sum_to_zero_matrix"
+
 # smbr 0.0.1.9011
 
 - Added `seed` and `niters_warmup` arguments to analyse1.smb_model.
