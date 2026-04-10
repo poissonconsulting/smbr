@@ -11,6 +11,10 @@ types <- function() {
     "cov_matrix",
     "positive_ordered",
     "array",
-    "cholesky_factor_corr"
+    "cholesky_factor_cov",
+    "cholesky_factor_corr",
+    "unit_vector",
+    "sum_to_zero_vector",
+    "sum_to_zero_matrix"
   )
 }
