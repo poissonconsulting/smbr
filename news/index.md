@@ -1,5 +1,10 @@
 # Changelog
 
+## smbr 0.0.1.9013
+
+- Add fledge-bump workflow
+- Add fledge-tag-on-merge workflow
+
 ## smbr 0.0.1.9012
 
 - Added following addition parameter types
