@@ -16,7 +16,7 @@ library(embr)
 library(smbr)
 
 # define model in Stan language
-model <- model("
+model <- model(code = "
   data {
       int nAnnual;
       int nObs;
