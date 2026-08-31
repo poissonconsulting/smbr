@@ -28,7 +28,7 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
     library(smbr)
 
     # define model in Stan language
-    model <- model("
+    model <- model(code = "
       data {
           int nAnnual;
           int nObs;
