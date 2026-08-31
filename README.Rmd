@@ -38,7 +38,7 @@ library(smbr)
 
 ```{r}
 # define model in Stan language
-model <- model("
+model <- model(code = "
   data {
       int nAnnual;
       int nObs;
