@@ -1,4 +1,9 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+<!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
+
+# smbr 0.0.1.9016
+
+- Same as previous version.
+
 
 # smbr 0.0.1.9015
 
